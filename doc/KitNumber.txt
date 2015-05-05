@@ -1,0 +1,11 @@
+-- Rio de Janeiro
+
+NCam Kit A
+- PC : 00460
+- BAR: 00466
+- BOX: 00481
+
+NCam Kit B
+- PC : 11360
+- BAR: 00488
+- BOX: 00470
