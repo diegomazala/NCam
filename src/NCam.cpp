@@ -600,7 +600,7 @@ extern "C"
 		std::for_each(gLensSamples.begin(), gLensSamples.end(), printZoom);
 	}
 
-
+	
 	NCAM_API bool NCamUpdateLensSample(double z, double f, double i, double _fov, int resolution)
 	{
 		int zoom = z * resolution;

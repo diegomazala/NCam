@@ -33,7 +33,7 @@ public class GLNvSdiRenderTexture : MonoBehaviour
         sdiRenderTarget.antiAliasing = 8;
         sdiRenderTarget.Create();
 
-        this.camera.targetTexture = sdiRenderTarget;
+        this.GetComponent<Camera>().targetTexture = sdiRenderTarget;
     }
     
 
@@ -44,7 +44,7 @@ public class GLNvSdiRenderTexture : MonoBehaviour
             if (RenderTexture.active == sdiRenderTarget)
                 RenderTexture.active = null;
 
-            this.camera.targetTexture = null;
+            this.GetComponent<Camera>().targetTexture = null;
             if (sdiRenderTarget != null)
             {
                 DestroyImmediate(sdiRenderTarget);

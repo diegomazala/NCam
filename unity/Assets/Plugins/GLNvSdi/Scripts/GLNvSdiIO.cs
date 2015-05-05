@@ -95,9 +95,9 @@ public class GLNvSdiIO : MonoBehaviour
             }
 
 
-            if (guiText != null)
+            if (GetComponent<GUIText>() != null)
             {
-                guiText.text = timeCodeData[0].ToString() + timeCodeData[1].ToString() + ':' +
+                GetComponent<GUIText>().text = timeCodeData[0].ToString() + timeCodeData[1].ToString() + ':' +
                                 timeCodeData[2].ToString() + timeCodeData[3].ToString() + ':' +
                                 timeCodeData[4].ToString() + timeCodeData[5].ToString() + ':' +
                                 timeCodeData[6].ToString() + timeCodeData[7].ToString();
