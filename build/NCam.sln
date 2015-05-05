@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NCamWin", "NCamWin.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestNCamWinGL", "TestNCamWinGL.vcxproj", "{7F6AD3AC-ECD7-45D1-B86B-AE468B9AC4D5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestNCamQt", "TestNCamQt.vcxproj", "{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -54,6 +56,18 @@ Global
 		{7F6AD3AC-ECD7-45D1-B86B-AE468B9AC4D5}.Release|Win32.Build.0 = Release|Win32
 		{7F6AD3AC-ECD7-45D1-B86B-AE468B9AC4D5}.Release|x64.ActiveCfg = Release|x64
 		{7F6AD3AC-ECD7-45D1-B86B-AE468B9AC4D5}.Release|x64.Build.0 = Release|x64
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Debug|Win32.Build.0 = Debug|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Debug|x64.ActiveCfg = Debug|x64
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Debug|x64.Build.0 = Debug|x64
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|Win32.ActiveCfg = Release|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|Win32.Build.0 = Release|Win32
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|x64.ActiveCfg = Release|x64
+		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
