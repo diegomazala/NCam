@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<NCam>
+  <attr type="System.Boolean" name="Enabled" value="True" />
+  <attr type="System.String" name="IpAddress" value="192.168.12.1" />
+  <attr type="System.Int32" name="Port" value="38860" />
+  <attr type="System.Boolean" name="AutoConnection" value="False" />
+  <attr type="System.Int32" name="DelayInFrames" value="0" />
+  <attr type="System.Single" name="ScaleUnits" value="100" />
+  <attr type="System.Boolean" name="UseGLMatrix" value="False" />
+  <LocalPosition>
+    <field type="System.Single" name="x" value="0" />
+    <field type="System.Single" name="y" value="0" />
+    <field type="System.Single" name="z" value="0" />
+  </LocalPosition>
+  <LocalRotation>
+    <field type="System.Single" name="x" value="0" />
+    <field type="System.Single" name="y" value="0" />
+    <field type="System.Single" name="z" value="0" />
+  </LocalRotation>
+</NCam>
