@@ -18,6 +18,7 @@ public:
 	explicit NCamWidget(QWidget *parent = 0);
 	~NCamWidget();
 
+	bool isConnected() const;
 
 public slots:
 	void onConnect();

@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestNCamWinGL", "TestNCamWi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestNCamQt", "TestNCamQt.vcxproj", "{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NCamLensTable", "NCamLensTable.vcxproj", "{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -68,6 +70,18 @@ Global
 		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|Win32.Build.0 = Release|Win32
 		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|x64.ActiveCfg = Release|x64
 		{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}.Release|x64.Build.0 = Release|x64
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Debug|Win32.Build.0 = Debug|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Debug|x64.ActiveCfg = Debug|x64
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Debug|x64.Build.0 = Debug|x64
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Release|Win32.ActiveCfg = Release|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Release|Win32.Build.0 = Release|Win32
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Release|x64.ActiveCfg = Release|x64
+		{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
