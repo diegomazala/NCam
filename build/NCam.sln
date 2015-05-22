@@ -8,6 +8,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NCamWin", "NCamWin.vcxproj", "{C1AE7D70-5EED-4258-B86C-FEE85C01B924}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NCamLensTable", "NCamLensTable.vcxproj", "{C70E52CC-6F17-4C23-BF10-CCFF831FFDDB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9EC981C2-267E-4686-9DB5-9B07FAC149DC} = {9EC981C2-267E-4686-9DB5-9B07FAC149DC}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{B3E07C26-BCD2-464D-AD01-85657F5D06EA}"
 EndProject
@@ -16,8 +19,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ui", "Ui", "{D823B6CC-74FF-4933-AC4E-A2AFC2F017C2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NCamQtClient", "NCamQtClient.vcxproj", "{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9EC981C2-267E-4686-9DB5-9B07FAC149DC} = {9EC981C2-267E-4686-9DB5-9B07FAC149DC}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NCamWinGLClient", "NCamWinGLClient.vcxproj", "{7F6AD3AC-ECD7-45D1-B86B-AE468B9AC4D5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1AE7D70-5EED-4258-B86C-FEE85C01B924} = {C1AE7D70-5EED-4258-B86C-FEE85C01B924}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

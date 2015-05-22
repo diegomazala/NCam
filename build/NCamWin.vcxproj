@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\NCam.cpp" />
-    <ClCompile Include="..\src\NCamClient.cpp" />
-    <ClCompile Include="..\src\NCamWinClient.cpp" />
+    <ClInclude Include="..\src\NCam\ClockTime.h" />
+    <ClInclude Include="..\src\NCam\NCam.h" />
+    <ClInclude Include="..\src\NCam\NCamClient.h" />
+    <ClInclude Include="..\src\NCam\NCamWinClient.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\ClockTime.h" />
-    <ClInclude Include="..\src\NCam.h" />
-    <ClInclude Include="..\src\NCamClient.h" />
-    <ClInclude Include="..\src\NCamWinClient.h" />
+    <ClCompile Include="..\src\NCam\NCam.cpp" />
+    <ClCompile Include="..\src\NCam\NCamClient.cpp" />
+    <ClCompile Include="..\src\NCam\NCamWinClient.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C1AE7D70-5EED-4258-B86C-FEE85C01B924}</ProjectGuid>

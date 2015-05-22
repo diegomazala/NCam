@@ -57,14 +57,14 @@ struct GLFont
 			return;											// Do Nothing
 
 		va_start(ap, fmt);									// Parses The String For Variables
-		vsprintf(text, fmt, ap);							// And Converts Symbols To Actual Numbers
+		vsprintf_s(text, fmt, ap);							// And Converts Symbols To Actual Numbers
 		va_end(ap);											// Results Are Stored In Text
 
 		glRasterPos2f(raster_pos_x, raster_pos_y);
 
 		glPushAttrib(GL_LIST_BIT);							// Pushes The Display List Bits
 		glListBase(base - 32);								// Sets The Base Character to 32
-		glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);	// Draws The Display List Text
+		glCallLists((GLsizei)strlen(text), GL_UNSIGNED_BYTE, text);	// Draws The Display List Text
 		glPopAttrib();										// Pops The Display List Bits
 	}
 
@@ -93,14 +93,14 @@ struct GLFont
 				return;											// Do Nothing
 
 			va_start(ap, fmt);									// Parses The String For Variables
-			vsprintf(text, fmt, ap);							// And Converts Symbols To Actual Numbers
+			vsprintf_s(text, fmt, ap);							// And Converts Symbols To Actual Numbers
 			va_end(ap);											// Results Are Stored In Text
 
 			glRasterPos2f(raster_pos_x, raster_pos_y);
 
 			glPushAttrib(GL_LIST_BIT);							// Pushes The Display List Bits
 			glListBase(base - 32);								// Sets The Base Character to 32
-			glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);	// Draws The Display List Text
+			glCallLists((GLsizei)strlen(text), GL_UNSIGNED_BYTE, text);	// Draws The Display List Text
 			glPopAttrib();										// Pops The Display List Bits
 		}
 		//
