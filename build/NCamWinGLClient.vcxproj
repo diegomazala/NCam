@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7F6AD3AC-ECD7-45D1-B86B-AE468B9AC4D5}</ProjectGuid>
     <RootNamespace>TestWinAppGL</RootNamespace>
-    <ProjectName>TestNCamWinGL</ProjectName>
+    <ProjectName>NCamWinGLClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

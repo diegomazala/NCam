@@ -248,6 +248,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>NCamQtd.lib;LibNcamDataStreamingd.lib;Qt5Widgetsd.lib;Qt5Cored.lib;Qt5Guid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\lib\NCam\x86\LibNcamDataStreamingd.dll $(OutDir) /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy the dependencies from lib folder to output folder</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -265,6 +271,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>NCamQtd.lib;LibNcamDataStreamingd.lib;Qt5Widgetsd.lib;Qt5Cored.lib;Qt5Guid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\lib\NCam\x64\LibNcamDataStreamingd.dll $(OutDir) /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy the dependencies from lib folder to output folder</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -283,6 +295,12 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>NCamQt.lib;LibNcamDataStreaming.lib;Qt5Widgets.lib;Qt5Core.lib;Qt5Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\lib\NCam\x86\LibNcamDataStreaming.dll $(OutDir) /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy the dependencies from lib folder to output folder</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -301,6 +319,12 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>NCamQt.lib;LibNcamDataStreaming.lib;Qt5Widgets.lib;Qt5Core.lib;Qt5Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\lib\NCam\x64\LibNcamDataStreaming.dll $(OutDir) /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy the dependencies from lib folder to output folder</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

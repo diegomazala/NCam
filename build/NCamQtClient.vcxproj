@@ -74,7 +74,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1F94BB6F-89D4-4462-BDCC-2CBA6C750C85}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
-    <ProjectName>TestNCamQt</ProjectName>
+    <ProjectName>NCamQtClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
