@@ -15,16 +15,154 @@ LensTable::~LensTable()
 }
 
 
-bool LensTable::ReadFile()
+void LensTable::CreateKeys(int rows, int columns)
 {
+	zoomKeys.resize(rows);
+	focusKeys.resize(columns);
+
+	// calculating sample interval
+	float zoom_interval = 1.0f / float(zoomKeys.size() - 1);
+	float focus_interval = 1.0f / float(focusKeys.size() - 1);
+
+	// filling zoom key vector
+	float zkey = 0.0f;
+	for (int z = 0; z < zoomKeys.size(); ++z, zkey += zoom_interval)
+		zoomKeys[z] = zkey;
+
+	// filling focus key vector
+	float fkey = 0.0f;
+	for (int f = 0; f < focusKeys.size(); ++f, fkey += focus_interval)
+		focusKeys[f] = fkey;
+}
+
+
+void LensTable::CreateMatrix(int rows, int columns)
+{
+	// reseting the lens matrix
+	matrix.resize(rows);
+	for (auto& l : matrix)
+		l.resize(columns);
+}
+
+
+bool LensTable::Load(std::string filename)
+{
+	std::ifstream in(filename, std::ios::in);
+
+	if (in.is_open())
+	{
+		char c;	// used for semicolon, space ou line break
+		int rows = 0;
+		int columns = 0;
+
+		in >> rows >> columns;
+
+		zoomKeys.resize(rows);
+		focusKeys.resize(columns);
+
+		// reseting the lens matrix
+		matrix.resize(rows);
+		for (auto& l : matrix)
+			l.resize(columns);
+
+		// reading zoom sample keys
+		for (int i = 0; i < rows; ++i)
+			in >> zoomKeys[i];
+		
+		// reading focus sample keys
+		for (int i = 0; i < columns; ++i)
+			in >> focusKeys[i];
+		
+		// reading matrix values
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < columns; ++j)
+				in >> matrix[i][j];
+
+		return in.good();
+	}
+
 	return false;
 }
 
 
-bool LensTable::WriteFile()
+bool LensTable::Save(std::string filename) const
 {
+	std::ofstream out(filename, std::ios::out);
+
+	if (out.is_open())
+	{
+		int rows = zoomKeys.size();
+		int columns = focusKeys.size();
+
+		out << rows << ' ' << columns << ' ' << std::endl;
+
+		for (const auto& z : zoomKeys)
+			out << z << ' ';
+		out << std::endl;
+
+		for (const auto& f : focusKeys)
+			out << f << ' ';
+		out << std::endl;
+
+		for (const auto& lz : matrix)
+			for (const auto& ls : lz)
+				out << ls << std::endl;
+
+		return out.good();
+	}
+
 	return false;
 }
+
+
+bool LensTable::ReadFile(std::string filename, LensMatrix& l)
+{
+	std::ifstream in(filename, std::ios::in);
+
+	if (in.is_open())
+	{
+		char c;	// used for semicolon, space ou line break
+		int rows = 0;
+		int columns = 0;
+
+		in >> rows >> columns;
+
+		CreateEmptyLensTable(l, rows, columns);
+
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < columns; ++j)
+				in >> l[i][j];
+
+		return in.good();
+	}
+
+	return false;
+}
+
+
+bool LensTable::WriteFile(std::string filename, const LensMatrix& l)
+{
+	std::ofstream out(filename, std::ios::out);
+
+	if (out.is_open())
+	{
+		int rows = l.size();
+		int columns = l[0].size();
+
+		out << rows << ' ' << columns << ' ' << std::endl;
+
+		for (const auto& lz : l)
+			for (const auto& ls : lz)
+				out << ls << std::endl;
+
+		return out.good();
+	}
+
+	return false;
+}
+
+
+
 
 
 static void printFocus(const std::pair<int, LensSample>& l)
