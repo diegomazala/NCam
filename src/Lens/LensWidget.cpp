@@ -21,7 +21,7 @@ LensWidget::~LensWidget()
 bool LensWidget::load(QString filename)
 {
 	bool success = false;
-	if (tableLens.Load(filename.toStdString()))
+	if (tableLens.load(filename.toStdString()))
 	{
 		// setting intial table
 		ui->tableWidget->clear();

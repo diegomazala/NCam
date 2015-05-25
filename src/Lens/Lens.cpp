@@ -7,6 +7,8 @@
 
 LensTable::LensTable()
 {
+	minZoom = minFocus = minIris = minFov = 0.0f;
+	maxZoom = maxFocus = maxIris = maxFov = 1.0f;
 }
 
 
@@ -15,7 +17,7 @@ LensTable::~LensTable()
 }
 
 
-void LensTable::CreateKeys(int rows, int columns)
+void LensTable::createKeys(int rows, int columns)
 {
 	zoomKeys.resize(rows);
 	focusKeys.resize(columns);
@@ -36,7 +38,7 @@ void LensTable::CreateKeys(int rows, int columns)
 }
 
 
-void LensTable::CreateMatrix(int rows, int columns)
+void LensTable::createMatrix(int rows, int columns)
 {
 	// reseting the lens matrix
 	matrix.resize(rows);
@@ -45,7 +47,24 @@ void LensTable::CreateMatrix(int rows, int columns)
 }
 
 
-bool LensTable::Load(std::string filename)
+
+void LensTable::normalizeMatrix()
+{
+	for (int i = 0; i < rowCount(); ++i)
+	{
+		for (int j = 0; j < columnCount(); ++j)
+		{
+			matrix[i][j].zoom = normalizeZoom(matrix[i][j].zoom);
+			matrix[i][j].focus = normalizeFocus(matrix[i][j].focus);
+			matrix[i][j].iris = normalizeIris(matrix[i][j].iris);
+			matrix[i][j].fov = normalizeFov(matrix[i][j].fov);
+		}
+	}
+}
+
+
+
+bool LensTable::load(std::string filename)
 {
 	std::ifstream in(filename, std::ios::in);
 
@@ -85,7 +104,7 @@ bool LensTable::Load(std::string filename)
 }
 
 
-bool LensTable::Save(std::string filename) const
+bool LensTable::save(std::string filename) const
 {
 	std::ofstream out(filename, std::ios::out);
 
@@ -115,7 +134,7 @@ bool LensTable::Save(std::string filename) const
 }
 
 
-bool LensTable::ReadFile(std::string filename, LensMatrix& l)
+bool LensTable::readFile(std::string filename, LensMatrix& l)
 {
 	std::ifstream in(filename, std::ios::in);
 
@@ -140,7 +159,7 @@ bool LensTable::ReadFile(std::string filename, LensMatrix& l)
 }
 
 
-bool LensTable::WriteFile(std::string filename, const LensMatrix& l)
+bool LensTable::writeFile(std::string filename, const LensMatrix& l)
 {
 	std::ofstream out(filename, std::ios::out);
 
@@ -178,7 +197,7 @@ static void printZoom(const std::pair<int, FocusMap>& l)
 	std::for_each(f.begin(), f.end(), printFocus);
 }
 
-void LensTable::Print()
+void LensTable::print()
 {
 	std::for_each(gLensSamples.begin(), gLensSamples.end(), printZoom);
 }
