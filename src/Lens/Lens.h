@@ -15,18 +15,25 @@ struct LensSample
 	double fov;
 	std::vector<double> distortion;
 
-	LensSample() : zoom(-1.0), focus(-1.0), iris(-1.0), fov(-1.0)
+	LensSample() : zoom(FLT_MAX), focus(FLT_MAX), iris(FLT_MAX), fov(0.0f)
 	{}
 
 	LensSample(double z, double f, double i, double _fov) : zoom(z), focus(f), iris(i), fov(_fov)
 	{}
 
-	LensSample(double z, double f, double _fov) : zoom(z), focus(f), iris(0.0), fov(_fov)
+	LensSample(double z, double f, double _fov) : zoom(z), focus(f), iris(1.0), fov(_fov)
 	{}
 
 	LensSample(const LensSample& l) : zoom(l.zoom), focus(l.focus), iris(l.iris), fov(l.fov)
 	{}
 
+	void reset()
+	{
+		zoom = FLT_MAX;
+		focus = FLT_MAX;
+		iris = FLT_MAX;
+		fov = 0.0f;
+	}
 
 	friend std::ostream& operator << (std::ostream& os, const LensSample& l)
 	{
@@ -70,8 +77,16 @@ public:
 	LensTable();
 	~LensTable();
 
+	int rowCount() const { return zoomKeys.size(); }
+	int columnCount() const { return focusKeys.size(); }
+	
 	void createKeys(int rows, int columns);
 	void createMatrix(int rows, int columns);
+
+	void normalizeMatrix();
+
+	void find(float z, float f, float& z_distance, float& f_distance, int& i, int &j);
+	LensSample& find(float z, float f, float& z_distance, float& f_distance);
 
 	bool load(std::string filename);
 	bool save(std::string filename) const;
@@ -81,8 +96,7 @@ public:
 
 	void print();
 
-	int rowCount() const { return zoomKeys.size(); }
-	int columnCount() const { return focusKeys.size(); }
+	
 
 	FocusMap gFocusMap;
 	ZoomMap gLensSamples;
@@ -94,7 +108,7 @@ public:
 	std::vector<float> focusKeys;
 	LensMatrix matrix;
 
-	void normalizeMatrix();
+	
 
 	static float lerp(float x, float x0, float x1, float y0, float y1)
 	{

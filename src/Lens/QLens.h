@@ -20,8 +20,13 @@ static void QImage2LensMatrix(const QImage& img, LensMatrix& lt)
 			QRgb rgba = img.pixel(x, y);
 			lt[y][x].zoom = (double)qRed(rgba) / 255.0;
 			lt[y][x].focus = (double)qGreen(rgba) / 255.0;
+#if 0
 			lt[y][x].iris = (double)qBlue(rgba) / 255.0;
 			lt[y][x].fov = (double)qAlpha(rgba) / 255.0;
+#else
+			lt[y][x].fov = (double)qBlue(rgba) / 255.0;
+			lt[y][x].iris = (double)qAlpha(rgba) / 255.0;
+#endif
 		}
 	}
 }
@@ -43,8 +48,13 @@ static void LensMatrix2QImage(const LensMatrix& lt, QImage& img)
 
 			int red = ls.zoom * 255;
 			int green = ls.focus * 255;
+#if 0
 			int blue = ls.iris * 255;
 			int alpha = ls.fov * 255;
+#else
+			int alpha = ls.iris * 255;
+			int blue = ls.fov * 255;
+#endif
 
 			img.setPixel(j, i, qRgba(red, green, blue, alpha));
 		}

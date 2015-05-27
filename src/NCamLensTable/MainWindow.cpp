@@ -16,42 +16,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	tableModel = new QStandardItemModel(this);
+	
+//	QImage img;
+//	LensMatrix2QImage(ui->lensWidget->tableLens.matrix, img);
+//	ui->lensImage->setImage(img);
+	
 
-	tableModel->setHorizontalHeaderItem(0, new QStandardItem(QString("0.00")));
-	tableModel->setHorizontalHeaderItem(1, new QStandardItem(QString("0.25")));
-	tableModel->setHorizontalHeaderItem(2, new QStandardItem(QString("0.50")));
-	tableModel->setHorizontalHeaderItem(3, new QStandardItem(QString("0.75")));
-	tableModel->setHorizontalHeaderItem(4, new QStandardItem(QString("1.00")));
+	connect(ui->ncamWidget, SIGNAL(lensDataUpdated(double, double, double, double)), ui->lensWidget, SLOT(onLensDataChanged(double, double, double, double)));
 
-	int currentRow = 0;
-	QStandardItem *row = new QStandardItem(QString::number(0.5));
-	tableModel->setItem(currentRow, 0, row);
-	row = new QStandardItem("0.6");
-	tableModel->setItem(currentRow, 1, row);
-	row = new QStandardItem("0.7");
-	tableModel->setItem(currentRow, 2, row);
-	row = new QStandardItem("0.8");
-	tableModel->setItem(currentRow, 3, row);
-	row = new QStandardItem("0.9");
-	tableModel->setItem(currentRow, 4, row);
-	currentRow++;
-
-
-	int currentCol = 0;
-	row = new QStandardItem(QString::number(0.5));
-	tableModel->setItem(currentRow, currentCol++, row);
-	row = new QStandardItem("0.66");
-	tableModel->setItem(currentRow, currentCol++, row);
-	row = new QStandardItem("0.77");
-	tableModel->setItem(currentRow, currentCol++, row);
-	row = new QStandardItem("0.88");
-	tableModel->setItem(currentRow, currentCol++, row);
-	row = new QStandardItem("0.99");
-	tableModel->setItem(currentRow, currentCol++, row);
-	currentRow++;
-
-	ui->tableView->setModel(tableModel);
 }
 
 MainWindow::~MainWindow()
@@ -66,11 +38,15 @@ void MainWindow::fileNew()
 
 void MainWindow::fileOpen()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../../../data", tr("Lens Table (*.nlt)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../data", tr("Lens File (*.lens)"));
 
 	if (!fileName.isEmpty())
 	{
 		currentFileName = fileName;
+		ui->lensWidget->load(currentFileName);
+		QImage img;
+		LensMatrix2QImage(ui->lensWidget->tableLens.matrix, img);
+		ui->lensImage->setImage(img);
 	}
 }
 
@@ -79,6 +55,7 @@ void MainWindow::fileSave()
 {
 	if (!currentFileName.isEmpty())
 	{
+		ui->lensWidget->tableLens.save(currentFileName.toStdString());
 	}
 	else
 	{
@@ -89,7 +66,7 @@ void MainWindow::fileSave()
 
 void MainWindow::fileSaveAs()
 {
-	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Images (*.png *.bmp *.jpg *.tiff)"));
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Lens File (*.lens)"));
 	if (!fileName.isEmpty())
 	{
 		currentFileName = fileName;
@@ -105,16 +82,7 @@ void MainWindow::aboutDialogShow()
 }
 
 
-
-void MainWindow::addColumn()
+void MainWindow::onTableUpdate()
 {
-	if (!ui->ncamWidget->isConnected())
-	{
-		QMessageBox::critical(this, tr("NCam Lens Table"),
-			QString("There is no connection to a NCam server."),
-			QMessageBox::Abort);
-		return;
-	}
-
-	//ui->tableView->
+	ui->lensImage->setLensMatrix(ui->lensWidget->tableLens.matrix);
 }

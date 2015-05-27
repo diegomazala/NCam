@@ -64,6 +64,73 @@ void LensTable::normalizeMatrix()
 
 
 
+void LensTable::find(float z, float f, float& z_distance, float& f_distance, int& i, int &j)
+{
+	int min_z_idx = 0;
+	int max_z_idx = (int)zoomKeys.size() - 1;
+	
+	std::vector<float>::iterator zlow, zup;
+	zlow = std::lower_bound(zoomKeys.begin(), zoomKeys.end(), z);
+	zup = std::upper_bound(zoomKeys.begin(), zoomKeys.end(), z);
+
+	if (zlow == zup)
+		--zlow;
+
+	std::vector<float>::iterator flow, fup;
+	flow = std::lower_bound(focusKeys.begin(), focusKeys.end(), f);
+	fup = std::upper_bound(focusKeys.begin(), focusKeys.end(), f); 
+
+	if (flow == fup)
+		--flow;
+
+	if (zlow == zoomKeys.end())
+		zlow = zoomKeys.end() - 1;
+
+	if (zup == zoomKeys.end())
+		zup = zoomKeys.end() - 1;
+	
+	if (flow == focusKeys.end())
+		flow = focusKeys.end() - 1;
+
+	if (fup == focusKeys.end())
+		fup = focusKeys.end() - 1;
+
+	float z_dist[2] = { std::fabs(z - *zlow), std::fabs(z - *zup) };
+	float f_dist[2] = { std::fabs(f - *flow), std::fabs(f - *fup) };
+
+	if (z_dist[0] < z_dist[1])
+	{
+		i = zlow - zoomKeys.begin();
+		z_distance = z_dist[0];
+	}
+	else
+	{
+		i = zup - zoomKeys.begin();
+		z_distance = z_dist[1];
+	}
+
+	if (f_dist[0] < f_dist[1])
+	{
+		j = flow - focusKeys.begin();
+		f_distance = f_dist[0];
+	}
+	else
+	{
+		j = fup - focusKeys.begin();
+		f_distance = f_dist[1];
+	}
+	
+}
+
+
+LensSample& LensTable::find(float z, float f, float& z_distance, float& f_distance)
+{
+	int i, j;
+	find(z, f, z_distance, f_distance, i, j);
+	return matrix[i][j];
+}
+
+
 bool LensTable::load(std::string filename)
 {
 	std::ifstream in(filename, std::ios::in);

@@ -7,39 +7,35 @@
     <x>0</x>
     <y>0</y>
     <width>924</width>
-    <height>642</height>
+    <height>795</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>NCam Lens </string>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
   </property>
   <property name="dockOptions">
-   <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="NCamWidget" name="ncamWidget" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>326</width>
-        <height>571</height>
-       </size>
-      </property>
-     </widget>
+     <widget class="NCamWidget" name="ncamWidget" native="true"/>
     </item>
     <item>
-     <widget class="QTableView" name="tableView">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>571</width>
-        <height>571</height>
-       </size>
-      </property>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="LensWidget" name="lensWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="LensImageWidget" name="lensImage" native="true"/>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -88,13 +84,12 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
-   <addaction name="actionAddColumn"/>
   </widget>
   <action name="actionNew">
    <property name="text">
@@ -144,23 +139,27 @@
     <string>F1</string>
    </property>
   </action>
-  <action name="actionAddColumn">
-   <property name="text">
-    <string>Add Column</string>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add a new column into the table&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Return</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>NCamWidget</class>
    <extends>QWidget</extends>
    <header>NCamWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LensWidget</class>
+   <extends>QWidget</extends>
+   <header>LensWidget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>tableUpdated()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>LensImageWidget</class>
+   <extends>QWidget</extends>
+   <header>LensImageWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -173,8 +172,8 @@
    <slot>fileNew()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>464</x>
-     <y>299</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>464</x>
@@ -247,22 +246,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionAddColumn</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>addColumn()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>461</x>
-     <y>320</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionExit</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
@@ -278,6 +261,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lensWidget</sender>
+   <signal>tableUpdated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onTableUpdate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>689</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>fileOpen()</slot>
@@ -285,6 +284,6 @@
   <slot>fileSaveAs()</slot>
   <slot>aboutDialogShow()</slot>
   <slot>fileNew()</slot>
-  <slot>addColumn()</slot>
+  <slot>onTableUpdate()</slot>
  </slots>
 </ui>

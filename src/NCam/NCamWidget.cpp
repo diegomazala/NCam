@@ -127,6 +127,8 @@ void NCamWidget::update()
 	ui->trans0LineEdit->setText(QString::number(tracking[9]));
 	ui->trans1LineEdit->setText(QString::number(tracking[10]));
 	ui->trans2LineEdit->setText(QString::number(tracking[11]));
+
+	emit lensDataUpdated(encoder[0], encoder[2], encoder[4], optical[1]);
 }
 
 

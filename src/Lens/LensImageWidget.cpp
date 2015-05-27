@@ -2,14 +2,12 @@
 #include "LensImageWidget.h"
 #include <QMouseEvent>
 #include <QKeyEvent>
-
-
-
-
+#include "QLens.h"
 
 
 LensImageWidget::LensImageWidget(QWidget *parent)
-	: GLImageWidget(parent)
+	: GLImageWidget(parent), 
+	channels(0, 0, 1, 0)
 {
 	// loop call update
 	// QTimer *timer = new QTimer(this);
@@ -23,16 +21,23 @@ LensImageWidget::~LensImageWidget()
 	cleanup();
 }
 
+void LensImageWidget::setLensMatrix(const LensMatrix& lm)
+{
+	LensMatrix2QImage(lm, image);
+	buildTexture();
+	update();
+}
 
 void LensImageWidget::initializeGL()
 {
 	GLImageWidget::initializeGL();
+
+	program.reset(buildTextureChannelProgram());
+	program->release();
 	
 	renderTexel.reset(buildImageRenderTexel2D());
 	renderTexel->release();
 
-	QString textureFile("G:/VgpCode/NCam/testlens.png");
-	image = QImage(textureFile);
 	texture.reset(new QOpenGLTexture(image.mirrored()));
 	texture->setMinificationFilter(QOpenGLTexture::Nearest);
 	texture->setMagnificationFilter(QOpenGLTexture::Nearest);
@@ -54,17 +59,17 @@ void LensImageWidget::paintGL()
 	renderTexel->setUniformValue("uv", glPixelCoord);
 	f->glDrawArrays(GL_QUADS, 0, 4);
 	glReadPixels(0, 0, 1, 1, GL_RGBA, GL_FLOAT, &glPixelColor[0]);
-	qDebug() << glPixelColor.x() << ',' << glPixelColor.y() << ',' << glPixelColor.z() << ',' << glPixelColor.w();
 	renderTexel->release();
 
 	program->bind();
+	program->setUniformValue("channels", channels);
 	f->glDrawArrays(GL_QUADS, 0, 4);
 	program->release();
 
-	f->glViewport(0, 0, 30, 30);
-	renderTexel->bind();
-	f->glDrawArrays(GL_QUADS, 0, 4);
-	renderTexel->release();
+	//f->glViewport(0, 0, 30, 30);
+	//renderTexel->bind();
+	//f->glDrawArrays(GL_QUADS, 0, 4);
+	//renderTexel->release();
 
 }
 
@@ -129,9 +134,21 @@ void LensImageWidget::keyReleaseEvent(QKeyEvent *event)
 	case Qt::Key_Q:
 		close();
 		break;
-	case Qt::Key_1:
+	case Qt::Key_R:
+		channels.setX( float( !bool(channels.x()) ) );
+		update();
 		break;
-	case Qt::Key_2:
+	case Qt::Key_G:
+		channels.setY(float(!bool(channels.y())));
+		update();
+		break;
+	case Qt::Key_B:
+		channels.setZ(float(!bool(channels.z())));
+		update();
+		break;
+	case Qt::Key_A:
+		channels.setW(float(!bool(channels.w())));
+		update();
 		break;
 	default:
 		QWidget::keyReleaseEvent(event);
@@ -165,6 +182,50 @@ QOpenGLShaderProgram* LensImageWidget::buildImageRenderTexel2D()
 		"void main(void)\n"
 		"{\n"
 		"    gl_FragColor = texture(in_Texture, uv);\n"
+		"}\n";
+	fshader->compileSourceCode(fsrc);
+
+	prog->addShader(vshader);
+	prog->addShader(fshader);
+	prog->bindAttributeLocation("in_Vertex", 0);
+	prog->bindAttributeLocation("in_TexCoord", 1);
+	prog->link();
+	prog->bind();
+	prog->setUniformValue("in_Texture", 0);
+	prog->release();
+
+	return prog;
+}
+
+
+
+
+
+QOpenGLShaderProgram* LensImageWidget::buildTextureChannelProgram()
+{
+	QOpenGLShaderProgram* prog = new QOpenGLShaderProgram();
+
+	QOpenGLShader *vshader = new QOpenGLShader(QOpenGLShader::Vertex, prog);
+	const char *vsrc =
+		"attribute highp vec4 in_Vertex;\n"
+		"attribute mediump vec4 in_TexCoord;\n"
+		"varying mediump vec4 texc;\n"
+		"void main(void)\n"
+		"{\n"
+		"    gl_Position = in_Vertex;\n"
+		"    texc = in_TexCoord;\n"
+		"}\n";
+	vshader->compileSourceCode(vsrc);
+
+
+	QOpenGLShader *fshader = new QOpenGLShader(QOpenGLShader::Fragment, prog);
+	const char *fsrc =
+		"uniform sampler2D in_Texture;\n"
+		"varying mediump vec4 texc;\n"
+		"uniform mediump vec4 channels;\n"
+		"void main(void)\n"
+		"{\n"
+		"    gl_FragColor = texture2D(in_Texture, texc.st) * channels;\n"
 		"}\n";
 	fshader->compileSourceCode(fsrc);
 

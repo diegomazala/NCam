@@ -28,13 +28,14 @@ public slots:
 	void setImage(const QImage& image);
 	void setImage(const QString& fileimage);
 	
+	
 
 protected:	// methods
 
 	virtual void initializeGL() Q_DECL_OVERRIDE;
 	virtual void paintGL() Q_DECL_OVERRIDE;
 	virtual void resizeGL(int width, int height) Q_DECL_OVERRIDE;
-
+	virtual void buildTexture();
 
 private: // methods
 	QOpenGLShaderProgram* buildImagePassthroughProgram() const;

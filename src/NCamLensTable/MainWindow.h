@@ -3,6 +3,7 @@
 
 
 #include <QMainWindow>
+#include "QLens.h"
 
 class AboutDialog;
 class QStandardItemModel;
@@ -28,16 +29,13 @@ public slots:
 	void fileSave();
 	void fileSaveAs();
 	void aboutDialogShow();
-
-	void addColumn();
+	void onTableUpdate();
 
 private:
 
 	Ui::MainWindow *ui;
 	QString currentFileName;
 	AboutDialog* aboutDialog;
-
-	QStandardItemModel* tableModel;
 };
 
 #endif // _MAIN_WINDOW_H_

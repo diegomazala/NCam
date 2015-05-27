@@ -27,12 +27,21 @@ GLImageWidget::~GLImageWidget()
 
 void GLImageWidget::setImage(const QImage& inputImage)
 {
-	this->makeCurrent();
-	this->image = inputImage;
-	texture.reset(new QOpenGLTexture(inputImage.mirrored()));
+	makeCurrent();
+	image = inputImage;
+	buildTexture();
+}
+
+
+void GLImageWidget::buildTexture()
+{
+	makeCurrent();
+	texture.reset(new QOpenGLTexture(image.mirrored()));
 	texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToEdge);
-	texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-	texture->setMagnificationFilter(QOpenGLTexture::Linear);
+	texture->setMinificationFilter(QOpenGLTexture::Nearest);
+	texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+	//texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+	//texture->setMagnificationFilter(QOpenGLTexture::Linear);
 }
 
 
@@ -72,7 +81,7 @@ void GLImageWidget::initializeGL()
 	texture->setMagnificationFilter(QOpenGLTexture::Linear);
 
 	program.reset(buildImagePassthroughProgram());
-	buildImagePassthroughProgram();
+	program->release();
 
 	vao.create();
 	QOpenGLVertexArrayObject::Binder vaoBinder(&vao);

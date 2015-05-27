@@ -749,6 +749,7 @@
   </connection>
  </connections>
  <slots>
+  <signal>lensDataUpdated(double,double,double,double)</signal>
   <slot>onConnect()</slot>
   <slot>onDisconnect()</slot>
  </slots>

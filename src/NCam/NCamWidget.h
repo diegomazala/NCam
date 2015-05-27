@@ -25,6 +25,9 @@ public slots:
 	void onDisconnect();
 	void update();
 
+signals:
+	void lensDataUpdated(double zoom, double focus, double iris, double fov);
+
 private:
 
 	Ui::NCamWidget *ui;

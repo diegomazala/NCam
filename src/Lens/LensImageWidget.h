@@ -5,7 +5,6 @@
 #include "Lens.h"
 
 
-
 class LensImageWidget : public GLImageWidget
 {
 	Q_OBJECT
@@ -13,6 +12,8 @@ class LensImageWidget : public GLImageWidget
 public:
 	LensImageWidget(QWidget *parent = 0);
 	~LensImageWidget();
+
+	void setLensMatrix(const LensMatrix& lm);
 
 protected:
 	void initializeGL() Q_DECL_OVERRIDE;
@@ -27,6 +28,7 @@ protected:
 private:
 
 	QOpenGLShaderProgram* buildImageRenderTexel2D();
+	QOpenGLShaderProgram* buildTextureChannelProgram();
 
 	QScopedPointer<QOpenGLShaderProgram> renderTexel;
 
@@ -37,6 +39,7 @@ private:
 	QPoint mousePos;
 	QVector2D glPixelCoord;
 	QVector4D glPixelColor;
+	QVector4D channels;
 };
 
 
