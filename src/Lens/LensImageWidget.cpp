@@ -117,15 +117,6 @@ void LensImageWidget::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void LensImageWidget::keyPressEvent(QKeyEvent *event) 
-{
-	//QMessageBox* box = new QMessageBox();
-	//box->setWindowTitle(QString("Hello"));
-	//box->setText(QString("You Pressed: ") + event->text());
-	//box->show();
-
-}
-
 
 void LensImageWidget::keyReleaseEvent(QKeyEvent *event)
 {
@@ -167,7 +158,7 @@ void LensImageWidget::focusChannel(int checked)
 	update();
 }
 
-void LensImageWidget::fovChannel(int checked)	
+void LensImageWidget::fovChannel(int checked)
 { 
 	channels.setZ(float(std::min(std::max(checked, 0), 1)));
 	update();
