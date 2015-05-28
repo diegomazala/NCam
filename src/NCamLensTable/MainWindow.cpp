@@ -29,7 +29,7 @@ MainWindow::~MainWindow()
 void MainWindow::fileNew()
 {
 	currentFileName.clear();
-	//ui->lensWidget->
+	ui->lensWidget->reset();
 }
 
 

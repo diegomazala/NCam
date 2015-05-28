@@ -49,7 +49,9 @@ void LensWidget::reset()
 	int columns = 5;
 	tableLens.createKeys(rows, columns);
 	tableLens.createMatrix(rows, columns);
+	emit tableUpdated();
 }
+
 
 void LensWidget::horizontalHeaderClicked(int column)
 {
@@ -58,11 +60,8 @@ void LensWidget::horizontalHeaderClicked(int column)
 	float z = 0.25;
 	float f = 0.0f;
 	tableLens.find(tableLens.zoomDeviation, tableLens.focusDeviation, z_dist, f_dist, i, j);
-
-	std::cout << "[i,j]  = " << i << ',' << j << std::endl;
-	std::cout << "[dist] = " << z_dist << ',' << f_dist << std::endl;
-	std::cout << "[fov]  = " << tableLens.matrix[i][j] << std::endl;
 }
+
 
 void LensWidget::verticalHeaderClicked(int row)
 {
@@ -135,6 +134,7 @@ void LensWidget::cellClicked(int i, int j)
 		emit tableUpdated();
 	}
 }
+
 
 void LensWidget::onLensDataChanged(double zoom, double focus, double iris, double fov)
 {

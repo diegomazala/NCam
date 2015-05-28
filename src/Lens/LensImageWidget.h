@@ -24,6 +24,10 @@ protected:
 	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 	void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
+public slots:
+	void zoomChannel(int checked);
+	void focusChannel(int checked);
+	void fovChannel(int checked);
 
 private:
 

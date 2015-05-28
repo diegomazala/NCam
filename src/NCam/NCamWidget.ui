@@ -453,6 +453,12 @@
    </item>
    <item>
     <widget class="QGroupBox" name="modelViewGroupBox">
+     <property name="minimumSize">
+      <size>
+       <width>308</width>
+       <height>197</height>
+      </size>
+     </property>
      <property name="title">
       <string>Modelview</string>
      </property>

@@ -46,7 +46,23 @@ void LensTable::createMatrix(int rows, int columns)
 		l.resize(columns, LensSample());
 }
 
+void LensTable::updateMinMaxFov()
+{
+	minFov = FLT_MAX;
+	maxFov = FLT_MIN;
 
+	for (auto& lz : matrix)
+	{
+		for (auto& ls : lz)
+		{
+			if (ls.fov < minFov)
+				minFov = ls.fov;
+
+			if (ls.fov > maxFov)
+				maxFov = ls.fov;
+		}
+	}
+}
 
 void LensTable::normalizeMatrix()
 {
@@ -168,6 +184,8 @@ bool LensTable::load(std::string filename)
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < columns; ++j)
 				in >> matrix[i][j].distortion;
+
+		updateMinMaxFov();
 
 		return in.good();
 	}

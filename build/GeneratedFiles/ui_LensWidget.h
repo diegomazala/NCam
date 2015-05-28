@@ -55,8 +55,7 @@ public:
     {
         if (LensWidget->objectName().isEmpty())
             LensWidget->setObjectName(QStringLiteral("LensWidget"));
-        LensWidget->resize(506, 380);
-        LensWidget->setMinimumSize(QSize(506, 380));
+        LensWidget->setMinimumSize(QSize(535, 256));
 #ifndef QT_NO_TOOLTIP
         LensWidget->setToolTip(QStringLiteral(""));
 #endif // QT_NO_TOOLTIP
@@ -107,11 +106,6 @@ public:
 
         horizontalLayout_3->addLayout(horizontalLayout_2);
 
-        focusSpinBox->raise();
-        focusSpinBox->raise();
-        zoomSpinBox->raise();
-        zoomLabel->raise();
-        focusLabel->raise();
 
         horizontalLayout_8->addWidget(deviationGroupBox);
 
@@ -176,11 +170,16 @@ public:
         verticalLayout->addLayout(horizontalLayout_8);
 
         tableWidget = new QTableWidget(LensWidget);
+        if (tableWidget->columnCount() < 5)
+            tableWidget->setColumnCount(5);
+        if (tableWidget->rowCount() < 5)
+            tableWidget->setRowCount(5);
         tableWidget->setObjectName(QStringLiteral("tableWidget"));
 #ifndef QT_NO_TOOLTIP
         tableWidget->setToolTip(QStringLiteral(""));
 #endif // QT_NO_TOOLTIP
-        tableWidget->setRowCount(0);
+        tableWidget->setRowCount(5);
+        tableWidget->setColumnCount(5);
 
         verticalLayout->addWidget(tableWidget);
 

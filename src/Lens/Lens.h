@@ -128,6 +128,7 @@ public:
 	void createKeys(int rows, int columns);
 	void createMatrix(int rows, int columns);
 
+	void updateMinMaxFov();
 	void normalizeMatrix();
 
 	void find(float z, float f, float& z_distance, float& f_distance, int& i, int &j);

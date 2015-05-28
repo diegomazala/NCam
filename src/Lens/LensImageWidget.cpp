@@ -155,6 +155,23 @@ void LensImageWidget::keyReleaseEvent(QKeyEvent *event)
 	}
 }
 
+void LensImageWidget::zoomChannel(int checked)	
+{ 
+	channels.setX(float(std::min(std::max(checked, 0), 1)));
+	update();
+}
+
+void LensImageWidget::focusChannel(int checked)	
+{ 
+	channels.setY(float(std::min(std::max(checked, 0), 1)));
+	update();
+}
+
+void LensImageWidget::fovChannel(int checked)	
+{ 
+	channels.setZ(float(std::min(std::max(checked, 0), 1)));
+	update();
+}
 
 
 

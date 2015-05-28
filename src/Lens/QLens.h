@@ -6,6 +6,50 @@
 
 
 
+template <typename T>
+inline T Lerp(T const& x, T const& x0, T const& x1, T const& y0, T const& y1)
+{
+	if ((x1 - x0) == 0)
+		return (y0 + y1) / 2;
+	return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
+}
+	
+
+static void NormalizeLensMatrix(LensMatrix& matrix, float min_zoom, float max_zoom, float min_focus, float max_focus, float min_fov, float max_fov)
+{
+	int rowCount = matrix.size();
+	int columnCount = matrix[0].size();
+	for (int i = 0; i < rowCount; ++i)
+	{
+		for (int j = 0; j < columnCount; ++j)
+		{
+			matrix[i][j].zoom = Lerp((float)matrix[i][j].zoom, min_zoom, max_zoom, 0.0f, 1.0f);
+			matrix[i][j].focus = Lerp((float)matrix[i][j].focus, min_focus, max_focus, 0.0f, 1.0f);
+			matrix[i][j].iris = Lerp((float)matrix[i][j].iris, 0.0f, 1.0f, 0.0f, 1.0f);
+			matrix[i][j].fov = Lerp((float)matrix[i][j].fov, min_fov, max_fov, 0.0f, 1.0f);
+		}
+	}
+}
+
+static std::pair<float, float> MinMaxFov(const LensMatrix& matrix)
+{
+	float minFov = FLT_MAX;
+	float maxFov = FLT_MIN;
+
+	for (auto& lz : matrix)
+	{
+		for (auto& ls : lz)
+		{
+			if (ls.fov < minFov)
+				minFov = ls.fov;
+
+			if (ls.fov > maxFov)
+				maxFov = ls.fov;
+		}
+	}
+	return std::make_pair(minFov, maxFov);
+}
+
 static void QImage2LensMatrix(const QImage& img, LensMatrix& lt)
 {
 	lt.clear();
@@ -32,11 +76,14 @@ static void QImage2LensMatrix(const QImage& img, LensMatrix& lt)
 }
 
 
-
-static void LensMatrix2QImage(const LensMatrix& lt, QImage& img)
+static void LensMatrix2QImage(const LensMatrix& lens_matrix, QImage& img)
 {
-	int rows = lt.size();
-	int columns = lt[0].size();
+	LensMatrix matrix = lens_matrix;
+	int rows = matrix.size();
+	int columns = matrix[0].size();
+
+	auto min_max_fov = MinMaxFov(matrix);
+	NormalizeLensMatrix(matrix, 0.0f, 1.0f, 0.0f, 1.0f, min_max_fov.first, min_max_fov.second);
 
 	img = QImage(columns, rows, QImage::Format::Format_RGBA8888);
 
@@ -44,7 +91,7 @@ static void LensMatrix2QImage(const LensMatrix& lt, QImage& img)
 	{
 		for (int j = 0; j < columns; j++)
 		{
-			const LensSample& ls = lt[i][j];
+			const LensSample& ls = matrix[i][j];
 
 			int red = ls.zoom * 255;
 			int green = ls.focus * 255;
