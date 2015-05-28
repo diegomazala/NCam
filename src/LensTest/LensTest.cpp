@@ -8,6 +8,34 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include "LensWidget.h"
 #include <QApplication>
 #include <QTimer>
+#include <fstream>
+#include <string>
+
+static bool AreFilesEqual(const std::string& filename0, const std::string& filename1, std::wstring& message)
+{
+	std::ifstream file0(filename0, std::ios::in);
+	std::ifstream file1(filename1, std::ios::in);
+
+	if (!file0.is_open() || !file1.is_open())
+	{
+		message = L"Could not open files for comparison";
+		return false;	// could not open files
+	}
+
+	while (!file0.eof() && !file1.eof())
+	{
+		char a = file0.get();
+		char b = file1.get();
+		if (a != b)
+		{
+			message = L"The files are not identical";
+			return false;
+		}
+	}
+
+	message = L"The files are identical";
+	return true;
+}
 
 namespace LensTest
 {
@@ -88,7 +116,7 @@ namespace LensTest
 			Assert::IsTrue(img3.save("lens_table_2.png", "png", 100), L"\n<Fail saving lens matrix into image>\n", LINE_INFO());
 		}
 
-		TEST_METHOD(LoadSave)
+		TEST_METHOD(LoadSaveLensMatrix)
 		{
 			int rows = 3;
 			int columns = 3;
@@ -133,6 +161,38 @@ namespace LensTest
 			Assert::IsTrue(img3.save("lens_table_2.png", "png", 100), L"\n<Fail saving lens matrix into image>\n", LINE_INFO());
 		}
 
+		TEST_METHOD(LoadSaveLensTable)
+		{
+			int rows = 3;
+			int columns = 3;
+			LensTable lt0;
+			lt0.createKeys(rows, columns);
+			lt0.createMatrix(rows, columns);
+
+			float z = 0.0f;
+			float f = 0.0f;
+			float fov = 0.0f;
+			float i = 1.0f;
+			for (int i = 0; i < rows; ++i)
+			{
+				for (int j = 0; j < columns; ++j)
+				{
+					lt0.matrix[i][j] = LensSample(z, f, i, fov);
+					f += 0.5f;
+				}
+				z += 0.5f;
+			}
+
+			lt0.save("lt0.lens");
+
+			LensTable lt1;
+			lt1.load("lt0.lens");
+			lt1.save("lt1.lens");
+
+			std::wstring wmessage;
+			bool areEqual = AreFilesEqual("lt0.lens", "lt1.lens", wmessage);
+			Assert::IsTrue(areEqual, wmessage.c_str(), LINE_INFO());
+		}
 
 		TEST_METHOD(LensWidgetTest)
 		{

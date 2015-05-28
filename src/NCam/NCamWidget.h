@@ -27,6 +27,7 @@ public slots:
 
 signals:
 	void lensDataUpdated(double zoom, double focus, double iris, double fov);
+	void lensUpdated();
 
 private:
 

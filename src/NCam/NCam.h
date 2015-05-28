@@ -70,16 +70,10 @@ extern "C"
 	NCAM_API bool			NCamUpdateDistortMap(unsigned int distort_tex_id);
 	NCAM_API int			NCamDistortMapWidth();
 	NCAM_API int			NCamDistortMapHeight();
+	NCAM_API int			NCamDistortMapChannelsCount();
+	NCAM_API float*			NCamDistortMapDataPtr();
 
-
-
-	NCAM_API bool			NCamCreateLensTable(int zoomSamples, int focusSamples);
-
-	NCAM_API void			NCamPrintLensTable();
-
-	NCAM_API bool			NCamUpdateLensSample(double z, double f, double i, double _fov, int resolution);
-
-	NCAM_API bool			NCamSaveLensTable();
+	NCAM_API void			NCamLensSample(double& zoom, double& focus, double& iris, double& fov, void* distortionMapFloatArray);
 
 }; // extern "C"
 

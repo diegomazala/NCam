@@ -55,17 +55,12 @@ void NCamWidget::onConnect()
 	{
 		qDebug() << "<ERROR> Could not connect";
 	}
-	else
-	{
-		qDebug() << "============= NCamOpen ==============";
-	}
 }
 
 
 void NCamWidget::onDisconnect()
 {
 	NCamClose();
-	qDebug() << "============= NCamClose =============";
 }
 
 
@@ -129,6 +124,7 @@ void NCamWidget::update()
 	ui->trans2LineEdit->setText(QString::number(tracking[11]));
 
 	emit lensDataUpdated(encoder[0], encoder[2], encoder[4], optical[1]);
+	emit lensUpdated();
 }
 
 

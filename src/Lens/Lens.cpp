@@ -43,7 +43,7 @@ void LensTable::createMatrix(int rows, int columns)
 	// reseting the lens matrix
 	matrix.resize(rows);
 	for (auto& l : matrix)
-		l.resize(columns);
+		l.resize(columns, LensSample());
 }
 
 
@@ -164,6 +164,11 @@ bool LensTable::load(std::string filename)
 			for (int j = 0; j < columns; ++j)
 				in >> matrix[i][j];
 
+		// reading matrix values
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < columns; ++j)
+				in >> matrix[i][j].distortion;
+
 		return in.good();
 	}
 
@@ -180,19 +185,28 @@ bool LensTable::save(std::string filename) const
 		int rows = zoomKeys.size();
 		int columns = focusKeys.size();
 
+		// writing count of rows and columns
 		out << rows << ' ' << columns << ' ' << std::endl;
 
+		// writing zoom keys samples
 		for (const auto& z : zoomKeys)
 			out << z << ' ';
 		out << std::endl;
 
+		// writing focus keys samples
 		for (const auto& f : focusKeys)
 			out << f << ' ';
 		out << std::endl;
 
+		// writing zoom, focus, iris and fov values
 		for (const auto& lz : matrix)
 			for (const auto& ls : lz)
 				out << ls << std::endl;
+
+		// writing distortion values
+		for (const auto& lz : matrix)
+			for (const auto& ls : lz)
+				out << ls.distortion << std::endl;
 
 		return out.good();
 	}

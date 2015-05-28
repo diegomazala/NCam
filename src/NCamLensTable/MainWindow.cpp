@@ -1,5 +1,3 @@
-
-
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "AboutDialog.h"
@@ -9,6 +7,7 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 
+
 MainWindow::MainWindow(QWidget *parent) : 
 			QMainWindow(parent),
 			ui(new Ui::MainWindow),
@@ -16,25 +15,23 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	
-//	QImage img;
-//	LensMatrix2QImage(ui->lensWidget->tableLens.matrix, img);
-//	ui->lensImage->setImage(img);
-	
-
 	connect(ui->ncamWidget, SIGNAL(lensDataUpdated(double, double, double, double)), ui->lensWidget, SLOT(onLensDataChanged(double, double, double, double)));
-
+	connect(ui->ncamWidget, SIGNAL(lensUpdated()), ui->lensWidget, SLOT(onLensChanged()));
 }
+
 
 MainWindow::~MainWindow()
 {
 	delete ui;
 }
 
+
 void MainWindow::fileNew()
 {
-
+	currentFileName.clear();
+	//ui->lensWidget->
 }
+
 
 void MainWindow::fileOpen()
 {

@@ -4,6 +4,7 @@
 #include <QStandardItemModel>
 #include <QTableWidgetItem>
 #include <QKeyEvent>
+#include "NCam/NCam.h"
 
 LensWidget::LensWidget(QWidget *parent) : 
 		QWidget(parent), 
@@ -41,6 +42,14 @@ bool LensWidget::load(QString filename)
 	return success;
 }
 
+
+void LensWidget::reset()
+{
+	int rows = 5;
+	int columns = 5;
+	tableLens.createKeys(rows, columns);
+	tableLens.createMatrix(rows, columns);
+}
 
 void LensWidget::horizontalHeaderClicked(int column)
 {
@@ -160,6 +169,16 @@ void LensWidget::onLensDataChanged(double zoom, double focus, double iris, doubl
 		ui->tableWidget->item(i, j)->setText(QString::number(sample.fov));
 		emit tableUpdated();
 	}
+}
+
+
+void LensWidget::onLensChanged()
+{
+	int w = NCamDistortMapWidth();
+	int h = NCamDistortMapHeight();
+	int c = NCamDistortMapChannelsCount();
+	encodeSample.distortion = DistortionMap(w, h, c);
+	NCamLensSample(encodeSample.zoom, encodeSample.focus, encodeSample.iris, encodeSample.fov, &encodeSample.distortion.data[0]);
 }
 
 

@@ -494,4 +494,41 @@ extern "C"
 		return gpNCamClient->DistortMap(FieldIndex).GetHeight();
 	}
 
+	NCAM_API int NCamDistortMapChannelsCount()
+	{
+		return gpNCamClient->DistortMap(FieldIndex).GetChannels();	// 2
+	}
+
+	NCAM_API float* NCamDistortMapDataPtr()
+	{
+		return (float*)gpNCamClient->DistortMap(FieldIndex).GetImagePtr();
+	}
+
+	NCAM_API void NCamLensSample(double& zoom, double& focus, double& iris, double& fov, void* distortionMapFloatArray)
+	{
+		if (gpNCamClient == nullptr)
+			return;
+
+		if (distortionMapFloatArray == nullptr)
+			return;
+
+		float* distortionMap = (float*)distortionMapFloatArray;
+
+		// safeguard - pointer must be not null
+		if (!distortionMap)
+			return;
+
+		zoom	= (float)gpNCamClient->TrackingPacket(FieldIndex).mZoomEncoder.mNormalized;
+		focus	= (float)gpNCamClient->TrackingPacket(FieldIndex).mFocusEncoder.mNormalized;
+		iris	= (float)gpNCamClient->TrackingPacket(FieldIndex).mIrisEncoder.mNormalized;
+		fov		= (float)gpNCamClient->OpticalPacket(FieldIndex).mFovInDegrees[1];
+
+		float* imgptr = (float*)gpNCamClient->DistortMap(FieldIndex).GetImagePtr();
+		uint32_t lWidth, lHeight;
+		gpNCamClient->DistortMap(FieldIndex).GetSize(lWidth, lHeight);
+		int size = lWidth * lHeight * 2;	// 2 channels
+		
+		for (int i = 0; i < size; ++i)
+			distortionMap[i] = imgptr[i];
+	}
 };

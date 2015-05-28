@@ -6,6 +6,53 @@
 #include <map>
 #include <vector>
 
+struct DistortionMap
+{
+	int width;
+	int height; 
+	int channelCount;
+	std::vector<float> data;
+
+	DistortionMap() : width(32), height(32), channelCount(2), data(width * height * channelCount, 0.0f){}
+
+	DistortionMap(int w, int h, int ch) : width(w), height(h), channelCount(ch), data(width * height * channelCount, 0.0f){}
+
+	DistortionMap(const DistortionMap& d) : width(d.width), height(d.height), channelCount(d.channelCount), data(d.data){}
+
+	friend std::ostream& operator << (std::ostream& os, const DistortionMap& d)
+	{
+		os << d.width << ' ' << d.height << ' ' << d.channelCount << ' ';
+		for (const auto& v : d.data)
+			os << std::fixed << v << '\t';
+		return os;
+	}
+
+
+	friend std::istream& operator >> (std::istream& is, DistortionMap& d)
+	{
+		is >> d.width >> d.height >> d.channelCount;
+		d.data.resize(d.width * d.height * d.channelCount);
+		for (auto& v : d.data)
+			is >> v;
+		return is;
+	}
+	
+
+	DistortionMap& operator=(const DistortionMap& other) // copy assignment
+	{
+		if (this != &other)	// self-assignment check expected
+		{
+			this->width = other.width;
+			this->height = other.height;
+			this->channelCount = other.channelCount;
+			this->data = other.data;
+		}
+		return *this;
+	}
+
+};
+
+
 
 struct LensSample
 {
@@ -13,18 +60,19 @@ struct LensSample
 	double focus;
 	double iris;
 	double fov;
-	std::vector<double> distortion;
+	//std::vector<float> distortion;
+	DistortionMap distortion;
 
-	LensSample() : zoom(FLT_MAX), focus(FLT_MAX), iris(FLT_MAX), fov(0.0f)
+	LensSample() : zoom(FLT_MAX), focus(FLT_MAX), iris(FLT_MAX), fov(0.0f), distortion()
 	{}
 
-	LensSample(double z, double f, double i, double _fov) : zoom(z), focus(f), iris(i), fov(_fov)
+	LensSample(double z, double f, double i, double _fov) : zoom(z), focus(f), iris(i), fov(_fov), distortion()
 	{}
 
-	LensSample(double z, double f, double _fov) : zoom(z), focus(f), iris(1.0), fov(_fov)
+	LensSample(double z, double f, double _fov) : zoom(z), focus(f), iris(1.0), fov(_fov), distortion()
 	{}
 
-	LensSample(const LensSample& l) : zoom(l.zoom), focus(l.focus), iris(l.iris), fov(l.fov)
+	LensSample(const LensSample& l) : zoom(l.zoom), focus(l.focus), iris(l.iris), fov(l.fov), distortion(l.distortion)
 	{}
 
 	void reset()
@@ -38,15 +86,12 @@ struct LensSample
 	friend std::ostream& operator << (std::ostream& os, const LensSample& l)
 	{
 		os << std::fixed << l.zoom << ' ' << l.focus << ' ' << l.iris << ' ' << l.fov;
-		//for (auto d = l.distortion.begin(); d != l.distortion.end(); ++d)
-		//	os << std::fixed << *d << '\t';
 		return os;
 	}
 
 
 	friend std::istream& operator >> (std::istream& is, LensSample& l)
 	{
-		char c;
 		is >> l.zoom >> l.focus >> l.iris >> l.fov;
 		return is;
 	}
