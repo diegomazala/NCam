@@ -73,6 +73,18 @@ void LensImageWidget::paintGL()
 }
 
 
+QVector4D LensImageWidget::getTexelColor(const QVector2D& coord)
+{
+	makeCurrent();
+
+	// render for interpolation of texel
+	if (!texture.isNull())
+		texture->bind();
+
+	texelRender.setCoord(coord);
+	texelRender.render();
+	return texelRender.color();
+}
 
 
 void LensImageWidget::mousePressEvent(QMouseEvent *event)

@@ -6,12 +6,10 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 
-
 LensServerMainWindow::LensServerMainWindow(QWidget *parent) :
 			QMainWindow(parent),
 			ui(new Ui::LensServerMainWindow),
 			currentFileName(QString())
-			//icon(":/images/bad.png")
 {
 	QApplication::setQuitOnLastWindowClosed(false);
 
@@ -128,3 +126,4 @@ void LensServerMainWindow::createTrayIcon()
 	trayIcon = new QSystemTrayIcon(this);
 	trayIcon->setContextMenu(trayIconMenu);
 }
+

@@ -39,13 +39,11 @@ protected:
 private slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
-
 private:
 
 	void createSystemTrayActions();
 	void createTrayIcon();
 
-	
 
 	Ui::LensServerMainWindow *ui;
 	QString currentFileName;

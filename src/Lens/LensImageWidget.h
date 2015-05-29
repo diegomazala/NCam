@@ -27,6 +27,7 @@ public slots:
 	void zoomChannel(int checked);
 	void focusChannel(int checked);
 	void fovChannel(int checked);
+	QVector4D getTexelColor(const QVector2D& coord);
 
 private:
 
