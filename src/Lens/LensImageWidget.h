@@ -3,7 +3,7 @@
 
 #include "GLImageWidget.h"
 #include "Lens.h"
-
+#include "TexelRender.h"
 
 class LensImageWidget : public GLImageWidget
 {
@@ -30,10 +30,7 @@ public slots:
 
 private:
 
-	QOpenGLShaderProgram* buildImageRenderTexel2D();
-	QOpenGLShaderProgram* buildTextureChannelProgram();
-
-	QScopedPointer<QOpenGLShaderProgram> renderTexel;
+	QOpenGLShaderProgram* buildTextureChannelProgram() const;
 
 	QPoint clickBegin;
 	QPoint clickEnd;
@@ -43,6 +40,8 @@ private:
 	QVector2D glPixelCoord;
 	QVector4D glPixelColor;
 	QVector4D channels;
+
+	TexelRender texelRender;
 };
 
 

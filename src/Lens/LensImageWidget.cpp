@@ -35,13 +35,12 @@ void LensImageWidget::initializeGL()
 	program.reset(buildTextureChannelProgram());
 	program->release();
 	
-	renderTexel.reset(buildImageRenderTexel2D());
-	renderTexel->release();
-
 	texture.reset(new QOpenGLTexture(image.mirrored()));
 	texture->setMinificationFilter(QOpenGLTexture::Nearest);
 	texture->setMagnificationFilter(QOpenGLTexture::Nearest);
 	texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToEdge);
+
+	texelRender.initGL();
 }
 
 
@@ -49,28 +48,28 @@ void LensImageWidget::initializeGL()
 
 void LensImageWidget::paintGL()
 {
-	QOpenGLVertexArrayObject::Binder vaoBinder(&vao);
-	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+	QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
 
 	if (!texture.isNull())
 		texture->bind();
 
-	renderTexel->bind();
-	renderTexel->setUniformValue("uv", glPixelCoord);
-	f->glDrawArrays(GL_QUADS, 0, 4);
-	glReadPixels(0, 0, 1, 1, GL_RGBA, GL_FLOAT, &glPixelColor[0]);
-	renderTexel->release();
+	// render for interpolation of texel
+	texelRender.setCoord(glPixelCoord);
+	texelRender.render();
+	glPixelColor = texelRender.color();
 
+	// render texture on screen
+	vao.bind();
 	program->bind();
 	program->setUniformValue("channels", channels);
 	f->glDrawArrays(GL_QUADS, 0, 4);
 	program->release();
+	vao.release();
 
-	//f->glViewport(0, 0, 30, 30);
-	//renderTexel->bind();
-	//f->glDrawArrays(GL_QUADS, 0, 4);
-	//renderTexel->release();
-
+	// render mini window
+	f->glViewport(0, 0, 20, 20);
+	//f->glViewport(mousePos.x() - 10, height()- mousePos.y() - 10, 20, 20);
+	texelRender.render();
 }
 
 
@@ -166,50 +165,7 @@ void LensImageWidget::fovChannel(int checked)
 
 
 
-QOpenGLShaderProgram* LensImageWidget::buildImageRenderTexel2D()
-{
-	QOpenGLShaderProgram* prog = new QOpenGLShaderProgram();
-
-	QOpenGLShader *vshader = new QOpenGLShader(QOpenGLShader::Vertex, prog);
-	const char *vsrc =
-		"attribute highp vec4 in_Vertex;\n"
-		"attribute mediump vec4 in_TexCoord;\n"
-		"varying mediump vec4 texc;\n"
-		"void main(void)\n"
-		"{\n"
-		"    gl_Position = in_Vertex;\n"
-		"    texc = in_TexCoord;\n"
-		"}\n";
-	vshader->compileSourceCode(vsrc);
-
-	QOpenGLShader *fshader = new QOpenGLShader(QOpenGLShader::Fragment, prog);
-	const char *fsrc =
-		"uniform sampler2D in_Texture;\n"
-		"varying mediump vec4 texc;\n"
-		"uniform vec2 uv;\n"
-		"void main(void)\n"
-		"{\n"
-		"    gl_FragColor = texture(in_Texture, uv);\n"
-		"}\n";
-	fshader->compileSourceCode(fsrc);
-
-	prog->addShader(vshader);
-	prog->addShader(fshader);
-	prog->bindAttributeLocation("in_Vertex", 0);
-	prog->bindAttributeLocation("in_TexCoord", 1);
-	prog->link();
-	prog->bind();
-	prog->setUniformValue("in_Texture", 0);
-	prog->release();
-
-	return prog;
-}
-
-
-
-
-
-QOpenGLShaderProgram* LensImageWidget::buildTextureChannelProgram()
+QOpenGLShaderProgram* LensImageWidget::buildTextureChannelProgram() const
 {
 	QOpenGLShaderProgram* prog = new QOpenGLShaderProgram();
 
