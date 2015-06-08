@@ -54,6 +54,7 @@ public:
 	void setPortNumber( int iComm );
 	bool initConnection();
 	void finishConnection();
+	bool isOpen() const;
 
 	int getIrisPos();
 	int getZoomPos();

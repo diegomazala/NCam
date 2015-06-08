@@ -159,16 +159,10 @@ bool FujinonEncoder::initConnection()
 {
 	if( !mPort.Open( iPortComm, CBR_38400 ) )
 	{
-		std::cout << "ERROR: Could not open port - " << iPortComm << std::endl;
-		std::cerr << "ERROR: Could not open port - " << iPortComm << std::endl;
+		std::cerr << "<Error>: Could not open port - " << iPortComm << std::endl;
 		return false;
 	}
-	else
-	{
-		std::cout << "SUCCESS: open port - " << iPortComm << std::endl;
-		std::cerr << "SUCCESS: open port - " << iPortComm << std::endl;
-		return true;
-	}
+	return true;
 }
 
 void FujinonEncoder::finishConnection()
@@ -177,6 +171,12 @@ void FujinonEncoder::finishConnection()
 	{
 		mPort.Close();
 	}
+}
+
+
+bool FujinonEncoder::isOpen() const
+{
+	return mPort.IsOpened();
 }
 
 int FujinonEncoder::getIrisPos()
