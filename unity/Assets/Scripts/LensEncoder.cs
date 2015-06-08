@@ -40,7 +40,7 @@ public class LensEncoder : MonoBehaviour
     private class Plugin
     {
         [DllImport("LensEncoder")]
-        public static extern bool LensEncoderConnect(int port);
+        public static extern bool LensEncoderConnect(int port, bool multihread);
         [DllImport("LensEncoder")]
         public static extern bool LensEncoderIsConnected();
         [DllImport("LensEncoder")]
@@ -96,7 +96,7 @@ public class LensEncoder : MonoBehaviour
 
         bool success = false;
 
-        success = Plugin.LensEncoderConnect(port);
+        success = Plugin.LensEncoderConnect(port, true);
 
         if (success)
         {
@@ -219,7 +219,7 @@ public class LensEncoder : MonoBehaviour
         XmlDeclaration xmlDec = xmlDoc.CreateXmlDeclaration("1.0", null, null);
         xmlDoc.AppendChild(xmlDec);
 
-        XmlElement ncamXml = xmlDoc.CreateElement("NCam");
+        XmlElement ncamXml = xmlDoc.CreateElement("LensEncoder");
 
         XmlIO.Write(ncamXml, enabled, "Enabled");
         XmlIO.Write(ncamXml, port, "Port");

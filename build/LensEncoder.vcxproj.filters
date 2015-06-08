@@ -36,5 +36,8 @@
     <ClInclude Include="..\src\LensEncoder\LensEncoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\LensEncoder\ThreadReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

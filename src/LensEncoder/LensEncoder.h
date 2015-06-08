@@ -17,7 +17,7 @@
 extern "C"
 {
 
-	LENS_ENCODER_API bool			LensEncoderConnect(unsigned int port);
+	LENS_ENCODER_API bool			LensEncoderConnect(unsigned int port, bool multithread);
 	LENS_ENCODER_API bool			LensEncoderIsConnected();
 	LENS_ENCODER_API void			LensEncoderDisconnect();
 	LENS_ENCODER_API void			LensEncoderUpdate();

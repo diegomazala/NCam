@@ -27,6 +27,7 @@
     <ClInclude Include="..\src\LensEncoder\FujinonEncoder.h" />
     <ClInclude Include="..\src\LensEncoder\LensEncoder.h" />
     <ClInclude Include="..\src\LensEncoder\SerialPort.h" />
+    <ClInclude Include="..\src\LensEncoder\ThreadReader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F87D2C72-0D1B-4534-9B75-5FA8201BB906}</ProjectGuid>

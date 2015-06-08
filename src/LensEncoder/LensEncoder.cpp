@@ -2,24 +2,39 @@
 #include "LensEncoder.h"
 #include "SerialPort.h"
 #include "FujinonEncoder.h"
+#include "ThreadReader.h"
 #include <fstream>
+
+
 
 extern "C"
 {	
 
-	static unsigned int Port = 38860;
+	static unsigned int Port = 3;
 
 	std::ofstream logFile; 
 
 	static FujinonEncoder lensHA22x7;
+	static ThreadReader threadLens;
 	int encoder[3];
 	bool isConnected = false;
+	bool multithread = false;
+	
 
-	LENS_ENCODER_API bool LensEncoderConnect(unsigned int port)
+	LENS_ENCODER_API bool LensEncoderConnect(unsigned int port, bool multithread_reading)
 	{
 		logFile.open("LensEncoder.log", std::ios::out);
-		lensHA22x7.setPortNumber(port);
-		isConnected = lensHA22x7.initConnection();
+		multithread = multithread_reading;
+		if (multithread)
+		{
+			isConnected = threadLens.Start(port);
+		}
+		else
+		{
+			lensHA22x7.setPortNumber(port);
+			isConnected = lensHA22x7.initConnection();
+		}
+
 		return isConnected;
 	}
 
@@ -32,7 +47,15 @@ extern "C"
 
 	LENS_ENCODER_API void LensEncoderDisconnect()
 	{		
-		lensHA22x7.finishConnection();
+		if (multithread)
+		{
+			threadLens.Stop();
+		}
+		else
+		{
+			lensHA22x7.finishConnection();
+		}
+		
 		logFile.close();
 		isConnected = false;
 	}
@@ -40,9 +63,12 @@ extern "C"
 
 	LENS_ENCODER_API void LensEncoderUpdate()
 	{
-		encoder[0] = lensHA22x7.getZoomPos();	// Request zoom
-		encoder[1] = lensHA22x7.getFocusPos();	// Request focus
-		encoder[2] = lensHA22x7.getIrisPos();	// Request iris
+		if (!multithread)
+		{
+			encoder[0] = lensHA22x7.getZoomPos();	// Request zoom
+			encoder[1] = lensHA22x7.getFocusPos();	// Request focus
+			encoder[2] = lensHA22x7.getIrisPos();	// Request iris
+		}
 	}
 
 
@@ -58,9 +84,18 @@ extern "C"
 		if (!pArrayInt)
 			return false;
 
-		// copying to array
-		for (int i = 0; i < 3; ++i)
-			pArrayInt[i] = encoder[i];
+		if (multithread)
+		{ 
+			// copying to array
+			for (int i = 0; i < 3; ++i)
+				pArrayInt[i] = threadLens.Data()[i];
+		}
+		else
+		{
+			// copying to array
+			for (int i = 0; i < 3; ++i)
+				pArrayInt[i] = encoder[i];
+		}
 
 		return true;
 	}

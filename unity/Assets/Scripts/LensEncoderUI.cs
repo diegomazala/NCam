@@ -38,29 +38,23 @@ public class LensEncoderUI : MonoBehaviour
 
     public void OnConnect()
     {
-        //Debug.Log(this.GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
-
         lensEncoder.Connect();
         UpdateUI();
     }
 
     public void OnDisconnect()
     {
-        //Debug.Log(this.GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
         lensEncoder.Disconnect();
         UpdateUI();
+                
     }
 
     public void UpdateUI()
     {
         connectButton.interactable = !lensEncoder.IsConnected();
         disconnectButton.interactable = lensEncoder.IsConnected();
-        
-        statusText.text = lensEncoder.IsConnected() ? "Connected" : "Disconnected";
-        //statusText.text += "\t(" + xcito.GetErrorStatus() + ')';
-
         portText.text = lensEncoder.port.ToString();
-
+        statusText.text = lensEncoder.IsConnected() ? "Connected" : "Disconnected";
         zoomText.text = lensEncoder.Zoom.ToString();
         focusText.text = lensEncoder.Focus.ToString();
         irisText.text = lensEncoder.Iris.ToString();
