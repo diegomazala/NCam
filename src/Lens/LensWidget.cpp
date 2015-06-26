@@ -176,8 +176,8 @@ void LensWidget::onLensDataChanged(double zoom, double focus, double iris, doubl
 		float* imgptr = (float*)NCamDistortMapDataPtr();
 		int size = sample.distortion.width * sample.distortion.height * sample.distortion.channelCount;	
 		sample.distortion.data.resize(size);
-		for (int i = 0; i < size; ++i)
-			sample.distortion.data[i] = imgptr[i];
+		for (int d = 0; d < size; ++d)
+			sample.distortion.data[d] = imgptr[d];
 
 		//update ui table
 		ui->tableWidget->item(i, j)->setText(QString::number(sample.fov));
