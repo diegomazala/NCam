@@ -77,7 +77,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0DCEFE0B-351C-4A9D-8EFF-6B56B3F11DAC}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
-    <ProjectName>Lens</ProjectName>
+    <ProjectName>LensWidget</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
