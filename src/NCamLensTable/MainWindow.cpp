@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	connect(ui->ncamWidget, SIGNAL(lensDataUpdated(double, double, double, double)), ui->lensWidget, SLOT(onLensDataChanged(double, double, double, double)));
-	connect(ui->ncamWidget, SIGNAL(lensUpdated()), ui->lensWidget, SLOT(onLensChanged()));
 }
 
 

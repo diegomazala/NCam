@@ -36,7 +36,6 @@ public slots:
 	void focusDeviationChanged(double value);
 	void update();
 	void onLensDataChanged(double zoom, double focus, double iris, double fov);
-	void onLensChanged();
 	void onEncodeFeedingToggled(bool toggle);
 	
 protected:

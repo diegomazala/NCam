@@ -165,21 +165,29 @@ void LensWidget::onLensDataChanged(double zoom, double focus, double iris, doubl
 
 	if (enc_dist < table_dist && enc_dist < sample_dist)
 	{
+		//update table lens 
 		sample = encodeSample;
+		
+
+		// updating distortion sample
+		sample.distortion.width = NCamDistortMapWidth();
+		sample.distortion.height = NCamDistortMapHeight();
+		sample.distortion.channelCount = NCamDistortMapChannelsCount();
+		float* imgptr = (float*)NCamDistortMapDataPtr();
+		int size = sample.distortion.width * sample.distortion.height * sample.distortion.channelCount;	
+		sample.distortion.data.resize(size);
+		for (int i = 0; i < size; ++i)
+			sample.distortion.data[i] = imgptr[i];
+
+		//update ui table
 		ui->tableWidget->item(i, j)->setText(QString::number(sample.fov));
+
+		//emit signal
 		emit tableUpdated();
 	}
 }
 
 
-void LensWidget::onLensChanged()
-{
-	int w = NCamDistortMapWidth();
-	int h = NCamDistortMapHeight();
-	int c = NCamDistortMapChannelsCount();
-	encodeSample.distortion = DistortionMap(w, h, c);
-	NCamLensSample(encodeSample.zoom, encodeSample.focus, encodeSample.iris, encodeSample.fov, &encodeSample.distortion.data[0]);
-}
 
 
 void LensWidget::onEncodeFeedingToggled(bool toggle)
