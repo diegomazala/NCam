@@ -176,7 +176,7 @@ extern "C"
 						lFormat, lType, 
 						(const GLvoid*)s.distortion.data.data());
 
-		return false;
+		return true;
 	}
 
 
@@ -201,7 +201,7 @@ extern "C"
 		sample.fov	= texel[2];
 		sample.iris = texel[3];
 
-		return false;
+		return true;
 	}
 
 	LENS_TABLE_API float LensTableZoom()
@@ -223,5 +223,19 @@ extern "C"
 	{
 		return sample.iris;
 	}
+	
+	LENS_TABLE_API int LensTableDistortionMapWidth()
+	{
+		return tableLens.matrix[0][0].distortion.width;
+	}
 
+	LENS_TABLE_API int LensTableDistortionMapHeight()
+	{
+		return tableLens.matrix[0][0].distortion.height;
+	}
+
+	LENS_TABLE_API int LensTableDistortionMapChannelCount()
+	{
+		return tableLens.matrix[0][0].distortion.channelCount;
+	}
 };

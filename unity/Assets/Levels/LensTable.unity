@@ -87,6 +87,79 @@ NavMeshSettings:
     cellSize: .166666657
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &22038956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 22038960}
+  - 33: {fileID: 22038959}
+  - 65: {fileID: 22038958}
+  - 23: {fileID: 22038957}
+  m_Layer: 0
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &22038957
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 22038956}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 2100000, guid: b3c8513a6bc050343805819454637c5f, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_ImportantGI: 0
+  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+--- !u!65 &22038958
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 22038956}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &22038959
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 22038956}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &22038960
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 22038956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.5, y: .5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
 --- !u!1 &25230361
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,80 +297,6 @@ Prefab:
     - {fileID: 14800000, guid: 5e5f0d24c44b00e49bb206815d97a7c0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 5e5f0d24c44b00e49bb206815d97a7c0, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &76985241
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 76985243}
-  - 114: {fileID: 76985242}
-  - 114: {fileID: 76985244}
-  - 114: {fileID: 76985245}
-  m_Layer: 0
-  m_Name: Lens
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &76985242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 76985241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 241e2d07140818e4e8ee3cb6268eb189, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &76985243
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 76985241}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
---- !u!114 &76985244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 76985241}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e98aa5851518b44dbbbcf617cad0b80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ipAddress: 127.0.0.1
-  port: 38860
-  DistortMap: {fileID: 0}
-  DistortMapSize: {x: 0, y: 0}
-  showGUI: 1
---- !u!114 &76985245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 76985241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633184ec96403848b5d98becf530a11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetCamera:
-  - {fileID: 250861749}
-  - {fileID: 1785835669}
-  zoom: 0
-  focus: 0
-  fovMapped: 0
 --- !u!1 &117579887
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,9 +552,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dee1c7c03ad00d43acb63175cddc67c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: 41afa35a59909ee4c93db1cb04fb1925, type: 3}
-  distortionMap: {fileID: 0}
   lensMap: {fileID: 0}
+  distortionMap: {fileID: 0}
+  texelShader: {fileID: 0}
+  distortionMapShader: {fileID: 0}
 --- !u!1001 &301344189
 Prefab:
   m_ObjectHideFlags: 0
@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b600922c8e51c724ca9b200d980cc0c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ncam: {fileID: 1339555566}
+  ncam: {fileID: 0}
   screenInfo: {fileID: 1181404132}
 --- !u!224 &1205163514 stripped
 RectTransform:
@@ -1225,9 +1225,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1339555564}
-  - 114: {fileID: 1339555566}
+  - 114: {fileID: 1339555565}
   m_Layer: 0
-  m_Name: NCam
+  m_Name: LensTable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1247,31 +1247,24 @@ Transform:
   - {fileID: 1785835668}
   m_Father: {fileID: 174672129}
   m_RootOrder: 1
---- !u!114 &1339555566
+--- !u!114 &1339555565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1339555563}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94b91804d2a2e754f927693e192959a5, type: 3}
+  m_Script: {fileID: 11500000, guid: 7633184ec96403848b5d98becf530a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ipAddress: 127.0.0.1
-  port: 38860
-  useGLMatrix: 0
-  updateData: 1
-  scale: 1
-  frameDelay: 0
+  fileName: Fujinon_HA14x45BERD-S6B_6701118.lens
   targetCamera:
-  - {fileID: 1785835669}
   - {fileID: 250861749}
-  DistortMap: []
-  DistortMapSize: {x: 0, y: 0}
-  FieldIndex: 0
-  reconnecting: 0
-  showGUI: 1
+  - {fileID: 1785835669}
+  zoom: 0
+  focus: 0
+  fovMapped: 0
 --- !u!1 &1380454488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1817,9 +1810,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dee1c7c03ad00d43acb63175cddc67c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: 41afa35a59909ee4c93db1cb04fb1925, type: 3}
-  distortionMap: {fileID: 0}
   lensMap: {fileID: 0}
+  distortionMap: {fileID: 0}
+  texelShader: {fileID: 0}
+  distortionMapShader: {fileID: 0}
 --- !u!1 &2041609721
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<Lens>
+  <attr type="System.Boolean" name="Enabled" value="True" />
+  <attr type="System.String" name="FileName" value="emulator.lens" />
+</Lens>

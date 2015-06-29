@@ -34,6 +34,9 @@ extern "C"
 	LENS_TABLE_API float		LensTableFov();
 	LENS_TABLE_API float		LensTableIris();
 
+	LENS_TABLE_API int			LensTableDistortionMapWidth();
+	LENS_TABLE_API int			LensTableDistortionMapHeight();
+	LENS_TABLE_API int			LensTableDistortionMapChannelCount();
 
 }; // extern "C"
 

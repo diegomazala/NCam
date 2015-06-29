@@ -45,14 +45,28 @@ public class LensPlugin
     private static extern float LensTableIris();
     [DllImport("LensTable")]
     private static extern bool LensTableUpdateDistortionMap(float zoom, float focus, int dist_tex_id);
+    [DllImport("LensTable")]
+    private static extern int LensTableDistortionMapWidth();
+    [DllImport("LensTable")]
+    private static extern int LensTableDistortionMapHeight();
+    [DllImport("LensTable")]
+    private static extern int LensTableDistortionMapChannelCount();
+
 
     private RenderTexture lensMap = null;
+    private RenderTexture distortionMap = null;
     private float fovMin = 0.0f;
     private float fovMax = 0.0f;
+
 
     public RenderTexture Map
     {
         get { return lensMap; }
+    }
+
+    public RenderTexture DistortionMap
+    {
+        get { return distortionMap; }
     }
 
     public LensPlugin()
@@ -72,7 +86,7 @@ public class LensPlugin
         {
             fovMin = LensTableFovMin();
             fovMax = LensTableFovMax();
-            return CreateLensMap();
+            return (CreateLensMap() && CreateDistortionMap());
         }
         else
         {
@@ -89,14 +103,31 @@ public class LensPlugin
                                     RenderTextureFormat.ARGB32);
         lensMap.name = "LensMap";
         lensMap.wrapMode = TextureWrapMode.Clamp;
-        lensMap.filterMode = FilterMode.Point;
+        lensMap.filterMode = FilterMode.Bilinear; //FilterMode.Point;
         return lensMap.Create();  // Call Create() so it's actually uploaded to the GPU
+    }
+
+    private bool CreateDistortionMap()
+    {
+        // Create RenderTexture for image lens
+        distortionMap = new RenderTexture(LensPlugin.LensTableDistortionMapWidth(),
+                                    LensPlugin.LensTableDistortionMapHeight(), 8,
+                                    RenderTextureFormat.RGFloat);
+        distortionMap.name = "DistortionMap";
+        distortionMap.wrapMode = TextureWrapMode.Clamp;
+        distortionMap.filterMode = FilterMode.Bilinear; //FilterMode.Point;
+        return distortionMap.Create();  // Call Create() so it's actually uploaded to the GPU
     }
 
 
     public void UpdateLensMap()
     {
         LensTableUpdateLensMap(lensMap.GetNativeTextureID());
+    }
+
+    public void UpdateDistortionMap(float zoom, float focus)
+    {
+        LensTableUpdateDistortionMap(zoom, focus, distortionMap.GetNativeTextureID());
     }
 
 

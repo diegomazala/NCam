@@ -25,17 +25,7 @@ Shader "Diem/TexelCoord" {
  
 			float4 frag (v2f_img i) : COLOR
 			{
-				//return tex2D (_MainTex, i.uv) * tex2D (_MainTex, i.uv).a;
-				
-				//float2 uv = float2(_TexCoord.x, 1.0f - _TexCoord.y);
-				//float4 c = tex2D(_MainTex, uv);
-				float4 c = tex2D(_MainTex, _TexCoord.yx);
-
-				//return float4(c.r, 0, 0, 0);
-				//return float4(0, c.g, 0, 0);
-				//return float4(0, 0, c.b, 0);
-				//return float4(0, 0, 0, c.a);
-				return c;
+				return tex2D(_MainTex, _TexCoord.yx);
 			}
 			ENDCG
 		}

@@ -5,6 +5,7 @@ using System.Collections;
 
 public class LensGUI : MonoBehaviour
 {
+#if false
     public string lensFileName = @"LensTable.xml";
     public LensTable lensTable = null;
     public LensSample testLens = null;
@@ -257,5 +258,5 @@ public class LensGUI : MonoBehaviour
         textureGUI.Apply();
     }
 
-
+#endif
 }
