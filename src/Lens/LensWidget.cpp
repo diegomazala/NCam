@@ -174,6 +174,17 @@ void LensWidget::onLensDataChanged(double zoom, double focus, double iris, doubl
 		//update table lens 
 		sample = encodeSample;
 		
+		// updating optical parameters
+		double opt[13];
+		NCamOpticalParameters(opt);
+		for (int p = 0; p < 13; ++p)
+			sample.optical[p] = (float)opt[p];
+
+		// updating projection matrix
+		double prj[16];
+		NCamGLProjectionMatrix(prj, 0.1, 100);
+		for (int p = 0; p < 16; ++p)
+			sample.projection[p] = (float)prj[p];
 
 		// updating distortion sample
 		sample.distortion.width = NCamDistortMapWidth();

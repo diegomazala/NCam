@@ -60,19 +60,20 @@ struct LensSample
 	double focus;
 	double iris;
 	double fov;
+	std::vector<float> optical;
 	std::vector<float> projection;
 	DistortionMap distortion;
 
-	LensSample() : zoom(FLT_MAX), focus(FLT_MAX), iris(FLT_MAX), fov(0.0f), projection(16), distortion()
+	LensSample() : zoom(FLT_MAX), focus(FLT_MAX), iris(FLT_MAX), fov(0.0f), optical(16), projection(16), distortion()
 	{}
 
-	LensSample(double z, double f, double i, double _fov) : zoom(z), focus(f), iris(i), fov(_fov), projection(16), distortion()
+	LensSample(double z, double f, double i, double _fov) : zoom(z), focus(f), iris(i), fov(_fov), optical(16), projection(16), distortion()
 	{}
 
-	LensSample(double z, double f, double _fov) : zoom(z), focus(f), iris(1.0), fov(_fov), projection(16), distortion()
+	LensSample(double z, double f, double _fov) : zoom(z), focus(f), iris(1.0), fov(_fov), optical(16), projection(16), distortion()
 	{}
 
-	LensSample(const LensSample& l) : zoom(l.zoom), focus(l.focus), iris(l.iris), fov(l.fov), projection(l.projection), distortion(l.distortion)
+	LensSample(const LensSample& l) : zoom(l.zoom), focus(l.focus), iris(l.iris), fov(l.fov), optical(16), projection(l.projection), distortion(l.distortion)
 	{}
 
 	void reset()
@@ -81,12 +82,15 @@ struct LensSample
 		focus = FLT_MAX;
 		iris = FLT_MAX;
 		fov = 0.0f;
+		optical.resize(16, 0.0f);
 		projection.resize(16, 0.0f);
 	}
 
 	friend std::ostream& operator << (std::ostream& os, const LensSample& l)
 	{
 		os << std::fixed << l.zoom << ' ' << l.focus << ' ' << l.iris << ' ' << l.fov << ' ';
+		for (const auto& v : l.optical)
+			os << std::fixed << v << ' ';
 		for (const auto& v : l.projection)
 			os << std::fixed << v << ' ';
 		return os;
@@ -96,6 +100,9 @@ struct LensSample
 	friend std::istream& operator >> (std::istream& is, LensSample& l)
 	{
 		is >> l.zoom >> l.focus >> l.iris >> l.fov;
+		l.optical.resize(16);
+		for (auto& v : l.optical)
+			is >> v;
 		l.projection.resize(16);
 		for (auto& v : l.projection)
 			is >> v;
@@ -112,6 +119,7 @@ struct LensSample
 			this->focus = other.focus;
 			this->iris = other.iris;
 			this->fov = other.fov;
+			this->optical = other.projection;
 			this->projection = other.projection;
 			this->distortion = other.distortion;
 		}
