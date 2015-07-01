@@ -203,7 +203,34 @@ namespace LensTest
 			LensWidget w;
 			w.show();
 
-			w.load("../lenstable3x3.lens");
+			Assert::IsTrue(w.load("../../../data/emulator.lens"), L"\n<Could not open 'emulator.lens' file>\n", LINE_INFO());
+
+			QTimer *timer = new QTimer();
+			timer->start(2000);
+			QApplication::connect(timer, SIGNAL(timeout()), &a, SLOT(quit()));
+
+			Assert::AreEqual(EXIT_SUCCESS, a.exec(), L"\n<QApplication did not finish properly>\n", LINE_INFO());
+		}
+
+		TEST_METHOD(LensWidgetIOTest)
+		{
+			int argc = 1;
+			char* argv[] = { "LensWidget" };
+			QApplication a(argc, argv);
+
+			LensWidget w;
+			w.show();
+
+			const std::string inputFile("../../../data/emulator.lens");
+			const std::string outputFile("../../../data/emulator_copy.lens");
+
+			Assert::IsTrue(w.load(inputFile.c_str()), L"\n<Could not open 'emulator.lens' file>\n", LINE_INFO());
+			Assert::IsTrue(w.save(outputFile.c_str()), L"\n<Could not save 'emulator_copy.lens' file>\n", LINE_INFO());
+			
+			std::wstring wmessage;
+			bool areEqual = AreFilesEqual(inputFile, outputFile, wmessage);
+			Assert::IsTrue(areEqual, wmessage.c_str(), LINE_INFO());
+
 
 			QTimer *timer = new QTimer();
 			timer->start(2000);
