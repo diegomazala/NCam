@@ -61,11 +61,6 @@ void LensWidget::reset()
 
 void LensWidget::horizontalHeaderClicked(int column)
 {
-	int i, j;
-	float z_dist, f_dist;
-	float z = 0.25;
-	float f = 0.0f;
-	tableLens.find(tableLens.zoomDeviation, tableLens.focusDeviation, z_dist, f_dist, i, j);
 }
 
 

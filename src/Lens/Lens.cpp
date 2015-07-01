@@ -32,8 +32,8 @@ void LensTable::createKeys(int rows, int columns)
 		zoomKeys[z] = zkey;
 
 	// filling focus key vector
-	float fkey = 0.0f;
-	for (int f = 0; f < focusKeys.size(); ++f, fkey += focus_interval)
+	float fkey = 1.0f;
+	for (int f = 0; f < focusKeys.size(); ++f, fkey -= focus_interval)
 		focusKeys[f] = fkey;
 }
 
@@ -92,27 +92,27 @@ void LensTable::find(float z, float f, float& z_distance, float& f_distance, int
 	if (zlow == zup)
 		--zlow;
 
-	std::vector<float>::iterator flow, fup;
-	flow = std::lower_bound(focusKeys.begin(), focusKeys.end(), f);
-	fup = std::upper_bound(focusKeys.begin(), focusKeys.end(), f); 
-
-	if (flow == fup)
-		--flow;
-
 	if (zlow == zoomKeys.end())
 		zlow = zoomKeys.end() - 1;
 
 	if (zup == zoomKeys.end())
 		zup = zoomKeys.end() - 1;
-	
-	if (flow == focusKeys.end())
-		flow = focusKeys.end() - 1;
 
-	if (fup == focusKeys.end())
-		fup = focusKeys.end() - 1;
+	std::vector<float>::reverse_iterator flow, fup;
+	flow = std::lower_bound(focusKeys.rbegin(), focusKeys.rend(), f);
+	fup = std::upper_bound(focusKeys.rbegin(), focusKeys.rend(), f); 
+
+	if (flow == focusKeys.rbegin())
+		flow = focusKeys.rbegin() + 1;
+
+	if (fup == focusKeys.rend())
+		fup = focusKeys.rend() - 1;
+
+	if (flow == fup)
+		++fup;
 
 	float z_dist[2] = { std::fabs(z - *zlow), std::fabs(z - *zup) };
-	float f_dist[2] = { std::fabs(f - *flow), std::fabs(f - *fup) };
+	float f_dist[2] = { std::fabs(f - *(flow-1)), std::fabs(f - *(fup-1)) };
 
 	if (z_dist[0] < z_dist[1])
 	{
@@ -127,12 +127,12 @@ void LensTable::find(float z, float f, float& z_distance, float& f_distance, int
 
 	if (f_dist[0] < f_dist[1])
 	{
-		j = flow - focusKeys.begin();
+		j = focusKeys.rend() - flow;
 		f_distance = f_dist[0];
 	}
 	else
 	{
-		j = fup - focusKeys.begin();
+		j = focusKeys.rend() - fup;
 		f_distance = f_dist[1];
 	}
 	

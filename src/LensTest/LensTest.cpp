@@ -52,10 +52,6 @@ namespace LensTest
 			lt.createKeys(rows, columns);
 			lt.createMatrix(rows, columns);
 
-			float z_step = 1.0f / (rows - 1);
-			float f_step = 1.0f / (columns - 1);
-			float z = 0.0f;
-			float f = 0.0f;
 			float fov = 35.0f;
 			float iris = 1.0f;
 	
@@ -69,6 +65,124 @@ namespace LensTest
 			Assert::AreEqual(columns, (int)lt.matrix[0].size(), L"\n<Column count and focus count are not equal in lens matrix>\n", LINE_INFO());
 
 			lt.save("lens5x5.lens");
+		}
+
+		TEST_METHOD(FindSampleExact)
+		{
+			int rows = 5;
+			int columns = 5;
+
+			LensTable lt;
+			lt.createKeys(rows, columns);
+			lt.createMatrix(rows, columns);
+
+			float fov = 62.0f;
+			float iris = 1.0f;
+
+			for (int i = 0; i < rows; ++i)
+				for (int j = 0; j < columns; ++j)
+					lt.matrix[i][j] = LensSample(lt.zoomKeys[i], lt.focusKeys[j], iris, fov-=2);
+
+			lt.save("findsampleexact.lens");
+
+			int i, j;
+			float z_dist = 0, f_dist = 0;
+			float zoom = 0.0f, focus = 0.0f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(i, 0, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(j, 4, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 1.0f;
+			focus = 1.0f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(i, 4, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(j, 0, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 0.5f;
+			focus = 1.0f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(i, 2, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(j, 0, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 1.0f;
+			focus = 0.5f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(i, 4, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(j, 2, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+
+			zoom = 0.25f;
+			focus = 0.25f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(i, 1, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(j, 3, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 0.75f;
+			focus = 0.75f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(i, 3, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(j, 1, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+			
+		}
+
+
+		TEST_METHOD(FindSampleDistance)
+		{
+			int rows = 5;
+			int columns = 5;
+
+			LensTable lt;
+			lt.createKeys(rows, columns);
+			lt.createMatrix(rows, columns);
+
+			float fov = 62.0f;
+			float iris = 1.0f;
+
+			for (int i = 0; i < rows; ++i)
+				for (int j = 0; j < columns; ++j)
+					lt.matrix[i][j] = LensSample(lt.zoomKeys[i], lt.focusKeys[j], iris, fov -= 2);
+
+			lt.save("findsampledistance.lens");
+
+			int i, j;
+			float z_dist = 0, f_dist = 0;
+			float zoom = 0.1f, 
+				focus = 0.1f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(0, i, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(4, j, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 0.9f;
+			focus = 0.9f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(4, i, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(0, j, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 0.2f;
+			focus = 0.8f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(1, i, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(1, j, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 0.8f;
+			focus = 0.2f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(3, i, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(3, j, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+
+			zoom = 0.49f;
+			focus = 0.51f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(2, i, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(2, j, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
+			zoom = 0.65f;
+			focus = 0.11f;
+			lt.find(zoom, focus, z_dist, f_dist, i, j);
+			Assert::AreEqual(3, i, L"\n<Returned wrong matrix row>\n", LINE_INFO());
+			Assert::AreEqual(4, j, L"\n<Returned wrong matrix column>\n", LINE_INFO());
+
 		}
 
 		TEST_METHOD(LensMatrixTest)
