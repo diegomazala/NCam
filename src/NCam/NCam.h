@@ -63,6 +63,9 @@ extern "C"
 											void* pArrayDouble16_ModelView, 
 											double near_plane, double far_plane);
 
+	NCAM_API void			NCamGLProjectionMatrix(void* pArrayDouble16_Projection,
+											double near_plane, double far_plane);
+
 	NCAM_API void			NCamGLModelViewMatrix(void* pArrayDouble16);
 
 	NCAM_API void			NCamPrintData();

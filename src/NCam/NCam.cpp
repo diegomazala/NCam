@@ -381,6 +381,15 @@ extern "C"
 		}
 	}
 
+	NCAM_API void NCamGLProjectionMatrix(void* pArrayDouble16_Projection, double near_plane, double far_plane)
+	{
+		if (pArrayDouble16_Projection != nullptr)
+		{
+			double* pPrjMatrix = (double*)pArrayDouble16_Projection;
+			NcDataStreamOpticalParametersHelper::GetProjectionMatrix(gpNCamClient->OpticalPacket(FieldIndex), &(*pPrjMatrix), near_plane, far_plane);
+		}
+	}
+
 
 	NCAM_API void NCamGLModelViewMatrix(void* pArrayDouble16)
 	{
