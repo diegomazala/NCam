@@ -9,9 +9,12 @@ public class LensEncoderUI : MonoBehaviour
     public UnityEngine.UI.Button disconnectButton;
     public UnityEngine.UI.Text portText;
     public UnityEngine.UI.Text statusText;
-    public UnityEngine.UI.Text zoomText;
-    public UnityEngine.UI.Text focusText;
-    public UnityEngine.UI.Text irisText;
+    public UnityEngine.UI.Text zoomNormalizedText;
+    public UnityEngine.UI.Text zoomMappedText;
+    public UnityEngine.UI.Text focusNormalizedText;
+    public UnityEngine.UI.Text focusMappedText;
+    public UnityEngine.UI.Text irisNormalizedText;
+    public UnityEngine.UI.Text irisMappedText;
 
 
 	void OnEnable () 
@@ -55,8 +58,13 @@ public class LensEncoderUI : MonoBehaviour
         disconnectButton.interactable = lensEncoder.IsConnected();
         portText.text = lensEncoder.port.ToString();
         statusText.text = lensEncoder.IsConnected() ? "Connected" : "Disconnected";
-        zoomText.text = lensEncoder.Zoom.ToString();
-        focusText.text = lensEncoder.Focus.ToString();
-        irisText.text = lensEncoder.Iris.ToString();
+        
+        zoomNormalizedText.text = lensEncoder.ZoomNormalized.ToString();
+        focusNormalizedText.text = lensEncoder.FocusNormalized.ToString();
+        irisNormalizedText.text = lensEncoder.IrisNormalized.ToString();
+
+        zoomMappedText.text = lensEncoder.ZoomMapped.ToString();
+        focusMappedText.text = lensEncoder.FocusMapped.ToString();
+        irisMappedText.text = lensEncoder.IrisMapped.ToString();
     }
 }

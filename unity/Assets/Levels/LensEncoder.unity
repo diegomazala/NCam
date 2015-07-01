@@ -352,8 +352,6 @@ GameObject:
   - 20: {fileID: 250861749}
   - 124: {fileID: 250861748}
   - 92: {fileID: 250861747}
-  - 114: {fileID: 250861745}
-  - 114: {fileID: 250861750}
   - 114: {fileID: 250861746}
   m_Layer: 0
   m_Name: Camera.Sensor.Field.0
@@ -374,20 +372,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1339555564}
   m_RootOrder: 0
---- !u!114 &250861745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 250861743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cf49bd3c486bea468bcda0aceb16ba9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: bcc8f297e37b7b245b7a1f809ef65ced, type: 3}
-  FieldIndex: 1
-  ncam: {fileID: 0}
 --- !u!114 &250861746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,63 +436,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
---- !u!114 &250861750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 250861743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a89e89629c29e9d4fad9687484ebcdda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mat: {fileID: 1633785060}
-  cellSize: {x: 50, y: 50}
-  resolution: {x: 50, y: 50}
-  gridPosition: {x: 0, y: 0, z: 0}
-  showGrid: 1
-  doubleLines: 0
-  verticalGrid: 1
---- !u!21 &293303058
-Material:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: VertexLit
-  m_Shader: {fileID: 6, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats:
-      data:
-        first:
-          name: _Shininess
-        second: .699999988
-    m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 0, b: 0, a: 1}
-      data:
-        first:
-          name: _SpecColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _Emission
-        second: {r: 0, g: 0, b: 0, a: 0}
+  m_StereoMirrorMode: 0
 --- !u!1 &312428111
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,6 +635,7 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
+  m_RepeatDelay: .5
   m_AllowActivationOnMobileDevice: 0
 --- !u!114 &475781707
 MonoBehaviour:
@@ -902,6 +831,24 @@ MonoBehaviour:
   objectList:
   - {fileID: 2041609721}
   - {fileID: 1339555563}
+--- !u!114 &618657779 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11407374, guid: 5b84390192c77b249bd20fa2b228085e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1417608639}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!114 &721235841 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11498192, guid: 5b84390192c77b249bd20fa2b228085e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1417608639}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!114 &774267138 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11479484, guid: 5b84390192c77b249bd20fa2b228085e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1417608639}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &1134425714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,10 +948,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1339555564}
-  - 114: {fileID: 1339555566}
   - 114: {fileID: 1339555565}
   m_Layer: 0
-  m_Name: NCam
+  m_Name: LensEncoder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1036,31 +982,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   port: 8
---- !u!114 &1339555566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1339555563}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94b91804d2a2e754f927693e192959a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ipAddress: 127.0.0.1
-  port: 38860
-  useGLMatrix: 0
-  updateData: 1
-  scale: 1
-  frameDelay: 0
-  targetCamera:
-  - {fileID: 1785835669}
-  - {fileID: 250861749}
-  DistortMap: []
-  DistortMapSize: {x: 0, y: 0}
-  FieldIndex: 0
-  reconnecting: 0
-  showGUI: 1
 --- !u!1 &1380454488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1133,6 +1054,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!4 &1380454493
 Transform:
   m_ObjectHideFlags: 0
@@ -1188,10 +1110,54 @@ Prefab:
       propertyPath: lensEncoder
       value: 
       objectReference: {fileID: 1339555565}
-    - target: {fileID: 11446398, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
-      propertyPath: m_Text
-      value: 8
+    - target: {fileID: 162336, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: m_Name
+      value: ZoomNormalizedText
       objectReference: {fileID: 0}
+    - target: {fileID: 157922, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: m_Name
+      value: ZoomMappedText
+      objectReference: {fileID: 0}
+    - target: {fileID: 144212, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: m_Name
+      value: FocusNormalizedText
+      objectReference: {fileID: 0}
+    - target: {fileID: 174156, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: m_Name
+      value: FocusMappedText
+      objectReference: {fileID: 0}
+    - target: {fileID: 156660, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: m_Name
+      value: IrisNormalizedText
+      objectReference: {fileID: 0}
+    - target: {fileID: 143132, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: m_Name
+      value: IrisMappedText
+      objectReference: {fileID: 0}
+    - target: {fileID: 11479922, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: zoomNormalizedText
+      value: 
+      objectReference: {fileID: 774267138}
+    - target: {fileID: 11479922, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: zoomMappedText
+      value: 
+      objectReference: {fileID: 1729802948}
+    - target: {fileID: 11479922, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: focusNormalizedText
+      value: 
+      objectReference: {fileID: 618657779}
+    - target: {fileID: 11479922, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: focusMappedText
+      value: 
+      objectReference: {fileID: 1870754431}
+    - target: {fileID: 11479922, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: irisNormalizedText
+      value: 
+      objectReference: {fileID: 721235841}
+    - target: {fileID: 11479922, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
+      propertyPath: irisMappedText
+      value: 
+      objectReference: {fileID: 2022941525}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5b84390192c77b249bd20fa2b228085e, type: 2}
   m_IsPrefabParent: 0
@@ -1335,6 +1301,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!4 &1497659594
 Transform:
   m_ObjectHideFlags: 0
@@ -1407,45 +1374,12 @@ Light:
   m_ShadowRadius: 0
   m_ShadowAngle: 0
   m_AreaSize: {x: 1, y: 1}
---- !u!21 &1633785060
-Material:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: VertexLit
-  m_Shader: {fileID: 6, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats:
-      data:
-        first:
-          name: _Shininess
-        second: .699999988
-    m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 0, b: 0, a: 1}
-      data:
-        first:
-          name: _SpecColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _Emission
-        second: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &1729802948 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11498796, guid: 5b84390192c77b249bd20fa2b228085e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1417608639}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &1785835667
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,8 +1391,6 @@ GameObject:
   - 20: {fileID: 1785835669}
   - 124: {fileID: 1785835673}
   - 92: {fileID: 1785835672}
-  - 114: {fileID: 1785835671}
-  - 114: {fileID: 1785835674}
   - 114: {fileID: 1785835670}
   m_Layer: 0
   m_Name: Camera.Sensor.Field.1
@@ -1512,6 +1444,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!114 &1785835670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1527,20 +1460,6 @@ MonoBehaviour:
   sdiRenderTarget: {fileID: 0}
   backgroundTex: {fileID: 0}
   m_Material: {fileID: 0}
---- !u!114 &1785835671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1785835667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cf49bd3c486bea468bcda0aceb16ba9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: bcc8f297e37b7b245b7a1f809ef65ced, type: 3}
-  FieldIndex: 0
-  ncam: {fileID: 0}
 --- !u!92 &1785835672
 Behaviour:
   m_ObjectHideFlags: 0
@@ -1557,24 +1476,18 @@ Behaviour:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1785835667}
   m_Enabled: 0
---- !u!114 &1785835674
+--- !u!114 &1870754431 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1785835667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a89e89629c29e9d4fad9687484ebcdda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mat: {fileID: 293303058}
-  cellSize: {x: 50, y: 50}
-  resolution: {x: 50, y: 50}
-  gridPosition: {x: 0, y: 0, z: 0}
-  showGrid: 1
-  doubleLines: 0
-  verticalGrid: 1
+  m_PrefabParentObject: {fileID: 11449792, guid: 5b84390192c77b249bd20fa2b228085e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1417608639}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!114 &2022941525 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11492904, guid: 5b84390192c77b249bd20fa2b228085e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1417608639}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &2041609721
 GameObject:
   m_ObjectHideFlags: 0

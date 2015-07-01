@@ -37,6 +37,8 @@ public class LensEncoder : MonoBehaviour
     public int port = 2;
     public LensEncoderData encoderData = new LensEncoderData();
 
+    private float max = 65535;
+
     private class Plugin
     {
         [DllImport("LensEncoder")]
@@ -51,24 +53,41 @@ public class LensEncoder : MonoBehaviour
         public static extern bool LensEncoderGetData(System.IntPtr intArray3);
     }
 
-    public int Zoom
+    public int ZoomMapped
     {
         get { return encoderData.data[0]; }
         set { encoderData.data[0] = value; }
     }
 
-    public int Focus
+    public int FocusMapped
     {
         get { return encoderData.data[1]; }
         set { encoderData.data[1] = value; }
     }
 
-    public int Iris
+    public int IrisMapped
     {
         get { return encoderData.data[2]; }
         set { encoderData.data[2] = value; }
     }
 
+    public float ZoomNormalized
+    {
+        get { return encoderData.data[0] / max; }
+        set { encoderData.data[0] = (int)(value * max); }
+    }
+
+    public float FocusNormalized
+    {
+        get { return encoderData.data[1] / max; }
+        set { encoderData.data[1] = (int)(value * max); }
+    }
+
+    public float IrisNormalized
+    {
+        get { return encoderData.data[2] / max; }
+        set { encoderData.data[2] = (int)(value * max); }
+    }
 
     public void Connect()
     {
@@ -145,7 +164,7 @@ public class LensEncoder : MonoBehaviour
 #else
             System.IO.DirectoryInfo mainFolderPath = new System.IO.DirectoryInfo(Application.dataPath + "/../");
 #endif
-            return mainFolderPath.FullName + @"Config/Sensor/";
+            return mainFolderPath.FullName + @"Config/Lens/";
         }
     }
 
