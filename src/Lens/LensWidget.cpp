@@ -43,6 +43,12 @@ bool LensWidget::load(QString filename)
 }
 
 
+bool LensWidget::save(QString filename)
+{
+	return tableLens.save(filename.toStdString());
+}
+
+
 void LensWidget::reset()
 {
 	int rows = 5;

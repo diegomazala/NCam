@@ -51,7 +51,7 @@ void MainWindow::fileSave()
 {
 	if (!currentFileName.isEmpty())
 	{
-		ui->lensWidget->tableLens.save(currentFileName.toStdString());
+		ui->lensWidget->save(currentFileName);
 	}
 	else
 	{

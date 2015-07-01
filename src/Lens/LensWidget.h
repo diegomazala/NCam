@@ -27,6 +27,7 @@ public:
 
 public slots:
 	bool load(QString filename);
+	bool save(QString filename);
 	void reset();
 	void cellChanged(int i, int );
 	void cellClicked(int i, int);
