@@ -55,7 +55,12 @@ public class NCamPlugin
 
     [DllImport(DllName)]
     public static extern void NCamGLMatrices(System.IntPtr doubleArray16_GLProjectionMatrix,
-                                                System.IntPtr doubleArray16_GLModelViewMatrix);
+                                        System.IntPtr doubleArray16_GLModelViewMatrix,
+                                        double near_plane, double far_plane);
+
+    [DllImport(DllName)]
+    public static extern void NCamGLProjectionMatrix(System.IntPtr doubleArray16_GLProjectionMatrix,
+                                                    double near_plane, double far_plane);
 
     [DllImport(DllName)]
     public static extern uint NCamTrackingTimeCode(System.IntPtr doubleArray6);
@@ -308,7 +313,7 @@ public class NCamTracking
     }
 }
 
-
+[System.Serializable]
 public class NCamEncoder
 {
     public enum EParameter
@@ -322,7 +327,7 @@ public class NCamEncoder
         ETotal
     }
 
-    private double[] data = null;
+    public double[] data = null;
     public GCHandle Handle;
 
     public NCamEncoder()

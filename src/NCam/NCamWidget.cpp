@@ -108,6 +108,11 @@ void NCamWidget::update()
 	ui->sensorHeightLineEdit->setText(QString::number(optical[5]));
 	ui->offsetXLineEdit->setText(QString::number(optical[2]));
 	ui->offsetYLineEdit->setText(QString::number(optical[3]));
+	ui->opticalTopLineEdit->setText(QString::number(optical[9]));
+	ui->opticalBottomLineEdit->setText(QString::number(optical[10]));
+	ui->opticalLeftLineEdit->setText(QString::number(optical[11]));
+	ui->opticalRightLineEdit->setText(QString::number(optical[12]));
+	
 
 	ui->rot0LineEdit->setText(QString::number(tracking[0]));
 	ui->rot1LineEdit->setText(QString::number(tracking[1]));
