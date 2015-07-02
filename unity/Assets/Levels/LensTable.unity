@@ -421,10 +421,9 @@ GameObject:
   - 20: {fileID: 250861749}
   - 124: {fileID: 250861748}
   - 92: {fileID: 250861747}
-  - 114: {fileID: 250861745}
+  - 114: {fileID: 250861751}
   - 114: {fileID: 250861750}
   - 114: {fileID: 250861746}
-  - 114: {fileID: 250861751}
   m_Layer: 0
   m_Name: Camera.Sensor.Field.0
   m_TagString: Untagged
@@ -444,20 +443,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1339555564}
   m_RootOrder: 0
---- !u!114 &250861745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 250861743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cf49bd3c486bea468bcda0aceb16ba9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: bcc8f297e37b7b245b7a1f809ef65ced, type: 3}
-  FieldIndex: 1
-  ncam: {fileID: 0}
 --- !u!114 &250861746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -877,6 +862,7 @@ MonoBehaviour:
   objectList:
   - {fileID: 2041609721}
   - {fileID: 1339555563}
+  - {fileID: 22038956}
 --- !u!1 &1134425714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,7 +1244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7633184ec96403848b5d98becf530a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: Fujinon_HA14x45BERD-S6B_6701118.lens
+  fileName: emulator.lens
   targetCamera:
   - {fileID: 250861749}
   - {fileID: 1785835669}
@@ -1679,10 +1665,9 @@ GameObject:
   - 20: {fileID: 1785835669}
   - 124: {fileID: 1785835673}
   - 92: {fileID: 1785835672}
-  - 114: {fileID: 1785835671}
+  - 114: {fileID: 1785835675}
   - 114: {fileID: 1785835674}
   - 114: {fileID: 1785835670}
-  - 114: {fileID: 1785835675}
   m_Layer: 0
   m_Name: Camera.Sensor.Field.1
   m_TagString: Untagged
@@ -1751,20 +1736,6 @@ MonoBehaviour:
   sdiRenderTarget: {fileID: 0}
   backgroundTex: {fileID: 0}
   m_Material: {fileID: 0}
---- !u!114 &1785835671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1785835667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cf49bd3c486bea468bcda0aceb16ba9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: bcc8f297e37b7b245b7a1f809ef65ced, type: 3}
-  FieldIndex: 0
-  ncam: {fileID: 0}
 --- !u!92 &1785835672
 Behaviour:
   m_ObjectHideFlags: 0

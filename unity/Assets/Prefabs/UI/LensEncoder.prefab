@@ -147,7 +147,7 @@ GameObject:
   - 222: {fileID: 22289216}
   - 114: {fileID: 11492904}
   m_Layer: 5
-  m_Name: IrisText
+  m_Name: IrisMappedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -164,7 +164,7 @@ GameObject:
   - 222: {fileID: 22230914}
   - 114: {fileID: 11407374}
   m_Layer: 5
-  m_Name: FocusText
+  m_Name: FocusNormalizedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -265,7 +265,7 @@ GameObject:
   - 222: {fileID: 22220822}
   - 114: {fileID: 11498192}
   m_Layer: 5
-  m_Name: IrisText
+  m_Name: IrisNormalizedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ GameObject:
   - 222: {fileID: 22289884}
   - 114: {fileID: 11498796}
   m_Layer: 5
-  m_Name: ZoomText
+  m_Name: ZoomMappedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -333,7 +333,7 @@ GameObject:
   - 222: {fileID: 22236194}
   - 114: {fileID: 11479484}
   m_Layer: 5
-  m_Name: ZoomText
+  m_Name: ZoomNormalizedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -367,7 +367,7 @@ GameObject:
   - 222: {fileID: 22280842}
   - 114: {fileID: 11449792}
   m_Layer: 5
-  m_Name: FocusText
+  m_Name: FocusMappedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1100,12 +1100,12 @@ MonoBehaviour:
   disconnectButton: {fileID: 11450462}
   portText: {fileID: 11446398}
   statusText: {fileID: 11409162}
-  zoomNormalizedText: {fileID: 0}
-  zoomMappedText: {fileID: 0}
-  focusNormalizedText: {fileID: 0}
-  focusMappedText: {fileID: 0}
-  irisNormalizedText: {fileID: 0}
-  irisMappedText: {fileID: 0}
+  zoomNormalizedText: {fileID: 11479484}
+  zoomMappedText: {fileID: 11498796}
+  focusNormalizedText: {fileID: 11407374}
+  focusMappedText: {fileID: 11449792}
+  irisNormalizedText: {fileID: 11498192}
+  irisMappedText: {fileID: 11492904}
 --- !u!114 &11488188
 MonoBehaviour:
   m_ObjectHideFlags: 1

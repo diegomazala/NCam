@@ -10,7 +10,7 @@ public class LensTable : MonoBehaviour
     public Camera[] targetCamera = { null, null };
     private LensDistortionUVMap[] lensDistortion = { null, null };
 
-    private LensPlugin lens;
+    private LensPlugin lens = new LensPlugin();
 
     public float zoom = 0;
     public float focus = 0;
@@ -29,6 +29,7 @@ public class LensTable : MonoBehaviour
         }
     }
 
+
     void OnEnable()
     {
 #if !UNITY_EDITOR
@@ -43,9 +44,6 @@ public class LensTable : MonoBehaviour
             WriteXml(xmlConfigFolder + @"Lens.xml");
         }
 #endif
-
-
-        lens = new LensPlugin();
 
         string filePath = xmlConfigFolder + fileName;
 
@@ -116,22 +114,34 @@ public class LensTable : MonoBehaviour
 
 
 
-    void Update()
+    public void UpdateCameraLens(float _zoom, float _focus)
     {
-        // just for DEBUG
         for (int i = 0; i < targetCamera.Length; ++i)
         {
             Camera cam = targetCamera[i];
             LensDistortionUVMap ld = lensDistortion[i];
 
+
+            //cam.ResetProjectionMatrix();
+            //// Projection Setup
+            //cam.fieldOfView = ProjectionMatrix2Fovy(-ncamData[i].GLProjection.m11);
+            //// There is a number precision difference between ImageAspectRatio and the ration between m11 and m00
+            //targetCamera[i].aspect = Mathf.Abs(.m11 / ncamData[i].GLProjection.m00); // ncamData[i].AspectRatio; 
+            //ApplyCcdShift(targetCamera[i], -ncamData[i].GLProjection.m02, -ncamData[i].GLProjection.m12);
+
             if (ld != null)
             {
-                ld.Zoom = zoom;
-                ld.Focus = focus;
+                ld.Zoom = _zoom;
+                ld.Focus = _focus;
                 fovMapped =
                 cam.fieldOfView = lens.FieldOfView(ld.Fov);
             }
         }
+    }
+
+    void Update()
+    {
+        UpdateCameraLens(zoom, focus);
     }
 
 
@@ -188,5 +198,21 @@ public class LensTable : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    static public float ProjectionMatrix2Fovy(float mat_11)
+    {
+        float m = Mathf.Pow(mat_11, -1);
+        return Mathf.Atan(m) * Mathf.Rad2Deg * 2.0f;
+    }
+
+    static public void ApplyCcdShift(Camera cam, float ccd_shift_x, float ccd_shift_y)
+    {
+        Matrix4x4 p = cam.projectionMatrix;
+
+        p[0, 2] = ccd_shift_x;
+        p[1, 2] = ccd_shift_y;
+
+        cam.projectionMatrix = p;
     }
 }
