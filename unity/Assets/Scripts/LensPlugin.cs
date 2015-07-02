@@ -36,6 +36,10 @@ public class LensPlugin
     [DllImport("LensTable")]
     private static extern bool LensTableUpdateSample(float zoom, float focus, float iris, int texId);
     [DllImport("LensTable")]
+    private static extern void LensTableProjectionMatrix(float zoom, float focus, System.IntPtr floatArray16_GLProjectionMatrix);
+    [DllImport("LensTable")]
+    private static extern void LensTableOpticalParameters(float zoom, float focus, System.IntPtr floatArray13_OpticalParameters);
+    [DllImport("LensTable")]
     private static extern float LensTableZoom();
     [DllImport("LensTable")]
     private static extern float LensTableFocus();
@@ -55,6 +59,8 @@ public class LensPlugin
 
     private RenderTexture lensMap = null;
     private RenderTexture distortionMap = null;
+    private LensProjectionMatrix projectionMatrix = null;
+    private LensOptical opticalParameters = null;
     private float fovMin = 0.0f;
     private float fovMax = 0.0f;
 
@@ -69,9 +75,17 @@ public class LensPlugin
         get { return distortionMap; }
     }
 
+    public Matrix4x4 ProjectionMatrix
+    {
+        get { return projectionMatrix.Matrix; }
+    }
+
     public LensPlugin()
     {
         LensTableCreate();
+
+        projectionMatrix = new LensProjectionMatrix();
+        opticalParameters = new LensOptical();
     }
 
     ~LensPlugin()
@@ -130,6 +144,16 @@ public class LensPlugin
         LensTableUpdateDistortionMap(zoom, focus, distortionMap.GetNativeTextureID());
     }
 
+    public void UpdateProjection(float zoom, float focus)
+    {
+        LensTableProjectionMatrix(zoom, focus, projectionMatrix.Handle.AddrOfPinnedObject());
+    }
+
+    public void UpdateOptical(float zoom, float focus)
+    {
+        LensTableOpticalParameters(zoom, focus, opticalParameters.Handle.AddrOfPinnedObject());
+    }
+
 
     public float FieldOfView(float fov_normalized)
     {
@@ -146,4 +170,100 @@ public class LensPlugin
 
 }
 
+
+public class LensProjectionMatrix
+{
+    private float[] data = null;
+    public GCHandle Handle;
+
+    public LensProjectionMatrix()
+    {
+        data = new float[16];
+        Handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+    }
+
+    public LensProjectionMatrix(float[] matrix_array_16)
+    {
+        data = matrix_array_16;
+        Handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+    }
+
+    ~LensProjectionMatrix()
+    {
+        Handle.Free();
+    }
+
+    public Matrix4x4 Matrix
+    {
+        get
+        {
+            Matrix4x4 mat = Matrix4x4.identity;
+            for (int i = 0; i < 16; ++i)
+                mat[i] = data[i];
+            return mat;
+        }
+    }
+
+    public float[] DataArray
+    {
+        get { return data; }
+        set { data = value; }
+    }
+}
+
+
+
+public class LensOptical
+{
+    private float[] data = null;
+    public GCHandle Handle;
+
+    public LensOptical()
+    {
+        this.data = new float[13];
+        this.Handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+    }
+
+    public LensOptical(float[] optical_data_array_13)
+    {
+        this.data = optical_data_array_13;
+        this.Handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+    }
+
+    ~LensOptical()
+    {
+        this.Handle.Free();
+    }
+
+    public float[] DataArray
+    {
+        get { return this.data; }
+        set { this.data = value; }
+    }
+
+    public float FieldOfViewVertical
+    {
+        get { return this.data[1]; }
+    }
+
+    public Vector2 ProjectionCenter
+    {
+        get { return new Vector2(this.data[2], this.data[3]); }
+    }
+
+    public Vector2 ImageSensorSize
+    {
+        get { return new Vector2(this.data[4], this.data[5]); }
+    }
+
+    public Vector2 ImageResolution
+    {
+        get { return new Vector2(this.data[6], this.data[7]); }
+    }
+
+    public float ImageAspectRatio
+    {
+        get { return this.data[8]; }
+    }
+}
 
