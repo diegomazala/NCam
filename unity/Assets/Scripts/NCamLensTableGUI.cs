@@ -5,6 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(NCamLens))]
 public class NCamLensTableGUI : MonoBehaviour
 {
+#if false
     public NCamLens ncamLens = null;
     public string lensFileName = @"LensTable.xml";
     private LensTable lensTable = null;
@@ -370,5 +371,5 @@ public class NCamLensTableGUI : MonoBehaviour
         textureGUI.Apply();
     }
 
-
+#endif
 }
