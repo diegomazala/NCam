@@ -21,13 +21,18 @@ extern "C"
 	LENS_TABLE_API int			LensTableRowCount();
 	LENS_TABLE_API int			LensTableColumnCount();
 
+	LENS_TABLE_API void			LensTableKeys(void* floatArrayRowCount_Zoom, void* floatArrayColumnCount_Focus);
+
 	LENS_TABLE_API float		LensTableFovMin();
 	LENS_TABLE_API float		LensTableFovMax();
 
 	LENS_TABLE_API bool			LensTableUpdateLensMap(unsigned int lens_tex_id);
 	LENS_TABLE_API bool			LensTableUpdateDistortionMap(float zoom, float focus, unsigned int dist_tex_id);
-
+	
 	LENS_TABLE_API bool			LensTableUpdateSample(float zoom, float focus, float iris, unsigned int lens_tex_id);
+
+	LENS_TABLE_API void			LensTableProjectionMatrix(float zoom, float focus, void* floatArray16_GLProjectionMatrix);
+	LENS_TABLE_API void			LensTableOpticalParameters(float zoom, float focus, void* floatArray13_GLProjectionMatrix);
 
 	LENS_TABLE_API float		LensTableZoom();
 	LENS_TABLE_API float		LensTableFocus();
@@ -37,6 +42,7 @@ extern "C"
 	LENS_TABLE_API int			LensTableDistortionMapWidth();
 	LENS_TABLE_API int			LensTableDistortionMapHeight();
 	LENS_TABLE_API int			LensTableDistortionMapChannelCount();
+	LENS_TABLE_API int			LensTableDistortionData(void* floatArray);
 
 }; // extern "C"
 

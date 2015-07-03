@@ -16,6 +16,7 @@ public class LensTable : MonoBehaviour
     public float focus = 0;
     public float fovMapped = 0;
 
+
     static public string xmlConfigFolder
     {
         get
@@ -30,7 +31,7 @@ public class LensTable : MonoBehaviour
     }
 
 
-    void OnEnable()
+    void Start()
     {
 #if !UNITY_EDITOR
         // If the xml configuration file does not exists, create it
@@ -59,12 +60,26 @@ public class LensTable : MonoBehaviour
         {
             Debug.LogError("Could not open lens file: " + filePath);
         }
-
-        
     }
 
 
-    void OnDisable()
+    public bool Distortion
+    {
+        set
+        {
+            foreach(LensDistortionUVMap l in lensDistortion)
+                if (l != null)
+                    l.enabled = value;
+        }
+
+        get
+        {
+            return (lensDistortion[0] != null) ? lensDistortion[0].enabled : false;
+        }
+    }
+
+
+    void OnApplicationQuit()
     {
         StopCoroutine( UpdateDistortionMap() );
         StopCoroutine( UpdateLensMap() );
@@ -124,30 +139,30 @@ public class LensTable : MonoBehaviour
             Camera cam = targetCamera[i];
             LensDistortionUVMap distort = lensDistortion[i];
 
-            cam.ResetProjectionMatrix();
-            //// Projection Setup
-            fovMapped =
-            cam.fieldOfView = ProjectionMatrix2Fovy(-lens.ProjectionMatrix.m11);
-            //// There is a number precision difference between ImageAspectRatio and the ration between m11 and m00
-            cam.aspect = Mathf.Abs(lens.ProjectionMatrix.m11 / lens.ProjectionMatrix.m00); // ncamData[i].AspectRatio; 
-            ApplyCcdShift(cam, -lens.ProjectionMatrix.m02, -lens.ProjectionMatrix.m12);
-
             if (distort != null)
             {
                 distort.Zoom = _zoom;
                 distort.Focus = _focus;
-                //fovMapped =
-                //cam.fieldOfView = lens.FieldOfView(ld.Fov);
+
+                cam.ResetProjectionMatrix();
+
+                //// Projection Setup
+                fovMapped =
+                //cam.fieldOfView = lens.FieldOfView(distort.Fov);
+                cam.fieldOfView = ProjectionMatrix2Fovy(-lens.ProjectionMatrix.m11);
+
+                //// There is a number precision difference between ImageAspectRatio and the ration between m11 and m00
+                cam.aspect = Mathf.Abs(lens.ProjectionMatrix.m11 / lens.ProjectionMatrix.m00); // ncamData[i].AspectRatio; 
+                ApplyCcdShift(cam, -lens.ProjectionMatrix.m02, -lens.ProjectionMatrix.m12);
             }
         }
     }
 
-    void Update()
-    {
-        UpdateCameraLens(zoom, focus);
-    }
-
-
+    //void Update()
+    //{
+    //    UpdateCameraLens(zoom, focus);
+    //}
+        
 
     public bool ReadXml(string file_path)
     {

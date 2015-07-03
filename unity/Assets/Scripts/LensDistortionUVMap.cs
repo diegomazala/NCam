@@ -22,7 +22,7 @@ public class LensDistortionUVMap : MonoBehaviour
     private Material texelMaterial = null;
     private Material distortionMaterial = null;
 
-
+    private Texture2D texFeedback = null;
 
 
     public float Zoom
@@ -52,6 +52,8 @@ public class LensDistortionUVMap : MonoBehaviour
     
     void OnEnable()
     {
+        texFeedback = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+
         texel = new RenderTexture(1, 1, 8, RenderTextureFormat.ARGB32);
         texel.name = "LensTexel";
         texel.wrapMode = TextureWrapMode.Clamp;
@@ -112,10 +114,12 @@ public class LensDistortionUVMap : MonoBehaviour
         
         //=======================================================
         // Reading pixel color which is the zoom, focus and fov values
-        Texture2D tex = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-        tex.ReadPixels(new Rect(Vector2.zero, Vector2.one), 0, 0);
-        texColor = tex.GetPixel(0, 0);
-        
+        texFeedback.ReadPixels(new Rect(Vector2.zero, Vector2.one), 0, 0);
+        texColor = texFeedback.GetPixel(0, 0);
+
+        //LensPlugin.LensTableUpdateSample(texCoord.x, texCoord.y, 0, texel.GetNativeTextureID());
+        //texColor = new Color(LensPlugin.LensTableZoom(), LensPlugin.LensTableFocus(), LensPlugin.LensTableFov());
+
         RenderTexture.active = destination;
 
         //=======================================================

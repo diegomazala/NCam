@@ -158,8 +158,8 @@ Transform:
   m_LocalPosition: {x: -.5, y: .5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_Father: {fileID: 608899325}
+  m_RootOrder: 2
 --- !u!1 &25230361
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,8 +846,9 @@ Transform:
   m_Children:
   - {fileID: 2041609722}
   - {fileID: 1592720954}
+  - {fileID: 22038960}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 4
 --- !u!114 &608899326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -891,7 +892,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!114 &1134425716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1112,7 +1113,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!1001 &1311187568
 Prefab:
   m_ObjectHideFlags: 0
@@ -1244,13 +1245,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7633184ec96403848b5d98becf530a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: emulator.lens
+  fileName: Fujinon_HA14x45BERD-S6B_6701118.lens
   targetCamera:
   - {fileID: 250861749}
   - {fileID: 1785835669}
   zoom: 0
-  focus: 0
+  focus: 1
   fovMapped: 0
+  mm: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &1380454488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,7 +1584,7 @@ RectTransform:
   - {fileID: 1205163514}
   - {fileID: 488970638}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}

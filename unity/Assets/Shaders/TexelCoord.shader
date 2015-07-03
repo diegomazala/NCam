@@ -28,6 +28,7 @@ Shader "Diem/TexelCoord" {
 				float x = _TexCoord.x;
 				float y = 1.0f - _TexCoord.y;
 				return tex2D(_MainTex,float2(y,x));
+				//return tex2D(_MainTex, _TexCoord.yx);
 			}
 			ENDCG
 		}

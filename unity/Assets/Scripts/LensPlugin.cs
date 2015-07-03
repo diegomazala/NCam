@@ -3,18 +3,6 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 
-//[System.Serializable]
-//public class LensSample
-//{
-//    public float zoom;
-//    public float focus;
-//    public float iris;
-//    public float fov;
-//    public RenderTexture distortionMap;
-//}
-
-    
-
 public class LensPlugin 
 {
     [DllImport("LensTable")]
@@ -28,6 +16,8 @@ public class LensPlugin
     [DllImport("LensTable")]
     private static extern int LensTableColumnCount();
     [DllImport("LensTable")]
+    private static extern void LensTableKeys(System.IntPtr zoomKeys, System.IntPtr focusKeys);
+    [DllImport("LensTable")]
     private static extern float LensTableFovMin();
     [DllImport("LensTable")]
     private static extern float LensTableFovMax();
@@ -35,10 +25,6 @@ public class LensPlugin
     private static extern bool LensTableUpdateLensMap(int texId);
     [DllImport("LensTable")]
     private static extern bool LensTableUpdateSample(float zoom, float focus, float iris, int texId);
-    [DllImport("LensTable")]
-    private static extern void LensTableProjectionMatrix(float zoom, float focus, System.IntPtr floatArray16_GLProjectionMatrix);
-    [DllImport("LensTable")]
-    private static extern void LensTableOpticalParameters(float zoom, float focus, System.IntPtr floatArray13_OpticalParameters);
     [DllImport("LensTable")]
     private static extern float LensTableZoom();
     [DllImport("LensTable")]
@@ -48,6 +34,10 @@ public class LensPlugin
     [DllImport("LensTable")]
     private static extern float LensTableIris();
     [DllImport("LensTable")]
+    private static extern void LensTableProjectionMatrix(float zoom, float focus, System.IntPtr floatArray16_GLProjectionMatrix);
+    [DllImport("LensTable")]
+    private static extern void LensTableOpticalParameters(float zoom, float focus, System.IntPtr floatArray13_OpticalParameters);
+    [DllImport("LensTable")]
     private static extern bool LensTableUpdateDistortionMap(float zoom, float focus, int dist_tex_id);
     [DllImport("LensTable")]
     private static extern int LensTableDistortionMapWidth();
@@ -55,12 +45,16 @@ public class LensPlugin
     private static extern int LensTableDistortionMapHeight();
     [DllImport("LensTable")]
     private static extern int LensTableDistortionMapChannelCount();
+    [DllImport("LensTable")]
+    private static extern int LensTableDistortionData(System.IntPtr floatArray);
 
 
     private RenderTexture lensMap = null;
     private RenderTexture distortionMap = null;
     private LensProjectionMatrix projectionMatrix = null;
     private LensOptical opticalParameters = null;
+    private LensKeys lensKeys = null;
+    //private LensDistortionData distortionData = null;
     private float fovMin = 0.0f;
     private float fovMax = 0.0f;
 
@@ -78,6 +72,11 @@ public class LensPlugin
     public Matrix4x4 ProjectionMatrix
     {
         get { return projectionMatrix.Matrix; }
+    }
+
+    public LensKeys Keys
+    {
+        get { return lensKeys; }
     }
 
     public LensPlugin()
@@ -100,6 +99,9 @@ public class LensPlugin
         {
             fovMin = LensTableFovMin();
             fovMax = LensTableFovMax();
+            lensKeys = new LensKeys(LensTableRowCount(), LensTableColumnCount());
+            //int depth_size = LensTableRowCount() * LensTableColumnCount();
+            //distortionData = new LensDistortionData(LensTableDistortionMapWidth() * LensTableDistortionMapHeight() * depth_size * LensTableDistortionMapChannelCount());
             return (CreateLensMap() && CreateDistortionMap());
         }
         else
@@ -123,7 +125,7 @@ public class LensPlugin
 
     private bool CreateDistortionMap()
     {
-        // Create RenderTexture for image lens
+        // Create RenderTexture for distortion
         distortionMap = new RenderTexture(LensPlugin.LensTableDistortionMapWidth(),
                                     LensPlugin.LensTableDistortionMapHeight(), 8,
                                     RenderTextureFormat.RGFloat);
@@ -159,6 +161,7 @@ public class LensPlugin
     {
         return Lerp(fov_normalized, 0.0f, 1.0f, fovMin, fovMax);
     }
+
 
 
     static float Lerp(float x, float x0, float x1, float y0, float y1)
@@ -264,6 +267,61 @@ public class LensOptical
     public float ImageAspectRatio
     {
         get { return this.data[8]; }
+    }
+}
+
+public class LensKeys
+{
+    private float[] zoomKeys = null;
+    public GCHandle HandleZoom;
+    private float[] focusKeys = null;
+    public GCHandle HandleFocus;
+
+    public LensKeys(int zoomKeyCount, int focusKeyCount)
+    {
+        this.zoomKeys = new float[zoomKeyCount];
+        this.HandleZoom = GCHandle.Alloc(zoomKeys, GCHandleType.Pinned);
+        this.focusKeys = new float[focusKeyCount];
+        this.HandleFocus = GCHandle.Alloc(focusKeys, GCHandleType.Pinned);
+    }
+
+    ~LensKeys()
+    {
+        this.HandleZoom.Free();
+        this.HandleFocus.Free();
+    }
+
+    public float[] Zoom
+    {
+        get { return zoomKeys; }
+    }
+
+    public float[] Focus
+    {
+        get { return focusKeys; }
+    }
+}
+
+
+public class LensDistortionData
+{
+    private float[] data = null;
+    public GCHandle Handle;
+
+    public LensDistortionData(int size)
+    {
+        this.data = new float[size];
+        this.Handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+    }
+
+    ~LensDistortionData()
+    {
+        this.Handle.Free();
+    }
+
+    public int Length
+    {
+        get { return data.Length; }
     }
 }
 

@@ -184,6 +184,7 @@ public class LensEncoder : MonoBehaviour
             WriteXml(xmlConfigFolder + @"LensEncoder.xml");
         }
 #endif
+        Connect();
     }
 
 

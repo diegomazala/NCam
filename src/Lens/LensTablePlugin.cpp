@@ -3,7 +3,7 @@
 #include "Lens.h"
 
 #include <Windows.h>
-#include "GL/GL.h"
+#include <gl/GL.h>
 #pragma comment (lib, "Opengl32.lib")
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_RG            0x8227
@@ -102,6 +102,20 @@ extern "C"
 		return tableLens.focusKeys.size();
 	}
 
+
+	LENS_TABLE_API void LensTableKeys(void* floatArrayRowCount_Zoom, void* floatArrayColumnCount_Focus)
+	{
+		float* pArrayZoom = (float*)floatArrayRowCount_Zoom;
+		float* pArrayFocus = (float*)floatArrayColumnCount_Focus;
+
+		// safeguard - pointer must be not null
+		if (!pArrayZoom || !pArrayFocus)
+			return;
+
+		std::memcpy(pArrayZoom, tableLens.zoomKeys.data(), sizeof(float) * tableLens.zoomKeys.size());
+		std::memcpy(pArrayFocus, tableLens.focusKeys.data(), sizeof(float) * tableLens.focusKeys.size());
+	}
+
 	LENS_TABLE_API float LensTableFovMin()
 	{
 		return tableLens.minFov;
@@ -179,8 +193,7 @@ extern "C"
 		return true;
 	}
 
-
-
+	
 
 	LENS_TABLE_API bool	LensTableUpdateSample(float zoom, float focus, float iris, unsigned int lens_tex_id)
 	{
@@ -223,7 +236,46 @@ extern "C"
 	{
 		return sample.iris;
 	}
-	
+
+
+	LENS_TABLE_API void	LensTableProjectionMatrix(float zoom, float focus, void* floatArray16_GLProjectionMatrix)
+	{
+		float z_dist = 0;
+		float f_dist = 0;
+		const LensSample& s = tableLens.find(zoom, focus, z_dist, f_dist);	// get nearest sample
+
+		float* pArrayFloat = (float*)floatArray16_GLProjectionMatrix;
+
+		// safeguard - pointer must be not null
+		if (!pArrayFloat)
+		{
+			logFile << "<Error> Trying to get projection parameters with a invalid float pointer" << std::endl;
+			return;
+		}
+
+		std::memcpy(pArrayFloat, s.projection.data(), sizeof(float) * 16);
+	}
+
+
+	LENS_TABLE_API void	LensTableOpticalParameters(float zoom, float focus, void* floatArray13_GLProjectionMatrix)
+	{
+		float z_dist = 0;
+		float f_dist = 0;
+		const LensSample& s = tableLens.find(zoom, focus, z_dist, f_dist);
+
+		float* pArrayFloat = (float*)floatArray13_GLProjectionMatrix;		// get nearest sample
+
+		// safeguard - pointer must be not null
+		if (!pArrayFloat)
+		{
+			logFile << "<Error> Trying to get optical parameters with a invalid float pointer" << std::endl;
+			return;
+		}
+
+		std::memcpy(pArrayFloat, s.optical.data(), sizeof(float) * 13);
+	}
+
+
 	LENS_TABLE_API int LensTableDistortionMapWidth()
 	{
 		return tableLens.matrix[0][0].distortion.width;
@@ -237,5 +289,41 @@ extern "C"
 	LENS_TABLE_API int LensTableDistortionMapChannelCount()
 	{
 		return tableLens.matrix[0][0].distortion.channelCount;
+	}
+
+	LENS_TABLE_API int LensTableDistortionData(void* floatArray)
+	{
+		float* pArrayFloat = (float*)floatArray;
+
+		// safeguard - pointer must be not null
+		if (!pArrayFloat)
+		{
+			logFile << "<Error> Trying to get distortion data with a invalid float pointer" << std::endl;
+			return 0;
+		}
+
+		int size = LensTableDistortionMapWidth() *							// width
+					LensTableDistortionMapHeight() *						// height
+					LensTableDistortionMapChannelCount() *					// channels
+					tableLens.zoomKeys.size() * tableLens.focusKeys.size();	// depth
+		
+		int rows = tableLens.matrix.size();
+		int columns = tableLens.matrix[0].size();
+		int depth = tableLens.zoomKeys.size() * tableLens.focusKeys.size();
+		int map_count = 0;
+
+		for (int i = 0; i < rows; i++)
+		{
+			for (int j = 0; j < columns; j++)
+			{
+				const std::vector<float>& data = tableLens.matrix[i][j].distortion.data;
+				
+				const int array_index = map_count * size;
+				std::memcpy(pArrayFloat + array_index, &data, size * sizeof(float));
+				map_count++;
+			}
+		}
+
+		return size;
 	}
 };
