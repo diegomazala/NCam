@@ -10,7 +10,7 @@ public class NCamLensControlUI : MonoBehaviour
 
     private Camera targetCam = null;
 
-    void OnEnable()
+    void Start()
     {
         if (lensControl == null)
             lensControl = FindObjectOfType<LensControl>();
@@ -35,8 +35,9 @@ public class NCamLensControlUI : MonoBehaviour
 
         targetCam = ncam.targetCamera[0];
 
-       OnNCamToggle(true);
-       // OnEncoderToggle(false);
+       
+        OnEncoderToggle(false);
+        OnNCamToggle(true);
     }
 
 

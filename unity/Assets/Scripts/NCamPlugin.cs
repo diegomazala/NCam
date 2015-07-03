@@ -347,6 +347,11 @@ public class NCamEncoder
         this.Handle.Free();
     }
 
+    public System.IntPtr Ptr()
+    {
+        return Handle.AddrOfPinnedObject();
+    }
+
     public double[] DataArray
     {
         get { return this.data; }
