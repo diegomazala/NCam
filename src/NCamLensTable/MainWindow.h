@@ -30,6 +30,7 @@ public slots:
 	void fileSaveAs();
 	void aboutDialogShow();
 	void onTableUpdate();
+	void updateSample(double zoom, double focus, double iris, double fov);
 
 private:
 

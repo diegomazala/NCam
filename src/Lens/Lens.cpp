@@ -139,6 +139,55 @@ void LensTable::find(float z, float f, float& z_distance, float& f_distance, int
 }
 
 
+void LensTable::findNeighbours(float z, float f, LensSample& q11, LensSample& q12, LensSample& q21, LensSample& q22)
+{
+	int min_z_idx = 0;
+	int max_z_idx = (int)zoomKeys.size() - 1;
+
+	std::vector<float>::iterator zlow, zup;
+	zlow = std::lower_bound(zoomKeys.begin(), zoomKeys.end(), z);
+	zup = std::upper_bound(zoomKeys.begin(), zoomKeys.end(), z);
+		
+
+	if (zlow == zoomKeys.end())
+		zlow = zoomKeys.end() - 1;
+
+	if (zup == zoomKeys.end())
+		zup = zoomKeys.end() - 1;
+
+	if (zlow == zup)
+		--zlow;
+
+	std::vector<float>::reverse_iterator flow, fup;
+	flow = std::lower_bound(focusKeys.rbegin(), focusKeys.rend(), f);
+	fup = std::upper_bound(focusKeys.rbegin(), focusKeys.rend(), f);
+
+	if (flow == focusKeys.rbegin())
+		flow = focusKeys.rbegin() + 1;
+
+	if (fup == focusKeys.rend())
+		fup = focusKeys.rend() - 1;
+
+	if (flow == fup)
+		++fup;
+
+	float z_dist[2] = { std::fabs(z - *zlow), std::fabs(z - *zup) };
+	float f_dist[2] = { std::fabs(f - *(flow - 1)), std::fabs(f - *(fup - 1)) };
+	
+	int i1 = zlow - zoomKeys.begin();
+	int i2 = zup - zoomKeys.begin();
+	int j1 = focusKeys.rend() - flow;
+	int j2 = focusKeys.rend() - fup;
+
+	q11 = matrix[i1][j1];
+	q12 = matrix[i1][j2];
+	q21 = matrix[i2][j1];
+	q22 = matrix[i2][j2];
+}
+
+
+
+
 LensSample& LensTable::find(float z, float f, float& z_distance, float& f_distance)
 {
 	int i, j;
@@ -146,6 +195,44 @@ LensSample& LensTable::find(float z, float f, float& z_distance, float& f_distan
 	return matrix[i][j];
 }
 
+
+float LensTable::getFov(float zoom, float focus)
+{
+	LensSample q11, q12, q21, q22;
+	findNeighbours(zoom, focus, q11, q12, q21, q22);
+	float x1 = (q11.zoom + q12.zoom) / 2.0f;
+	float x2 = (q21.zoom + q22.zoom) / 2.0f;
+	float y1 = (q11.focus + q21.focus) / 2.0f;
+	float y2 = (q12.focus + q22.focus) / 2.0f;
+	return bilerp(q11.fov, q12.fov, q21.fov, q22.fov, x1, x2, y1, y2, zoom, focus);
+}
+
+
+
+void LensTable::roundSamples(int precision)
+{
+	int rows = zoomKeys.size();
+	int columns = focusKeys.size();
+
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < columns; ++j)
+		{
+			if (matrix[i][j].zoom > 0.99)		// rounding zoom borders
+				matrix[i][j].zoom = 1;
+			if (matrix[i][j].focus > 0.99)		// rounding focus borders
+				matrix[i][j].focus = 1;
+
+			if (matrix[i][j].zoom < 0.01)		// rounding zoom borders
+				matrix[i][j].zoom = 0;
+			if (matrix[i][j].focus < 0.01)		// rounding focus borders
+				matrix[i][j].focus = 0;
+
+			matrix[i][j].zoom = roundP(matrix[i][j].zoom, precision);
+			matrix[i][j].focus = roundP(matrix[i][j].focus, precision);
+		}
+	}
+}
 
 bool LensTable::load(std::string filename)
 {
@@ -180,13 +267,16 @@ bool LensTable::load(std::string filename)
 			for (int j = 0; j < columns; ++j)
 				in >> matrix[i][j];
 
-		// reading matrix values
+		// reading distortion values
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < columns; ++j)
 				in >> matrix[i][j].distortion;
 
-		updateMinMaxFov();
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < columns; ++j)
+				matrix[i][j].computeFovFromProjectionMatrix();
 
+		updateMinMaxFov();
 		return in.good();
 	}
 

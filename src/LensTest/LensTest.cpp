@@ -185,6 +185,48 @@ namespace LensTest
 
 		}
 
+		TEST_METHOD(Interpolation)
+		{
+			int rows = 5;
+			int columns = 5;
+
+			LensTable lt;
+			lt.createKeys(rows, columns);
+			lt.createMatrix(rows, columns);
+
+			float fov = 62.0f;
+			float iris = 1.0f;
+
+			for (int i = 0; i < rows; ++i)
+				for (int j = 0; j < columns; ++j)
+					lt.matrix[i][j] = LensSample(lt.zoomKeys[i], lt.focusKeys[j], iris, fov -= 2);
+
+			lt.save("interpolation.lens");
+			lt.roundSamples(3);
+
+			float zoom, focus;
+			float z_dist = 0, f_dist = 0;
+			LensSample q11, q12, q21, q22;
+			float x1, x2, y1, y2;
+
+			zoom = 0.0f;
+			focus = 1.0f;
+			fov = lt.getFov(zoom, focus);
+			Assert::AreEqual(int(60.0), int(fov), L"\n<Returned wrong fov value>\n", LINE_INFO());
+
+			zoom = 0.875f;
+			focus = 0.0f;
+			fov = lt.getFov(zoom, focus);
+			Assert::AreEqual(int(17.0), int(fov), L"\n<Returned wrong fov value>\n", LINE_INFO());
+
+			zoom = 0.125f;
+			focus = 1.0f;
+			fov = lt.getFov(zoom, focus);
+			Assert::AreEqual(int(55.0), int(fov), L"\n<Returned wrong fov value>\n", LINE_INFO());
+
+			
+		}
+
 		TEST_METHOD(LensMatrixTest)
 		{
 			int rows = 3;
@@ -292,6 +334,7 @@ namespace LensTest
 				for (int j = 0; j < columns; ++j)
 				{
 					lt0.matrix[i][j] = LensSample(z, f, i, fov);
+					lt0.matrix[i][j].computeFovFromProjectionMatrix();
 					f += 0.5f;
 				}
 				z += 0.5f;
@@ -335,11 +378,11 @@ namespace LensTest
 			LensWidget w;
 			w.show();
 
-			const std::string inputFile("../../../data/emulator.lens");
-			const std::string outputFile("../../../data/emulator_copy.lens");
+			const std::string inputFile("../../../data/Fujinon_HA14x45BERD-S6B_6701118.lens");
+			const std::string outputFile("../../../data/Fujinon_HA14x45BERD-S6B_6701118_copy.lens");
 
-			Assert::IsTrue(w.load(inputFile.c_str()), L"\n<Could not open 'emulator.lens' file>\n", LINE_INFO());
-			Assert::IsTrue(w.save(outputFile.c_str()), L"\n<Could not save 'emulator_copy.lens' file>\n", LINE_INFO());
+			Assert::IsTrue(w.load(inputFile.c_str()), L"\n<Could not open 'Fujinon_HA14x45BERD-S6B_6701118.lens' file>\n", LINE_INFO());
+			Assert::IsTrue(w.save(outputFile.c_str()), L"\n<Could not save 'Fujinon_HA14x45BERD-S6B_6701118_copy.lens' file>\n", LINE_INFO());
 			
 			std::wstring wmessage;
 			bool areEqual = AreFilesEqual(inputFile, outputFile, wmessage);

@@ -14,6 +14,7 @@ public:
 	~LensImageWidget();
 
 	void setLensMatrix(const LensMatrix& lm);
+	void setTexelCoord(float x, float y);
 
 protected:
 	void initializeGL() Q_DECL_OVERRIDE;
@@ -27,7 +28,8 @@ public slots:
 	void zoomChannel(int checked);
 	void focusChannel(int checked);
 	void fovChannel(int checked);
-	QVector4D getTexelColor(const QVector2D& coord);
+	//QVector4D getTexelColor(const QVector2D& coord);
+	QVector4D getTexelColor();
 
 private:
 

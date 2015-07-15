@@ -5,6 +5,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <cmath>
+
 
 struct DistortionMap
 {
@@ -86,6 +88,15 @@ struct LensSample
 		projection.resize(16, 0.0f);
 	}
 
+
+	void computeFovFromProjectionMatrix()
+	{
+		const double Rad2Deg = 57.2958f;
+		double m = std::pow(-projection[5], -1.0);
+		fov = std::atan(m) * Rad2Deg * 2.0;
+	}
+
+
 	friend std::ostream& operator << (std::ostream& os, const LensSample& l)
 	{
 		os << std::fixed << l.zoom << ' ' << l.focus << ' ' << l.iris << ' ' << l.fov << ' ';
@@ -132,6 +143,14 @@ typedef std::map<int, LensSample> FocusMap;
 typedef std::map<int, FocusMap> ZoomMap;
 typedef std::vector<std::vector<LensSample>> LensMatrix;
 
+
+static double roundP(double f, int precision)
+{
+	const int temp = std::pow(10, precision);
+	return round(f*temp) / temp;
+};
+
+
 class LensTable
 {
 public:
@@ -149,6 +168,12 @@ public:
 
 	void find(float z, float f, float& z_distance, float& f_distance, int& i, int &j);
 	LensSample& find(float z, float f, float& z_distance, float& f_distance);
+
+	void findNeighbours(float z, float f, LensSample& q11, LensSample& q12, LensSample& q21, LensSample& q22);
+
+	float getFov(float zoom, float focus);
+
+	void roundSamples(int precision);
 
 	bool load(std::string filename);
 	bool save(std::string filename) const;
@@ -177,6 +202,22 @@ public:
 		if ((x1 - x0) == 0)
 			return (y0 + y1) / 2;
 		return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
+	}
+
+	static float bilerp(float q11, float q12, float q21, float q22, float x1, float x2, float y1, float y2, float x, float y)
+	{
+		float x2x1, y2y1, x2x, y2y, xx1, yy1;
+		x2x1 = x2 - x1;
+		y2y1 = y2 - y1;
+		x2x = x2 - x;
+		y2y = y2 - y;
+		xx1 = x - x1;
+		yy1 = y - y1;
+		return 1.0f / (x2x1 * y2y1) * (
+			q11 * x2x * y2y +
+			q21 * xx1 * y2y + 
+			q12 * x2x * yy1 + 
+			q22 * xx1 * yy1);
 	}
 
 	

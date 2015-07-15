@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QTimer>
 
 
 MainWindow::MainWindow(QWidget *parent) : 
@@ -16,6 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	connect(ui->ncamWidget, SIGNAL(lensDataUpdated(double, double, double, double)), ui->lensWidget, SLOT(onLensDataChanged(double, double, double, double)));
+	connect(ui->ncamWidget, SIGNAL(lensDataUpdated(double, double, double, double)), this, SLOT(updateSample(double, double, double, double)));
+
+	// loop call update
+	/*QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(updateSample()));
+	timer->start(33);*/
 }
 
 
@@ -81,4 +88,20 @@ void MainWindow::aboutDialogShow()
 void MainWindow::onTableUpdate()
 {
 	ui->lensImage->setLensMatrix(ui->lensWidget->tableLens.matrix);
+}
+
+
+
+void MainWindow::updateSample(double zoom, double focus, double iris, double fov)
+{
+	
+	std::cout << zoom << ", " << focus << " : " << fov << std::endl;
+	ui->lensImage->setTexelCoord(zoom, 1.0f - focus);
+
+	QVector4D texel = ui->lensImage->getTexelColor();
+	ui->zoomLineEdit->setText(QString::number(texel.x()));
+	ui->focusLineEdit->setText(QString::number(texel.y()));
+	ui->fovLineEdit->setText(QString::number(ui->lensWidget->tableLens.denormalizeFov(texel.z())));
+
+	
 }

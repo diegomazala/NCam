@@ -2,6 +2,7 @@
 #include "LensImageWidget.h"
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QTimer>
 #include "QLens.h"
 
 
@@ -10,9 +11,9 @@ LensImageWidget::LensImageWidget(QWidget *parent)
 	channels(0, 0, 1, 0)
 {
 	// loop call update
-	// QTimer *timer = new QTimer(this);
-	// connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	// timer->start(33);
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+	timer->start(33);
 }
 
 
@@ -72,9 +73,17 @@ void LensImageWidget::paintGL()
 	texelRender.render();
 }
 
-
-QVector4D LensImageWidget::getTexelColor(const QVector2D& coord)
+void LensImageWidget::setTexelCoord(float x, float y)
 {
+	glPixelCoord.setX(x);
+	glPixelCoord.setY(y);
+}
+
+//QVector4D LensImageWidget::getTexelColor(const QVector2D& coord)
+QVector4D LensImageWidget::getTexelColor()
+{
+	return glPixelColor;
+#if 0
 	makeCurrent();
 
 	// render for interpolation of texel
@@ -83,7 +92,9 @@ QVector4D LensImageWidget::getTexelColor(const QVector2D& coord)
 
 	texelRender.setCoord(coord);
 	texelRender.render();
+
 	return texelRender.color();
+#endif
 }
 
 
@@ -119,12 +130,12 @@ void LensImageWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void LensImageWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	mousePos = event->pos();
+	//mousePos = event->pos();
 
-	glPixelCoord.setX(float(mousePos.x()) / float(width()));
-	glPixelCoord.setY(1.0f - float(mousePos.y()) / float(height()));
-	
-	this->update();
+	//glPixelCoord.setX(float(mousePos.x()) / float(width()));
+	//glPixelCoord.setY(1.0f - float(mousePos.y()) / float(height()));
+	//
+	//this->update();
 }
 
 

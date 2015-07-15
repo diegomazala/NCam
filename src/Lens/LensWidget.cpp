@@ -16,8 +16,8 @@ LensWidget::LensWidget(QWidget *parent) :
 	tableLens.zoomDeviation = (float)ui->zoomSpinBox->value();
 	tableLens.focusDeviation = (float)ui->focusSpinBox->value();
 
-	tableLens.createKeys(5, 5);
-	tableLens.createMatrix(5, 5);
+	tableLens.createKeys(11, 11);
+	tableLens.createMatrix(11, 11);
 
 	connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(horizontalHeaderClicked(int)));
 	connect(ui->tableWidget->verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(verticalHeaderClicked(int)));
@@ -90,13 +90,13 @@ void LensWidget::update()
 	// setting vertical labels
 	QStringList labels;
 	for (auto z : tableLens.zoomKeys)
-		labels.push_back(QString::number(z));
+		labels.push_back(QString::number(z, 'f', 2));
 	ui->tableWidget->setVerticalHeaderLabels(labels);
 
 	// setting horizontal labels
 	labels.clear();
 	for (auto f : tableLens.focusKeys)
-		labels.push_back(QString::number(f));
+		labels.push_back(QString::number(f, 'f', 2));
 	ui->tableWidget->setHorizontalHeaderLabels(labels);
 
 	// setting table items
@@ -180,6 +180,8 @@ void LensWidget::onLensDataChanged(double zoom, double focus, double iris, doubl
 		NCamGLProjectionMatrix(prj, 0.1, 100);
 		for (int p = 0; p < 16; ++p)
 			sample.projection[p] = (float)prj[p];
+
+		sample.computeFovFromProjectionMatrix();
 
 		// updating distortion sample
 		sample.distortion.width = NCamDistortMapWidth();
