@@ -151,6 +151,12 @@ static double roundP(double f, int precision)
 };
 
 
+template <typename T>
+static T clamp(const T& x, const T& a, const T& b)
+{
+	return x < a ? a : (x > b ? b : x);
+}
+
 class LensTable
 {
 public:
@@ -171,7 +177,7 @@ public:
 
 	void findNeighbours(float z, float f, LensSample& q11, LensSample& q12, LensSample& q21, LensSample& q22);
 
-	float getFov(float zoom, float focus);
+	
 
 	void roundSamples(int precision);
 
@@ -181,8 +187,9 @@ public:
 	static bool readFile(std::string filename, LensMatrix& l);
 	static bool writeFile(std::string filename, const LensMatrix& l);
 
-	void print();
 
+	float getFov(float zoom, float focus);
+	void computeSample(float zoom, float focus, LensSample& rSample);
 	
 
 	FocusMap gFocusMap;

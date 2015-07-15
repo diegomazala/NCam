@@ -209,6 +209,34 @@ float LensTable::getFov(float zoom, float focus)
 
 
 
+void LensTable::computeSample(float zoom, float focus, LensSample& rSample)
+{
+	zoom = clamp(zoom, 0.0f, 1.0f);
+	focus = clamp(focus, 0.0f, 1.0f);
+	LensSample q11, q12, q21, q22;
+	findNeighbours(zoom, focus, q11, q12, q21, q22);
+	float x1 = (q11.zoom + q12.zoom) / 2.0f;
+	float x2 = (q21.zoom + q22.zoom) / 2.0f;
+	float y1 = (q11.focus + q21.focus) / 2.0f;
+	float y2 = (q12.focus + q22.focus) / 2.0f;
+	float fov = bilerp(q11.fov, q12.fov, q21.fov, q22.fov, x1, x2, y1, y2, zoom, focus);
+	
+	rSample.zoom = zoom;
+	rSample.focus = focus;
+	rSample.fov = fov;
+
+	for (int i = 0; i < rSample.projection.size(); ++i)
+		rSample.projection[i] = bilerp(q11.projection[i], q12.projection[i], q21.projection[i], q22.projection[i], x1, x2, y1, y2, zoom, focus);
+
+	for (int i = 0; i < rSample.optical.size(); ++i)
+		rSample.optical[i] = bilerp(q11.optical[i], q12.optical[i], q21.optical[i], q22.optical[i], x1, x2, y1, y2, zoom, focus);
+
+	for (int i = 0; i < rSample.distortion.data.size(); ++i)
+		rSample.distortion.data[i] = bilerp(q11.distortion.data[i], q12.distortion.data[i], q21.distortion.data[i], q22.distortion.data[i], x1, x2, y1, y2, zoom, focus);
+}
+
+
+
 void LensTable::roundSamples(int precision)
 {
 	int rows = zoomKeys.size();
@@ -277,6 +305,7 @@ bool LensTable::load(std::string filename)
 				matrix[i][j].computeFovFromProjectionMatrix();
 
 		updateMinMaxFov();
+		roundSamples(3);
 		return in.good();
 	}
 
@@ -368,27 +397,4 @@ bool LensTable::writeFile(std::string filename, const LensMatrix& l)
 
 	return false;
 }
-
-
-
-
-
-static void printFocus(const std::pair<int, LensSample>& l)
-{
-	std::cout << '\t' << l.first << '\t' << l.second.fov << "   (" << l.second.zoom << ", " << l.second.focus << ")" << std::endl;
-}
-
-static void printZoom(const std::pair<int, FocusMap>& l)
-{
-	const FocusMap& f = l.second;
-	std::cout << l.first << std::endl;
-
-	std::for_each(f.begin(), f.end(), printFocus);
-}
-
-void LensTable::print()
-{
-	std::for_each(gLensSamples.begin(), gLensSamples.end(), printZoom);
-}
-
 
