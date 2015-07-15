@@ -9,6 +9,7 @@
 #define GL_RG            0x8227
 #define GL_RG32F         0x8230
 
+
 template <typename T>
 T Lerp(T const& x, T const& x0, T const& x1, T const& y0, T const& y1)
 {
@@ -217,25 +218,51 @@ extern "C"
 		return true;
 	}
 
-	LENS_TABLE_API float LensTableZoom()
+	LENS_TABLE_API float LensTableZoomSample()
 	{
 		return sample.zoom;
 	}
 
-	LENS_TABLE_API float LensTableFocus()
+	LENS_TABLE_API float LensTableFocusSample()
 	{
 		return sample.focus;
 	}
 
-	LENS_TABLE_API float LensTableFov()
+	LENS_TABLE_API float LensTableFovSample()
 	{
 		return sample.fov;
 	}
 
-	LENS_TABLE_API float LensTableIris()
+	LENS_TABLE_API float LensTableIrisSample()
 	{
 		return sample.iris;
 	}
+
+	LENS_TABLE_API float LensTableFov(float zoom, float focus)
+	{
+		return tableLens.getFov(zoom, focus);
+	}
+
+	LENS_TABLE_API void LensTableUpdate(float zoom, float focus)
+	{
+		tableLens.computeSample(zoom, focus, sample);
+	}
+
+	LENS_TABLE_API void	LensTableProjection(void* floatArray16_GLProjectionMatrix)
+	{
+		float* pArrayFloat = (float*)floatArray16_GLProjectionMatrix;
+
+		// safeguard - pointer must be not null
+		if (!pArrayFloat)
+		{
+			logFile << "<Error> Trying to get projection parameters with a invalid float pointer" << std::endl;
+			return;
+		}
+
+		std::memcpy(pArrayFloat, sample.projection.data(), sizeof(float) * 16);
+	}
+
+
 
 
 	LENS_TABLE_API void	LensTableProjectionMatrix(float zoom, float focus, void* floatArray16_GLProjectionMatrix)

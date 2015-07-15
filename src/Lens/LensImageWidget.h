@@ -30,6 +30,7 @@ public slots:
 	void fovChannel(int checked);
 	//QVector4D getTexelColor(const QVector2D& coord);
 	QVector4D getTexelColor();
+	void reset(int w, int h);
 
 private:
 

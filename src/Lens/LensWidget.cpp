@@ -16,13 +16,10 @@ LensWidget::LensWidget(QWidget *parent) :
 	tableLens.zoomDeviation = (float)ui->zoomSpinBox->value();
 	tableLens.focusDeviation = (float)ui->focusSpinBox->value();
 
-	tableLens.createKeys(11, 11);
-	tableLens.createMatrix(11, 11);
-
 	connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(horizontalHeaderClicked(int)));
 	connect(ui->tableWidget->verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(verticalHeaderClicked(int)));
 
-	update();
+	reset(11, 11);
 }
 
 LensWidget::~LensWidget()
@@ -49,12 +46,11 @@ bool LensWidget::save(QString filename)
 }
 
 
-void LensWidget::reset()
+void LensWidget::reset(int rows, int columns)
 {
-	int rows = 5;
-	int columns = 5;
 	tableLens.createKeys(rows, columns);
 	tableLens.createMatrix(rows, columns);
+	update();
 	emit tableUpdated();
 }
 

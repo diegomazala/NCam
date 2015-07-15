@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "AboutDialog.h"
+#include "NewLensTableDialog.h"
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QDebug>
@@ -34,8 +35,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::fileNew()
 {
-	currentFileName.clear();
-	ui->lensWidget->reset();
+	newTableDialog = new NewLensTableDialog(this);
+	if (newTableDialog->exec() == QDialog::Accepted)
+	{
+		currentFileName.clear();
+		ui->lensWidget->reset(newTableDialog->zoomSamples(), newTableDialog->focusSamples());
+		ui->lensImage->reset(newTableDialog->zoomSamples(), newTableDialog->focusSamples());
+	}
 }
 
 
@@ -94,8 +100,6 @@ void MainWindow::onTableUpdate()
 
 void MainWindow::updateSample(double zoom, double focus, double iris, double fov)
 {
-	
-	std::cout << zoom << ", " << focus << " : " << fov << std::endl;
 	ui->lensImage->setTexelCoord(zoom, 1.0f - focus);
 
 	QVector4D texel = ui->lensImage->getTexelColor();

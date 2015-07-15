@@ -29,6 +29,15 @@ void LensImageWidget::setLensMatrix(const LensMatrix& lm)
 	update();
 }
 
+void LensImageWidget::reset(int w, int h)
+{
+	image = QImage(w, h, QImage::Format::Format_ARGB32);
+	texture.reset(new QOpenGLTexture(image.mirrored()));
+	texture->setMinificationFilter(QOpenGLTexture::Nearest);
+	texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+	texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToEdge);
+}
+
 void LensImageWidget::initializeGL()
 {
 	GLImageWidget::initializeGL();

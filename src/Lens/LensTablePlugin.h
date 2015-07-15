@@ -34,10 +34,15 @@ extern "C"
 	LENS_TABLE_API void			LensTableProjectionMatrix(float zoom, float focus, void* floatArray16_GLProjectionMatrix);
 	LENS_TABLE_API void			LensTableOpticalParameters(float zoom, float focus, void* floatArray13_GLProjectionMatrix);
 
-	LENS_TABLE_API float		LensTableZoom();
-	LENS_TABLE_API float		LensTableFocus();
-	LENS_TABLE_API float		LensTableFov();
-	LENS_TABLE_API float		LensTableIris();
+	LENS_TABLE_API float		LensTableZoomSample();
+	LENS_TABLE_API float		LensTableFocusSample();
+	LENS_TABLE_API float		LensTableFovSample();
+	LENS_TABLE_API float		LensTableIrisSample();
+
+	LENS_TABLE_API void			LensTableUpdate(float zoom, float focus);
+	LENS_TABLE_API float		LensTableFov(float zoom, float focus);
+	LENS_TABLE_API void			LensTableProjection(void* floatArray16_GLProjectionMatrix);
+
 
 	LENS_TABLE_API int			LensTableDistortionMapWidth();
 	LENS_TABLE_API int			LensTableDistortionMapHeight();

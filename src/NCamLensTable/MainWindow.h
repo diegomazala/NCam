@@ -6,7 +6,7 @@
 #include "QLens.h"
 
 class AboutDialog;
-class QStandardItemModel;
+class NewLensTableDialog;
 
 namespace Ui 
 {
@@ -37,6 +37,7 @@ private:
 	Ui::MainWindow *ui;
 	QString currentFileName;
 	AboutDialog* aboutDialog;
+	NewLensTableDialog* newTableDialog;
 };
 
 #endif // _MAIN_WINDOW_H_
