@@ -3,21 +3,24 @@ using System.Collections;
 
 public class NCamLensControlUI : MonoBehaviour 
 {
-    public LensControl lensControl = null;
+    public LensTable lensTable = null;
     public NCam ncam = null;
 
     public UnityEngine.UI.Text fovText;
 
     private Camera targetCam = null;
+    private NCamEncoder ncamEncoder = null;
+
+    private bool lensTableToggled = false;
 
     void Start()
     {
-        if (lensControl == null)
-            lensControl = FindObjectOfType<LensControl>();
+        if (lensTable == null)
+            lensTable = FindObjectOfType<LensTable>();
 
-        if (lensControl == null)
+        if (lensTable == null)
         {
-            Debug.LogError("Could not find LensControl object. NCamLensControlUI will be disabled.");
+            Debug.LogError("Could not find LensTable object. NCamLensControlUI will be disabled.");
             enabled = false;
             return;
         }
@@ -33,11 +36,13 @@ public class NCamLensControlUI : MonoBehaviour
         }
 
 
+        NCamLensEncoderUI ncamEncoderUI = FindObjectOfType<NCamLensEncoderUI>();
+        if (ncamEncoderUI != null)
+            ncamEncoder = ncamEncoderUI.ncamEncoder;
+
         targetCam = ncam.targetCamera[0];
 
-       
-        OnEncoderToggle(false);
-        OnNCamToggle(true);
+        OnLensTableToggle(false);
     }
 
 
@@ -51,20 +56,26 @@ public class NCamLensControlUI : MonoBehaviour
     }
 
 
-    public void OnEncoderToggle(bool toggle)
+    public void OnLensTableToggle(bool toggle)
     {
-        if (lensControl != null)
+        lensTableToggled = toggle;
+        if (lensTable != null)
         {
-            lensControl.lensEncoder.enabled = toggle;
-            lensControl.lensTable.enabled = toggle;
-            lensControl.lensTable.Distortion = toggle;
-            lensControl.enabled = toggle;
+            lensTable.Distortion = toggle;
         }
-
     }
 
     void Update()
     {
+        if (lensTableToggled && ncamEncoder != null)
+        {
+            float zoom = (float)ncamEncoder.GetValue(NCamEncoder.EParameter.ZoomNormalized);
+            float focus = (float)ncamEncoder.GetValue(NCamEncoder.EParameter.FocusNormalized);
+            lensTable.zoom = zoom;
+            lensTable.focus = focus;
+            lensTable.UpdateCameraLens(zoom, focus);
+        }
+
         UpdateUI();
     }
 

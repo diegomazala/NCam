@@ -103,20 +103,7 @@ extern "C"
 		return tableLens.focusKeys.size();
 	}
 
-
-	LENS_TABLE_API void LensTableKeys(void* floatArrayRowCount_Zoom, void* floatArrayColumnCount_Focus)
-	{
-		float* pArrayZoom = (float*)floatArrayRowCount_Zoom;
-		float* pArrayFocus = (float*)floatArrayColumnCount_Focus;
-
-		// safeguard - pointer must be not null
-		if (!pArrayZoom || !pArrayFocus)
-			return;
-
-		std::memcpy(pArrayZoom, tableLens.zoomKeys.data(), sizeof(float) * tableLens.zoomKeys.size());
-		std::memcpy(pArrayFocus, tableLens.focusKeys.data(), sizeof(float) * tableLens.focusKeys.size());
-	}
-
+	
 	LENS_TABLE_API float LensTableFovMin()
 	{
 		return tableLens.minFov;
@@ -128,125 +115,19 @@ extern "C"
 	}
 	
 
-		
-	LENS_TABLE_API bool	LensTableUpdateLensMap(unsigned int lens_tex_id)
-	{
-		if (!glIsTexture(lens_tex_id))
-		{
-			logFile << "<Error> Trying to update lens map with a invalid opengl texture id" << std::endl;
-			return false;
-		}
-		
-		GLenum lFormat = GL_RGBA;
-		GLenum lType = GL_FLOAT;
-		glBindTexture(GL_TEXTURE_2D, lens_tex_id);
-
-		LensMatrix matrix = tableLens.matrix;
-		int rows = matrix.size();
-		int columns = matrix[0].size();
-		tableLens.updateMinMaxFov();
-		tableLens.normalizeMatrix();
-
-		std::vector<float> texels;
-		for (int i = 0; i < rows; i++)
-		{
-			for (int j = 0; j < columns; j++)
-			{
-				const LensSample& ls = matrix[i][j];
-				texels.push_back(ls.zoom);	// red
-				texels.push_back(ls.focus);	// green
-				texels.push_back(ls.fov);	// blue
-				texels.push_back(ls.iris);	// alpha
-				
-			}
-		}
-
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-						tableLens.zoomKeys.size(), 
-						tableLens.focusKeys.size(), 
-						lFormat, lType, 
-						texels.data());
-		return true;
-	}
-	
-	
-	LENS_TABLE_API bool	LensTableUpdateDistortionMap(float zoom, float focus, unsigned int dist_tex_id)
-	{
-		float z_dist = 0;
-		float f_dist = 0;
-		const LensSample& s = tableLens.find(zoom, focus, z_dist, f_dist);
-
-		if (!glIsTexture(dist_tex_id))
-		{
-			logFile << "<Error> Trying to update distortion map with a invalid opengl texture id" << std::endl;
-			return false;
-		}
-
-		GLenum lFormat = GL_RG;
-		GLenum lType = GL_FLOAT;
-		glBindTexture(GL_TEXTURE_2D, dist_tex_id);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-						s.distortion.width, 
-						s.distortion.height, 
-						lFormat, lType, 
-						(const GLvoid*)s.distortion.data.data());
-
-		return true;
-	}
-
-	
-
-	LENS_TABLE_API bool	LensTableUpdateSample(float zoom, float focus, float iris, unsigned int lens_tex_id)
-	{
-		if (!glIsTexture(lens_tex_id))
-		{
-			logFile << "<Error> Trying to update lens sample with a invalid opengl texture id" << std::endl;
-			return false;
-		}
-
-		GLenum lFormat = GL_RGBA;
-		GLenum lType = GL_FLOAT;
-		glBindTexture(GL_TEXTURE_2D, lens_tex_id);
-		float texel[4];
-		glReadPixels(0, 0, 1, 1, GL_RGBA, GL_FLOAT, texel);
-
-		sample.zoom	= texel[0];
-		sample.focus= texel[1];
-		sample.fov	= texel[2];
-		sample.iris = texel[3];
-
-		return true;
-	}
-
-	LENS_TABLE_API float LensTableZoomSample()
-	{
-		return sample.zoom;
-	}
-
-	LENS_TABLE_API float LensTableFocusSample()
-	{
-		return sample.focus;
-	}
-
-	LENS_TABLE_API float LensTableFovSample()
-	{
-		return sample.fov;
-	}
-
-	LENS_TABLE_API float LensTableIrisSample()
-	{
-		return sample.iris;
-	}
-
-	LENS_TABLE_API float LensTableFov(float zoom, float focus)
-	{
-		return tableLens.getFov(zoom, focus);
-	}
 
 	LENS_TABLE_API void LensTableUpdate(float zoom, float focus)
 	{
 		tableLens.computeSample(zoom, focus, sample);
 	}
+
+	
+
+	LENS_TABLE_API float LensTableFov()
+	{
+		return sample.fov;
+	}
+
 
 	LENS_TABLE_API void	LensTableProjection(void* floatArray16_GLProjectionMatrix)
 	{
@@ -264,42 +145,28 @@ extern "C"
 
 
 
-
-	LENS_TABLE_API void	LensTableProjectionMatrix(float zoom, float focus, void* floatArray16_GLProjectionMatrix)
-	{
-		float z_dist = 0;
-		float f_dist = 0;
-		const LensSample& s = tableLens.find(zoom, focus, z_dist, f_dist);	// get nearest sample
-
-		float* pArrayFloat = (float*)floatArray16_GLProjectionMatrix;
-
-		// safeguard - pointer must be not null
-		if (!pArrayFloat)
-		{
-			logFile << "<Error> Trying to get projection parameters with a invalid float pointer" << std::endl;
-			return;
-		}
-
-		std::memcpy(pArrayFloat, s.projection.data(), sizeof(float) * 16);
-	}
-
-
-	LENS_TABLE_API void	LensTableOpticalParameters(float zoom, float focus, void* floatArray13_GLProjectionMatrix)
+	LENS_TABLE_API bool	LensTableUpdateDistortionMap(float zoom, float focus, unsigned int dist_tex_id)
 	{
 		float z_dist = 0;
 		float f_dist = 0;
 		const LensSample& s = tableLens.find(zoom, focus, z_dist, f_dist);
 
-		float* pArrayFloat = (float*)floatArray13_GLProjectionMatrix;		// get nearest sample
-
-		// safeguard - pointer must be not null
-		if (!pArrayFloat)
+		if (!glIsTexture(dist_tex_id))
 		{
-			logFile << "<Error> Trying to get optical parameters with a invalid float pointer" << std::endl;
-			return;
+			logFile << "<Error> Trying to update distortion map with a invalid opengl texture id" << std::endl;
+			return false;
 		}
 
-		std::memcpy(pArrayFloat, s.optical.data(), sizeof(float) * 13);
+		GLenum lFormat = GL_RG;
+		GLenum lType = GL_FLOAT;
+		glBindTexture(GL_TEXTURE_2D, dist_tex_id);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+			s.distortion.width,
+			s.distortion.height,
+			lFormat, lType,
+			(const GLvoid*)s.distortion.data.data());
+
+		return true;
 	}
 
 

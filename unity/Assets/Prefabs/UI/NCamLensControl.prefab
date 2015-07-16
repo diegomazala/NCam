@@ -13,7 +13,7 @@ GameObject:
   - 114: {fileID: 11429520}
   - 114: {fileID: 11456344}
   m_Layer: 5
-  m_Name: LensEncoderUIPanel
+  m_Name: NCamLensControlUIPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,7 +96,7 @@ GameObject:
   - 224: {fileID: 22494912}
   - 114: {fileID: 11412348}
   m_Layer: 5
-  m_Name: LensEncoderToggle
+  m_Name: LensTableToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,7 +130,7 @@ GameObject:
   - 222: {fileID: 22204056}
   - 114: {fileID: 11447832}
   m_Layer: 5
-  m_Name: LensEncoderLabel
+  m_Name: LensTableLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -359,7 +359,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11421654}
-        m_MethodName: OnEncoderToggle
+        m_MethodName: OnLensTableToggle
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0396f0a79af893a40a54fd06b46c1c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lensControl: {fileID: 0}
+  lensTable: {fileID: 0}
   ncam: {fileID: 0}
   fovText: {fileID: 11488084}
 --- !u!114 &11429520
@@ -493,7 +493,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Encoder
+  m_Text: 'Lens Table
 
 '
 --- !u!114 &11455632
@@ -816,8 +816,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -194, y: -286}
-  m_SizeDelta: {x: 166.100006, y: 103.580002}
+  m_AnchoredPosition: {x: -512, y: 68}
+  m_SizeDelta: {x: 178, y: 104}
   m_Pivot: {x: 0, y: 0}
 --- !u!224 &22412784
 RectTransform:
@@ -1028,7 +1028,7 @@ RectTransform:
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
   m_AnchoredPosition: {x: .100000001, y: -10}
-  m_SizeDelta: {x: 165.600006, y: 20}
+  m_SizeDelta: {x: 176.5, y: 20}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22494912
 RectTransform:

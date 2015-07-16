@@ -8,6 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 480106}
+  - 114: {fileID: 11462252}
   m_Layer: 0
   m_Name: NCamLensEncoderUIControl
   m_TagString: Untagged
@@ -263,7 +264,7 @@ GameObject:
   - 114: {fileID: 11441646}
   - 114: {fileID: 11402032}
   m_Layer: 5
-  m_Name: LensEncoderUIPanel
+  m_Name: NCamLensEncoderUIPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -730,6 +731,32 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &11462252
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 112140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ff161f1295c91642aa979f3f35a0a61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ncam: {fileID: 0}
+  ncamEncoder:
+    data:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  zoomNormalizedText: {fileID: 11446192}
+  zoomMappedText: {fileID: 11440202}
+  focusNormalizedText: {fileID: 11426936}
+  focusMappedText: {fileID: 11428798}
+  irisNormalizedText: {fileID: 11427696}
+  irisMappedText: {fileID: 11400286}
 --- !u!114 &11465380
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1109,7 +1136,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -512, y: -63.2099991}
-  m_SizeDelta: {x: 316, y: 126.599998}
+  m_SizeDelta: {x: 316, y: 126}
   m_Pivot: {x: 0, y: 0}
 --- !u!224 &22467852
 RectTransform:

@@ -52,7 +52,6 @@ public class LensTable : MonoBehaviour
         {
             if (SystemInfo.graphicsDeviceVersion.Contains("OpenGL"))
             {
-                StartCoroutine(UpdateLensMap());
                 StartCoroutine(UpdateDistortionMap());
             } 
         }
@@ -82,17 +81,13 @@ public class LensTable : MonoBehaviour
     void OnApplicationQuit()
     {
         StopCoroutine( UpdateDistortionMap() );
-        StopCoroutine( UpdateLensMap() );
     }
 
 
-    private IEnumerator UpdateLensMap()
+    private IEnumerator UpdateDistortionMap()
     {
         yield return new WaitForEndOfFrame();
-
-        // BUG: Why do I have to call twice?
-        lens.UpdateLensMap();
-        lens.UpdateLensMap();
+        yield return new WaitForEndOfFrame();
 
         for (int i = 0; i < targetCamera.Length; ++i)
         {
@@ -101,19 +96,8 @@ public class LensTable : MonoBehaviour
             if (lensDistortion[i] == null)
                 lensDistortion[i] = targetCamera[i].gameObject.AddComponent<LensDistortionUVMap>();
 
-            lensDistortion[i].lensMap = lens.Map;
             lensDistortion[i].distortionMap = lens.DistortionMap;
         }
-
-        
-        
-        yield return null;
-    }
-
-    private IEnumerator UpdateDistortionMap()
-    {
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
 
         while (enabled)
         {
@@ -123,7 +107,6 @@ public class LensTable : MonoBehaviour
             for (int i = 0; i < targetCamera.Length; ++i)
                 lens.UpdateDistortionMap(zoom, focus);
         }
-
         yield return null;
     }
 
@@ -131,30 +114,18 @@ public class LensTable : MonoBehaviour
 
     public void UpdateCameraLens(float _zoom, float _focus)
     {
-        lens.UpdateProjection(zoom, focus);
-        lens.UpdateOptical(zoom, focus);
+        lens.Update(_zoom, _focus);
+        lens.UpdateProjection();
 
         for (int i = 0; i < targetCamera.Length; ++i)
         {
             Camera cam = targetCamera[i];
-            LensDistortionUVMap distort = lensDistortion[i];
-
-            if (distort != null)
-            {
-                distort.Zoom = _zoom;
-                distort.Focus = _focus;
-
-                cam.ResetProjectionMatrix();
-
-                //// Projection Setup
-                fovMapped =
-                //cam.fieldOfView = lens.FieldOfView(distort.Fov);
-                cam.fieldOfView = ProjectionMatrix2Fovy(-lens.ProjectionMatrix.m11);
-
-                //// There is a number precision difference between ImageAspectRatio and the ration between m11 and m00
-                cam.aspect = Mathf.Abs(lens.ProjectionMatrix.m11 / lens.ProjectionMatrix.m00); // ncamData[i].AspectRatio; 
-                ApplyCcdShift(cam, -lens.ProjectionMatrix.m02, -lens.ProjectionMatrix.m12);
-            }
+            cam.ResetProjectionMatrix();                // the reset is done to allow gizmo update
+            fovMapped =
+            cam.fieldOfView = lens.Projection.Fovy;     // set fov (for gizmo update)
+            // There is a number precision difference between ImageAspectRatio and the ratio between m11 and m00
+            cam.aspect = lens.Projection.Aspect;        // set aspect  (for gizmo update)
+            cam.projectionMatrix = lens.Projection.Matrix;  // overwrite projection matrix
         }
     }
 
@@ -217,12 +188,7 @@ public class LensTable : MonoBehaviour
         }
         return true;
     }
-
-    static public float ProjectionMatrix2Fovy(float mat_11)
-    {
-        float m = Mathf.Pow(mat_11, -1);
-        return Mathf.Atan(m) * Mathf.Rad2Deg * 2.0f;
-    }
+    
 
     static public void ApplyCcdShift(Camera cam, float ccd_shift_x, float ccd_shift_y)
     {
