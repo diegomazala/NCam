@@ -49,10 +49,7 @@ public class NCamLensControlUI : MonoBehaviour
     public void OnNCamToggle(bool toggle)
     {
         if (ncam != null)
-        {
-            ncam.updateData = toggle;
             ncam.Distortion = toggle;
-        }
     }
 
 
@@ -65,7 +62,8 @@ public class NCamLensControlUI : MonoBehaviour
         }
     }
 
-    void Update()
+    // On late update, the camera values will be owerwritten by LensTable
+    void LateUpdate()
     {
         if (lensTableToggled && ncamEncoder != null)
         {
