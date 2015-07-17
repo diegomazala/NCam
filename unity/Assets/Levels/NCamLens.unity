@@ -627,7 +627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distortionMap: {fileID: 0}
-  distortionMapShader: {fileID: 0}
+  distortionMapShader: {fileID: 4800000, guid: dc500072fe270c14c9e26c2d8825deeb, type: 3}
 --- !u!21 &293303058
 Material:
   serializedVersion: 6
@@ -864,6 +864,10 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: 126
       objectReference: {fileID: 0}
+    - target: {fileID: 11462252, guid: c5d224b5d6a1ab248900abdfc7d1095b, type: 2}
+      propertyPath: ncam
+      value: 
+      objectReference: {fileID: 1339555566}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c5d224b5d6a1ab248900abdfc7d1095b, type: 2}
   m_IsPrefabParent: 0
@@ -1100,6 +1104,14 @@ Prefab:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnLensTableToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 11421654, guid: dd49c921f77997a43ba1c96b69230f0e, type: 2}
+      propertyPath: lensTable
+      value: 
+      objectReference: {fileID: 1339555567}
+    - target: {fileID: 11421654, guid: dd49c921f77997a43ba1c96b69230f0e, type: 2}
+      propertyPath: ncam
+      value: 
+      objectReference: {fileID: 1339555566}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: dd49c921f77997a43ba1c96b69230f0e, type: 2}
   m_IsPrefabParent: 0
@@ -1269,7 +1281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7633184ec96403848b5d98becf530a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: fujinon_11x11.lens
+  fileName: Fujinon_HA23x7.6BERD-S6_232423_21x21.lens
   targetCamera:
   - {fileID: 250861749}
   - {fileID: 1785835669}
@@ -1904,7 +1916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distortionMap: {fileID: 0}
-  distortionMapShader: {fileID: 0}
+  distortionMapShader: {fileID: 4800000, guid: dc500072fe270c14c9e26c2d8825deeb, type: 3}
 --- !u!1 &2041609721
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,6 +19,8 @@ LensTable::~LensTable()
 
 void LensTable::createKeys(int rows, int columns)
 {
+	zoomKeys.clear();
+	focusKeys.clear();
 	zoomKeys.resize(rows);
 	focusKeys.resize(columns);
 
@@ -41,9 +43,13 @@ void LensTable::createKeys(int rows, int columns)
 void LensTable::createMatrix(int rows, int columns)
 {
 	// reseting the lens matrix
+	matrix.clear();
 	matrix.resize(rows);
 	for (auto& l : matrix)
+	{
+		l.clear();
 		l.resize(columns, LensSample());
+	}
 }
 
 void LensTable::updateMinMaxFov()
@@ -103,13 +109,25 @@ void LensTable::find(float z, float f, float& z_distance, float& f_distance, int
 	fup = std::upper_bound(focusKeys.rbegin(), focusKeys.rend(), f); 
 
 	if (flow == focusKeys.rbegin())
+	{
+		if (flow == fup)
+			fup = focusKeys.rbegin() + 1;
 		flow = focusKeys.rbegin() + 1;
+	}
 
 	if (fup == focusKeys.rend())
 		fup = focusKeys.rend() - 1;
 
 	if (flow == fup)
 		++fup;
+
+	//if ((flow - 1) == focusKeys.rbegin())
+	//	std::cout << "((flow - 1) == focusKeys.rbegin())" << std::endl;
+	//if ((flow - 1) == focusKeys.rend())
+	//	std::cout << "flow - 1) == focusKeys.rend()" << std::endl;
+
+	//if ((fup - 1) == focusKeys.rbegin() || (fup - 1) == focusKeys.rend())
+	//	std::cout << "((flup - 1) == focusKeys.rbegin()) || (flup - 1) == focusKeys.rend()" << std::endl;
 
 	float z_dist[2] = { std::fabs(z - *zlow), std::fabs(z - *zup) };
 	float f_dist[2] = { std::fabs(f - *(flow-1)), std::fabs(f - *(fup-1)) };
@@ -262,7 +280,7 @@ void LensTable::roundSamples(int precision)
 	}
 }
 
-bool LensTable::load(std::string filename)
+bool LensTable::load(std::string filename, bool compute_fov_from_prj_matrix)
 {
 	std::ifstream in(filename, std::ios::in);
 
@@ -300,9 +318,12 @@ bool LensTable::load(std::string filename)
 			for (int j = 0; j < columns; ++j)
 				in >> matrix[i][j].distortion;
 
-		for (int i = 0; i < rows; ++i)
-			for (int j = 0; j < columns; ++j)
-				matrix[i][j].computeFovFromProjectionMatrix();
+		if (compute_fov_from_prj_matrix)
+		{
+			for (int i = 0; i < rows; ++i)
+				for (int j = 0; j < columns; ++j)
+					matrix[i][j].computeFovFromProjectionMatrix();
+		}
 
 		updateMinMaxFov();
 		roundSamples(3);

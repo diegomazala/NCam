@@ -120,12 +120,8 @@ public class LensTable : MonoBehaviour
         for (int i = 0; i < targetCamera.Length; ++i)
         {
             Camera cam = targetCamera[i];
-            cam.ResetProjectionMatrix();                // the reset is done to allow gizmo update
-            fovMapped =
-            cam.fieldOfView = lens.Projection.Fovy;     // set fov (for gizmo update)
-            // There is a number precision difference between ImageAspectRatio and the ratio between m11 and m00
-            cam.aspect = lens.Projection.Aspect;        // set aspect  (for gizmo update)
-            cam.projectionMatrix = lens.Projection.Matrix;  // overwrite projection matrix
+            lens.Projection.UpdateCamera(cam);
+            fovMapped = cam.fieldOfView;     // set fov (for gizmo update)
         }
     }
 
@@ -189,14 +185,4 @@ public class LensTable : MonoBehaviour
         return true;
     }
     
-
-    static public void ApplyCcdShift(Camera cam, float ccd_shift_x, float ccd_shift_y)
-    {
-        Matrix4x4 p = cam.projectionMatrix;
-
-        p[0, 2] = ccd_shift_x;
-        p[1, 2] = ccd_shift_y;
-
-        cam.projectionMatrix = p;
-    }
 }

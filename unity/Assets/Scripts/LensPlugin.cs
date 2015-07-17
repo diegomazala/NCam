@@ -155,6 +155,19 @@ public class LensProjection
         Handle.Free();
     }
 
+    public void UpdateCamera(Camera cam)
+    {
+        cam.ResetProjectionMatrix();    // the reset is done to allow gizmo update
+        cam.fieldOfView = Fovy;         // set fov (for gizmo update)
+        // There is a number precision difference between ImageAspectRatio and the ratio between m11 and m00
+        cam.aspect = Aspect;            // set aspect  (for gizmo update)
+
+        Matrix4x4 p = cam.projectionMatrix;
+        p[0, 2] = -data[8];             // set ccd shift on x
+        p[1, 2] = -data[9];             // set ccd shift on y
+        cam.projectionMatrix = p;
+    }
+
     public Matrix4x4 Matrix
     {
         get
@@ -194,6 +207,22 @@ public class LensProjection
         {
             return Mathf.Abs(data[5] / data[0]);
         }
+    }
+
+    public Vector2 ShiftCCD
+    {
+        get 
+        { 
+            return new Vector2(-data[8], -data[9]); 
+        }
+    }
+
+    public void ApplyCcdShift(Camera cam)
+    {
+        Matrix4x4 p = cam.projectionMatrix;
+        p[0, 2] = -data[8];             // set ccd shift on x
+        p[1, 2] = -data[9];             // set ccd shift on y
+        cam.projectionMatrix = p;
     }
 }
 

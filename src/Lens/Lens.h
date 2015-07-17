@@ -181,7 +181,7 @@ public:
 
 	void roundSamples(int precision);
 
-	bool load(std::string filename);
+	bool load(std::string filename, bool compute_fov_from_prj_matrix = true);
 	bool save(std::string filename) const;
 
 	static bool readFile(std::string filename, LensMatrix& l);
