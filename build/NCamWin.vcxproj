@@ -109,6 +109,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>LibNcamDataStreamingd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\$(ProjectName)$(TargetExt)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -127,6 +130,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>LibNcamDataStreamingd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86_64\$(ProjectName)$(TargetExt)
+copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -145,6 +152,9 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>LibNcamDataStreaming.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\  </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -163,6 +173,11 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>LibNcamDataStreaming.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86_64\
+copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,7 +6,7 @@ AppId=NCamDepends
 OutputBaseFilename=NCamDepends
 AppVerName=NCam Dependencies 2.0
 DefaultDirName=C:\Vgp\NCam
-DefaultGroupName=Vgp
+DefaultGroupName=Vgp\NCam
 ChangesEnvironment=true
 Compression=lzma2
 SolidCompression=yes
@@ -29,7 +29,7 @@ Source: {app}\bin\*; DestDir: {app}\backup\{code:GetBackupFolder}\bin; Check: Do
 Source: "..\depends\*"; DestDir: {app}\bin\; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe"
+Name: "{group}\Uninstall NCam"; Filename: "{app}\unins000.exe"
 
 
 [CODE]
