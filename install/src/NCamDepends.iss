@@ -5,7 +5,7 @@ AppName=NCam Dependencies
 AppId=NCamDepends
 OutputBaseFilename=NCamDepends
 AppVerName=NCam Dependencies 2.0
-DefaultDirName=C:\Vgp_tmp
+DefaultDirName=C:\Vgp\NCam
 DefaultGroupName=Vgp
 ChangesEnvironment=true
 Compression=lzma2
@@ -41,8 +41,6 @@ var
 
 
 function NextButtonClick(CurPageID: Integer): Boolean;
-var
-  ResultCode: Integer;
 begin
   if (CurPageID = wpReady) then
   begin
