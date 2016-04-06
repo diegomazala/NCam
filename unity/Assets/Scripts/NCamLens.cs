@@ -143,6 +143,9 @@ public class NCamLens : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
+        if (DistortMap != null)
+            NCamPlugin.NCamSetDistortMapPtr(DistortMap.GetNativeTexturePtr());
+
         while (true)
         {
             // Wait until all frame rendering is done
@@ -173,8 +176,7 @@ public class NCamLens : MonoBehaviour
                 }
             }
 
-            if (DistortMap != null)
-                NCamPlugin.NCamUpdateDistortMap(DistortMap.GetNativeTextureID());
+            GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), 0);
 
             yield return null;
         }

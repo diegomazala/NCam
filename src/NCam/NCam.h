@@ -12,8 +12,6 @@
 	#define NCAM_API __declspec(dllimport)
 #endif
 
-
-
 extern "C"
 {
 	
@@ -70,7 +68,8 @@ extern "C"
 
 	NCAM_API void			NCamPrintData();
 
-	NCAM_API bool			NCamUpdateDistortMap(unsigned int distort_tex_id);
+	NCAM_API void			NCamSetDistortMapPtr(void* distort_tex_ptr);
+	NCAM_API bool			NCamUpdateDistortMap();
 	NCAM_API int			NCamDistortMapWidth();
 	NCAM_API int			NCamDistortMapHeight();
 	NCAM_API int			NCamDistortMapChannelsCount();

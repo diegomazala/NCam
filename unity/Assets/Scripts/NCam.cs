@@ -247,11 +247,11 @@ public class NCam : MonoBehaviour
             // Wait until all frame rendering is done
             yield return new WaitForEndOfFrame();
 
-            if (!NCamPlugin.NCamIsOpen())
+            if (!updateData || !NCamPlugin.NCamIsOpen())
             {
                 yield return null;
             }
-
+            
             if (DistortMap[0] == null || DistortMap[1] == null)
             {
                 int w = NCamPlugin.NCamDistortMapWidth();
@@ -267,6 +267,9 @@ public class NCam : MonoBehaviour
                         DistortMap[i].name = "NCamDistortMap_" + i.ToString();
                         DistortMap[i].wrapMode = TextureWrapMode.Clamp;
                         DistortMap[i].Create();  // Call Create() so it's actually uploaded to the GPU
+
+                        NCamPlugin.NCamFieldIndex(i);
+                        NCamPlugin.NCamSetDistortMapPtr(DistortMap[i].GetNativeTexturePtr());
                     }
                 }
                 else
@@ -274,17 +277,13 @@ public class NCam : MonoBehaviour
                     yield return null;
                 }
             }
-
-
-            for (int i = 0; i < 2; ++i)
-            {
-                if (DistortMap[i] != null)
-                    NCamPlugin.NCamUpdateDistortMap(DistortMap[i].GetNativeTextureID());
-            }
-
-            yield return null;
+            
+            GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Update);
+            GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
         }
     }
+
+
 
     void Update()
     {
