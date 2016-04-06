@@ -3,6 +3,13 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using System.Xml;
 
+public enum NCamRenderEvent
+{
+    Initialize,
+    Update,
+    UpdateDistortion,
+    Uninitialize
+};
 
 
 
@@ -85,11 +92,15 @@ public class NCamPlugin
     public static extern void NCamGLModelViewMatrix(System.IntPtr doubleArray16);
 
     [DllImport(DllName)]
-    public static extern bool NCamUpdateDistortMap(int texId);
+    public static extern bool NCamSetDistortMapPtr(System.IntPtr texPtr);
+    [DllImport(DllName)]
+    public static extern bool NCamUpdateDistortMap();
     [DllImport(DllName)]
     public static extern int NCamDistortMapWidth();
     [DllImport(DllName)]
     public static extern int NCamDistortMapHeight();
+    [DllImport(DllName)]
+    public static extern System.IntPtr GetNCamRenderEventFunc();
 
     public static ErrorCodeEnum ErrorCode()
     {

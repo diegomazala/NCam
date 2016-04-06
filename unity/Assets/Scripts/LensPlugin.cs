@@ -26,7 +26,7 @@ public class LensPlugin
     [DllImport("LensTable")]
     private static extern void LensTableProjection(System.IntPtr floatArray16_GLProjectionMatrix);
     [DllImport("LensTable")]
-    private static extern bool LensTableUpdateDistortionMap(float zoom, float focus, int dist_tex_id);
+    private static extern bool LensTableUpdateDistortionMap(float zoom, float focus, System.IntPtr dist_tex_ptr);
     [DllImport("LensTable")]
     private static extern int LensTableDistortionMapWidth();
     [DllImport("LensTable")]
@@ -102,7 +102,7 @@ public class LensPlugin
 
     public void UpdateDistortionMap(float zoom, float focus)
     {
-        LensTableUpdateDistortionMap(zoom, focus, distortionMap.GetNativeTextureID());
+        LensTableUpdateDistortionMap(zoom, focus, distortionMap.GetNativeTexturePtr());
     }
 
     public void UpdateProjection()
