@@ -7,10 +7,12 @@ using System.Xml;
 public class LensTable : MonoBehaviour
 {
     public string fileName = "emulator.lens";
+    public bool computeFovFromMatrix = true;
     public Camera[] targetCamera = { null, null };
     private LensDistortionUVMap[] lensDistortion = { null, null };
 
-    private LensPlugin lens = new LensPlugin();
+    public LensPlugin lens = new LensPlugin();
+
 
     public float zoom = 0;
     public float focus = 0;
@@ -48,7 +50,7 @@ public class LensTable : MonoBehaviour
 
         string filePath = xmlConfigFolder + fileName;
 
-        if (lens.ReadFile(filePath))
+        if (lens.ReadFile(filePath, computeFovFromMatrix))
         {
             if (SystemInfo.graphicsDeviceVersion.Contains("OpenGL"))
             {
@@ -121,14 +123,16 @@ public class LensTable : MonoBehaviour
         {
             Camera cam = targetCamera[i];
             lens.Projection.UpdateCamera(cam);
+            if (!computeFovFromMatrix)
+                cam.fieldOfView = lens.FieldOfView();
             fovMapped = cam.fieldOfView;     // set fov (for gizmo update)
         }
     }
 
-    //void Update()
-    //{
-    //    UpdateCameraLens(zoom, focus);
-    //}
+    void Update()
+    {
+        UpdateCameraLens(zoom, focus);
+    }
         
 
     public bool ReadXml(string file_path)

@@ -10,7 +10,7 @@ public class LensPlugin
     [DllImport("LensTable")]
     private static extern void LensTableDestroy();
     [DllImport("LensTable")]
-    private static extern bool LensTableReadFile(string filepath);
+    private static extern bool LensTableReadFile(string filepath, bool compute_fov_from_matrix = true);
     [DllImport("LensTable")]
     private static extern int LensTableRowCount();
     [DllImport("LensTable")]
@@ -66,9 +66,9 @@ public class LensPlugin
     }
 
 
-    public bool ReadFile(string filepath)
+    public bool ReadFile(string filepath, bool compute_fov_from_matrix = true)
     {
-        if (LensTableReadFile(filepath))
+        if (LensTableReadFile(filepath, compute_fov_from_matrix))
         {
             fovMin = LensTableFovMin();
             fovMax = LensTableFovMax();

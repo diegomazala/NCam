@@ -79,11 +79,11 @@ extern "C"
 		logFile.close();
 	}
 
-	LENS_TABLE_API bool	LensTableReadFile(const char* filename)
+	LENS_TABLE_API bool	LensTableReadFile(const char* filename, bool compute_fov_from_matrix)
 	{
-		if (tableLens.load(filename))
+		if (tableLens.load(filename, compute_fov_from_matrix))
 		{
-			logFile << "<Info> Lens file '" << filename << "' read successfuly" << std::endl;
+			logFile << "<Info> Lens file '" << filename << "' read successfully" << std::endl;
 			return true;
 		}
 		else

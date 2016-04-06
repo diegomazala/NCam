@@ -16,7 +16,7 @@ extern "C"
 	LENS_TABLE_API void			LensTableCrete();
 	LENS_TABLE_API void			LensTableDestroy();
 
-	LENS_TABLE_API bool			LensTableReadFile(const char* filename);
+	LENS_TABLE_API bool			LensTableReadFile(const char* filename, bool compute_fov_from_matrix = true);
 
 	LENS_TABLE_API int			LensTableRowCount();
 	LENS_TABLE_API int			LensTableColumnCount();
