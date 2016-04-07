@@ -280,30 +280,16 @@ public class NCam : MonoBehaviour
             
             GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Update);
             GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
+
+            if (updateData && NCamPlugin.NCamIsOpen())
+                UpdateCameras();
         }
     }
 
 
 
-    void Update()
+    void UpdateCameras()
     {
-        if (Input.GetKeyDown(KeyCode.F3) && Input.GetKey(KeyCode.LeftControl))
-            showGUI = !showGUI;
-
-
-        if (!NCamPlugin.NCamIsOpen() && !reconnecting && autoConnection)
-        {
-            StartCoroutine(OpenNCam());
-        }
-
-        if (!updateData || !NCamPlugin.NCamIsOpen())
-            return;
-
-        if (!NCamPlugin.NCamUpdate())
-        {
-            return;
-        }
-
         lastOpticalTimeCode = ncamData[1].OpticalTimeCode.Time;
 
         for (int i = 0; i < 2; ++i)
@@ -366,6 +352,20 @@ public class NCam : MonoBehaviour
         }
 
     }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3) && Input.GetKey(KeyCode.LeftControl))
+            showGUI = !showGUI;
+
+
+        if (!NCamPlugin.NCamIsOpen() && !reconnecting && autoConnection)
+        {
+            StartCoroutine(OpenNCam());
+        }
+
+    }
+
 
 
     void OnGUI()

@@ -62,6 +62,9 @@
     <ClInclude Include="..\src\UnityPlugin\UnityPlugin.h">
       <Filter>UnityPlugin</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\NCam\NCamUnity.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\NCam\NCam.cpp">
@@ -80,6 +83,9 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\src\UnityPlugin\UnityPlugin.cpp">
+      <Filter>UnityPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\NCam\NCamUnity.cpp">
       <Filter>UnityPlugin</Filter>
     </ClCompile>
   </ItemGroup>

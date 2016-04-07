@@ -351,7 +351,6 @@ GameObject:
   - 124: {fileID: 250861748}
   - 92: {fileID: 250861747}
   - 114: {fileID: 250861745}
-  - 114: {fileID: 250861750}
   m_Layer: 0
   m_Name: Camera.Sensor.Field.0
   m_TagString: Untagged
@@ -436,64 +435,6 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
---- !u!114 &250861750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 250861743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a89e89629c29e9d4fad9687484ebcdda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mat: {fileID: 1633785060}
-  cellSize: {x: 50, y: 50}
-  resolution: {x: 50, y: 50}
-  gridPosition: {x: 0, y: 0, z: 0}
-  showGrid: 1
-  doubleLines: 0
-  verticalGrid: 1
---- !u!21 &293303058
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: VertexLit
-  m_Shader: {fileID: 6, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats:
-      data:
-        first:
-          name: _Shininess
-        second: 0.7
-    m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 0, b: 0, a: 1}
-      data:
-        first:
-          name: _SpecColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _Emission
-        second: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &312428111
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,46 +1029,6 @@ Light:
   m_ShadowRadius: 0
   m_ShadowAngle: 0
   m_AreaSize: {x: 1, y: 1}
---- !u!21 &1633785060
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: VertexLit
-  m_Shader: {fileID: 6, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats:
-      data:
-        first:
-          name: _Shininess
-        second: 0.7
-    m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 0, b: 0, a: 1}
-      data:
-        first:
-          name: _SpecColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _Emission
-        second: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1785835667
 GameObject:
   m_ObjectHideFlags: 0
@@ -1140,7 +1041,6 @@ GameObject:
   - 124: {fileID: 1785835673}
   - 92: {fileID: 1785835672}
   - 114: {fileID: 1785835671}
-  - 114: {fileID: 1785835674}
   m_Layer: 0
   m_Name: Camera.Sensor.Field.1
   m_TagString: Untagged
@@ -1225,24 +1125,6 @@ Behaviour:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1785835667}
   m_Enabled: 0
---- !u!114 &1785835674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1785835667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a89e89629c29e9d4fad9687484ebcdda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mat: {fileID: 293303058}
-  cellSize: {x: 50, y: 50}
-  resolution: {x: 50, y: 50}
-  gridPosition: {x: 0, y: 0, z: 0}
-  showGrid: 1
-  doubleLines: 0
-  verticalGrid: 1
 --- !u!1 &2041609721
 GameObject:
   m_ObjectHideFlags: 0
