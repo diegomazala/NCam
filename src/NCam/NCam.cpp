@@ -464,37 +464,6 @@ extern "C"
 	}
 
 
-	static void FillTextureFromCode(int width, int height, int stride, unsigned char* dst)
-	{
-		const float t = 4.0f;
-
-		for (int y = 0; y < height; ++y)
-		{
-			unsigned char* ptr = dst;
-			for (int x = 0; x < width; ++x)
-			{
-				// Simple oldskool "plasma effect", a bunch of combined sine waves
-				int vv = int(
-					(127.0f + (127.0f * sinf(x / 7.0f + t))) +
-					(127.0f + (127.0f * sinf(y / 5.0f - t))) +
-					(127.0f + (127.0f * sinf((x + y) / 6.0f - t))) +
-					(127.0f + (127.0f * sinf(sqrtf(float(x*x + y*y)) / 4.0f - t)))
-					) / 4;
-
-				// Write the texture pixel
-				ptr[0] = vv;
-				ptr[1] = vv;
-
-				// To next pixel (our pixels are 4 bpp)
-				ptr += 2;
-			}
-
-			// To next image row
-			dst += stride;
-		}
-	}
-
-
 	NCAM_API bool NCamUpdateDistortMap()
 	{
 		GLuint distort_tex_id = distortMapId[FieldIndex];
@@ -502,7 +471,6 @@ extern "C"
 		GLenum lFormat = 0;
 		GLenum lType = 0;
 
-#if 0
 		if (distort_tex_id == 0)
 		{
 			glGenTextures(1, &distort_tex_id);
@@ -534,12 +502,7 @@ extern "C"
 			return false;
 		}
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, gpNCamClient->DistortMap(FieldIndex).GetWidth(), gpNCamClient->DistortMap(FieldIndex).GetHeight(), lFormat, lType, (const GLvoid*)gpNCamClient->DistortMap(FieldIndex).GetImagePtr());
-#endif
-
-		unsigned char* data = new unsigned char[gpNCamClient->DistortMap(FieldIndex).GetWidth() * gpNCamClient->DistortMap(FieldIndex).GetHeight() * 2];
-		FillTextureFromCode(gpNCamClient->DistortMap(FieldIndex).GetWidth(), gpNCamClient->DistortMap(FieldIndex).GetHeight(), gpNCamClient->DistortMap(FieldIndex).GetHeight() * 2, data);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, gpNCamClient->DistortMap(FieldIndex).GetWidth(), gpNCamClient->DistortMap(FieldIndex).GetHeight(), lFormat, lType, (const GLvoid*)gpNCamClient->DistortMap(FieldIndex).GetImagePtr());
-
+		
 		return true;
 	}
 
