@@ -33,6 +33,9 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="UnityPlugin">
+      <UniqueIdentifier>{24f05507-baa0-44b0-a21c-add7eb8386a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\NCam\ClockTime.h">
@@ -50,6 +53,15 @@
     <ClInclude Include="..\src\NCam\NCamQtGlobal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\IUnityGraphics.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\IUnityInterface.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\UnityPlugin.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\NCam\NCam.cpp">
@@ -66,6 +78,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_NCamQtClient.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UnityPlugin\UnityPlugin.cpp">
+      <Filter>UnityPlugin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

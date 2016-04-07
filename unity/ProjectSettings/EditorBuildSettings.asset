@@ -6,4 +6,4 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Levels/LensEncoder.unity
+    path: Assets/Scenes/LensEncoder.unity
