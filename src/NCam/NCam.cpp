@@ -29,11 +29,10 @@ unsigned int	FieldIndex = 0;
 NCamClient*		gpNCamClient = nullptr;
 GLuint			distortMapId[2] = {0, 0};
 
-
 extern "C"
 {	
 
-	static char IpAddress[32];
+	static std::string IpAddress;
 	static unsigned int Port = 38860;
 
 	std::ofstream ncamLogFile; 
@@ -100,9 +99,15 @@ extern "C"
 		ncamLogFile << "NCam Packet Type: " << lPacketType << std::endl;
 	}
 	
+	NCAM_API void NCamSetIpAddress(const char* ip_address, unsigned int ip_port)
+	{
+		IpAddress = ip_address;
+		Port = ip_port;
+	}
 
-
-	NCAM_API bool NCamOpen(const char* ip_address, unsigned int ip_port)
+	
+	//NCAM_API bool NCamOpen(const char* ip_address, unsigned int ip_port)
+	NCAM_API bool NCamOpen()
 	{
 		if (ncamLogFile.is_open())
 			ncamLogFile.close();
@@ -112,7 +117,7 @@ extern "C"
 
 		if (!gpNCamClient->AskForPackets(gpNCamClient->GetPacketType()))
 		{
-			ncamLogFile << "AskForPackets Failed : Unable to get the capabilities : " << ip_address << " " << ip_port << std::endl;
+			ncamLogFile << "AskForPackets Failed : Unable to get the capabilities : " << IpAddress << " " << Port << std::endl;
 			return false;
 		}
 		else
@@ -120,9 +125,9 @@ extern "C"
 			ncamLogFile << "AskForPacket Successfully: " << gpNCamClient->GetPacketType() << std::endl;
 		}
 
-		ncamLogFile << "NCamOpen " << ip_address << " " << ip_port << std::endl;
+		ncamLogFile << "NCamOpen " << IpAddress << " " << Port << std::endl;
 
-		gpNCamClient->Connect(ip_address, ip_port);
+		gpNCamClient->Connect(IpAddress, Port);
 		
 		gpNCamClient->TrackingPacket(0).mTimeCode = gpNCamClient->TrackingPacket(1).mTimeCode = 0;
 

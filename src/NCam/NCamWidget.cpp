@@ -50,8 +50,8 @@ bool NCamWidget::isConnected() const
 void NCamWidget::onConnect()
 {
 	NCamSetPacketType(true, true, true);
-
-	if (!NCamOpen(ui->ipLineEdit->text().toStdString().c_str(), ui->portLineEdit->text().toInt()))
+	NCamSetIpAddress(ui->ipLineEdit->text().toStdString().c_str(), ui->portLineEdit->text().toInt());
+	if (!NCamOpen())
 	{
 		qDebug() << "<ERROR> Could not connect";
 	}

@@ -110,9 +110,8 @@ public class NCamLens : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
 
-        bool success = false;
-
-        success = NCamPlugin.NCamOpen(ipAddress, port);
+        NCamPlugin.NCamSetIpAddress(ipAddress, port);
+        bool success = NCamPlugin.NCamOpen();
 
         if (success)
         {

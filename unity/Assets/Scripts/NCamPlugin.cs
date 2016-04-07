@@ -32,7 +32,9 @@ public class NCamPlugin
     public static extern void NCamDestroy();
 
     [DllImport(DllName)]
-    public static extern bool NCamOpen(string ip_address, int port);
+    public static extern void NCamSetIpAddress(string ip_address, int port);
+    [DllImport(DllName)]
+    public static extern bool NCamOpen();
     [DllImport(DllName)]
     public static extern bool NCamIsOpen();
     [DllImport(DllName)]
@@ -165,7 +167,7 @@ public class NCamTimeCode
 
 	public NCamTimeCode()
 	{
-		data = new uint[6];
+        data = new uint[6] { 0, 0, 0, 0, 0, 0 };
 		Handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 	}
 
@@ -322,6 +324,7 @@ public class NCamTracking
         get { return this.data; }
         set { this.data = value; }
     }
+       
 }
 
 [System.Serializable]

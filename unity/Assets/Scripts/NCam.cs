@@ -12,7 +12,6 @@ public class NCam : MonoBehaviour
     public int port = 38860; //3003;
 
     public bool useGLMatrix = false;
-    public bool updateData = true;
     public float scale = 100.0f;
     public int frameDelay = 0;
 
@@ -175,13 +174,13 @@ public class NCam : MonoBehaviour
         }
 #endif
 
-        StartCoroutine(OpenNCam());
+        StartCoroutine(StartNCam());
     }
 
 
     void OnDisable()
     {
-        CloseNCam();
+        StopNCam();
 
 #if !UNITY_EDITOR
         WriteXml(xmlConfigFolder + @"NCam.xml");
@@ -191,7 +190,32 @@ public class NCam : MonoBehaviour
     }
 
 
-    private IEnumerator OpenNCam()
+    private IEnumerator CreateDistortMaps()
+    {
+        int w = NCamPlugin.NCamDistortMapWidth();
+        int h = NCamPlugin.NCamDistortMapHeight();
+
+        DistortMapSize = new Vector2(w, h);
+
+        if (w > 1 && h > 1) // otherwise the reading has not been initialized yet
+        {
+            for (int i = 0; i < 2; ++i)
+            {
+                DistortMap[i] = new RenderTexture(w, h, 8, RenderTextureFormat.RGFloat);
+                DistortMap[i].name = "NCamDistortMap_" + i.ToString();
+                DistortMap[i].wrapMode = TextureWrapMode.Clamp;
+                DistortMap[i].Create();  // Call Create() so it's actually uploaded to the GPU
+
+                NCamPlugin.NCamFieldIndex(i);
+                NCamPlugin.NCamSetDistortMapPtr(DistortMap[i].GetNativeTexturePtr());
+            }
+        }
+
+        yield return new WaitForEndOfFrame();
+    }
+
+
+    private IEnumerator StartNCam()
     {
         if (reconnecting)
         {
@@ -199,97 +223,58 @@ public class NCam : MonoBehaviour
         }
 
         reconnecting = true;
-        CloseNCam();
+        StopNCam();
 
         NCamPlugin.NCamResetError();
         NCamPlugin.NCamSetPacketType(true, true, true);
 
         yield return new WaitForEndOfFrame();
 
-        //this.transform.localPosition = Vector3.zero;
-        //this.transform.localRotation = Quaternion.identity;
+        NCamPlugin.NCamSetIpAddress(ipAddress, port);
+        GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Initialize);
 
-        bool success = false;
-
-        success = NCamPlugin.NCamOpen(ipAddress, port);
-
-        if (success)
-        {
-            if (SystemInfo.graphicsDeviceVersion.Contains("OpenGL"))
-                StartCoroutine("NCamUpdateAtEndOfFrames");
-        }
-        else
-        {
-            Debug.LogError("Could not open NCam");
-        }
-
-        yield return new WaitForSeconds(1.0f);
-        reconnecting = false;
-        yield return null;
-    }
-
-
-
-    void CloseNCam()
-    {
-        StopCoroutine("NCamUpdateAtEndOfFrames");
-
-        NCamPlugin.NCamClose();
-    }
-
-
-    private IEnumerator NCamUpdateAtEndOfFrames()
-    {
         yield return new WaitForEndOfFrame();
+        reconnecting = false;
 
         while (true)
         {
             // Wait until all frame rendering is done
             yield return new WaitForEndOfFrame();
 
-            if (!updateData || !NCamPlugin.NCamIsOpen())
+            if (!NCamPlugin.NCamIsOpen())
             {
                 yield return null;
             }
-            
+
             if (DistortMap[0] == null || DistortMap[1] == null)
             {
-                int w = NCamPlugin.NCamDistortMapWidth();
-                int h = NCamPlugin.NCamDistortMapHeight();
-
-                DistortMapSize = new Vector2(w, h);
-
-                if (w > 1 && h > 1) // otherwise the reading has not been initialized yet
-                {
-                    for (int i = 0; i < 2; ++i)
-                    {
-                        DistortMap[i] = new RenderTexture(w, h, 8, RenderTextureFormat.RGFloat);
-                        DistortMap[i].name = "NCamDistortMap_" + i.ToString();
-                        DistortMap[i].wrapMode = TextureWrapMode.Clamp;
-                        DistortMap[i].Create();  // Call Create() so it's actually uploaded to the GPU
-
-                        NCamPlugin.NCamFieldIndex(i);
-                        NCamPlugin.NCamSetDistortMapPtr(DistortMap[i].GetNativeTexturePtr());
-                    }
-                }
-                else
-                {
-                    yield return null;
-                }
+                yield return CreateDistortMaps();
             }
-            
+
             GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Update);
             GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
 
-            if (updateData && NCamPlugin.NCamIsOpen())
-                UpdateCameras();
+            UpdateCameras();
         }
     }
 
 
 
+    void StopNCam()
+    {
+        StopCoroutine(StartNCam());
+        NCamPlugin.NCamClose();
+    }
+
+
+
+
     void UpdateCameras()
     {
+        // Check if we got a valid packet
+        if (NCamPlugin.NCamOpticalTimeCode(Optical.Handle.AddrOfPinnedObject()) < 1)
+            return;
+
         lastOpticalTimeCode = ncamData[1].OpticalTimeCode.Time;
 
         for (int i = 0; i < 2; ++i)
@@ -323,10 +308,12 @@ public class NCam : MonoBehaviour
                 targetCamera[i].ResetProjectionMatrix();
                 targetCamera[i].ResetWorldToCameraMatrix();
 
+
                 // Projection Setup
                 targetCamera[i].fieldOfView = ProjectionMatrix2Fovy(-ncamData[i].GLProjection.m11);
                 // There is a number precision difference between ImageAspectRatio and the ration between m11 and m00
                 targetCamera[i].aspect = Mathf.Abs(ncamData[i].GLProjection.m11 / ncamData[i].GLProjection.m00); // ncamData[i].AspectRatio; 
+
                 ApplyCcdShift(targetCamera[i], -ncamData[i].GLProjection.m02, -ncamData[i].GLProjection.m12);
 
                 // ModelView Setup
@@ -335,6 +322,7 @@ public class NCam : MonoBehaviour
                 eulerAngles = QuaternionFromMatrix(mdv).eulerAngles;
                 targetCamera[i].transform.localPosition = new Vector3(position.x * scale, position.y * scale, -position.z * scale);
                 targetCamera[i].transform.localRotation = Quaternion.Euler(eulerAngles.x, 180.0f - eulerAngles.y, 180.0f - eulerAngles.z);
+
             }
         }
         else
@@ -361,7 +349,7 @@ public class NCam : MonoBehaviour
 
         if (!NCamPlugin.NCamIsOpen() && !reconnecting && autoConnection)
         {
-            StartCoroutine(OpenNCam());
+            StartCoroutine(StartNCam());
         }
 
     }
@@ -426,12 +414,12 @@ public class NCam : MonoBehaviour
 
             if (GUILayout.Button("Open"))
             {
-                StartCoroutine(OpenNCam());
+                StartCoroutine(StartNCam());
             }
 
             if (GUILayout.Button("Close"))
             {
-                CloseNCam();
+                StopNCam();
             }
 
             GUI.enabled = true;
@@ -444,7 +432,6 @@ public class NCam : MonoBehaviour
         GUILayout.BeginHorizontal("box");
         {
             useGLMatrix = GUILayout.Toggle(useGLMatrix, "Use OpenGL Matrix");
-            updateData = GUILayout.Toggle(updateData, "Update Data");
 
             bool dist = Distortion;
             dist = GUILayout.Toggle(dist, "Distortion");

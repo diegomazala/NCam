@@ -26,7 +26,9 @@ extern "C"
 
 	NCAM_API void			NCamSetPacketType(bool cameraTracking, bool opticalParamters, bool distortMap);
 	
-	NCAM_API bool			NCamOpen(const char* ip_address, unsigned int ip_port);
+	NCAM_API void			NCamSetIpAddress(const char* ip_address, unsigned int ip_port);
+
+	NCAM_API bool			NCamOpen();
 	NCAM_API bool			NCamIsOpen();
 	NCAM_API void			NCamClose();
 	NCAM_API bool			NCamUpdate();
@@ -76,7 +78,6 @@ extern "C"
 	NCAM_API float*			NCamDistortMapDataPtr();
 
 	NCAM_API void			NCamLensSample(double& zoom, double& focus, double& iris, double& fov, void* distortionMapFloatArray);
-
 }; // extern "C"
 
 

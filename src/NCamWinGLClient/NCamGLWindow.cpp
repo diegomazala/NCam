@@ -26,7 +26,8 @@ bool NCamGLWindow::OpenNCam()
 
 	std::cout << IpAddress << ":" << Port << std::endl;
 	NCamSetPacketType(true, true, true);
-	return NCamOpen(IpAddress.c_str(), Port);
+	NCamSetIpAddress(IpAddress.c_str(), Port);
+	return NCamOpen();
 }
 
 void NCamGLWindow::CloseNCam()

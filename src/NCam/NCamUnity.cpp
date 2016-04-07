@@ -15,7 +15,7 @@ extern "C"
 				NCamClose();
 				NCamResetError();
 				NCamSetPacketType(true, true, true);
-				//NCamOpen();
+				NCamOpen();
 				break;
 			}
 			case NCamRenderEvent::Update:
