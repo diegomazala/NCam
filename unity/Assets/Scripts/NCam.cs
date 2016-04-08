@@ -30,7 +30,7 @@ public class NCam : MonoBehaviour
     public NCamMatrix[] ncamModelview = { null, null };
 
     [HideInInspector]
-    public RenderTexture[] DistortMap = { null, null };
+    public RenderTexture DistortMap = null;
     [HideInInspector]
     public Vector2 DistortMapSize;
 
@@ -49,6 +49,10 @@ public class NCam : MonoBehaviour
     private bool showParentTransform = false;
     #endregion
 
+    public RenderTexture DistortionMap
+    {
+        get { return DistortMap; }
+    }
 
     static public string xmlConfigFolder
     {
@@ -119,7 +123,6 @@ public class NCam : MonoBehaviour
         ncamProjection = new NCamMatrix[2];
         ncamModelview = new NCamMatrix[2];
         ncamData = new NCamData[2];
-        DistortMap = new RenderTexture[2];
         DistortMapSize = Vector2.one;
 
         for (int i = 0; i < 2; ++i)
@@ -190,7 +193,7 @@ public class NCam : MonoBehaviour
     }
 
 
-    private IEnumerator CreateDistortMaps()
+    private IEnumerator CreateDistortMap()
     {
         int w = NCamPlugin.NCamDistortMapWidth();
         int h = NCamPlugin.NCamDistortMapHeight();
@@ -199,16 +202,13 @@ public class NCam : MonoBehaviour
 
         if (w > 1 && h > 1) // otherwise the reading has not been initialized yet
         {
-            for (int i = 0; i < 2; ++i)
-            {
-                DistortMap[i] = new RenderTexture(w, h, 8, RenderTextureFormat.RGFloat);
-                DistortMap[i].name = "NCamDistortMap_" + i.ToString();
-                DistortMap[i].wrapMode = TextureWrapMode.Clamp;
-                DistortMap[i].Create();  // Call Create() so it's actually uploaded to the GPU
+            DistortMap = new RenderTexture(w, h, 8, RenderTextureFormat.RGFloat);
+            DistortMap.name = "NCamDistortMap";
+            DistortMap.anisoLevel = 0;
+            DistortMap.wrapMode = TextureWrapMode.Clamp;
+            DistortMap.Create();  // Call Create() so it's actually uploaded to the GPU
 
-                NCamPlugin.NCamFieldIndex(i);
-                NCamPlugin.NCamSetDistortMapPtr(DistortMap[i].GetNativeTexturePtr());
-            }
+            NCamPlugin.NCamSetDistortMapPtr(DistortMap.GetNativeTexturePtr());
         }
 
         yield return new WaitForEndOfFrame();
@@ -242,14 +242,10 @@ public class NCam : MonoBehaviour
             yield return new WaitForEndOfFrame();
 
             if (!NCamPlugin.NCamIsOpen())
-            {
                 yield return null;
-            }
 
-            if (DistortMap[0] == null || DistortMap[1] == null)
-            {
-                yield return CreateDistortMaps();
-            }
+            if (DistortMap == null)
+                yield return CreateDistortMap();
 
             GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Update);
 
@@ -259,7 +255,6 @@ public class NCam : MonoBehaviour
                 UpdateCameras();
                 GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
             }
-
         }
     }
 

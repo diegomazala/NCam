@@ -5,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class NCamDistortion : ImageEffectBase
 {
-    public int FieldIndex = 0;
     [HideInInspector]
     public NCam ncam = null;
     
@@ -32,7 +31,7 @@ public class NCamDistortion : ImageEffectBase
 	{
         if (ncam != null)
         {
-            material.SetTexture("DistortTex", ncam.DistortMap[FieldIndex]);
+            material.SetTexture("DistortTex", ncam.DistortionMap);
             material.SetFloat("DistortUScale", (ncam.DistortMapSize.x - 1.0f) / ncam.DistortMapSize.x);
             material.SetFloat("DistortUOffset", 0.5f / ncam.DistortMapSize.x);
             material.SetFloat("DistortVScale", (ncam.DistortMapSize.y - 1.0f) / ncam.DistortMapSize.y);

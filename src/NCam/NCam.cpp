@@ -27,7 +27,7 @@
 
 unsigned int	FieldIndex = 0;
 NCamClient*		gpNCamClient = nullptr;
-GLuint			distortMapId[2] = {0, 0};
+GLuint			distortMapId = 0;
 
 extern "C"
 {	
@@ -460,13 +460,13 @@ extern "C"
 
 	NCAM_API void NCamSetDistortMapPtr(void* distort_tex_ptr)
 	{
-		distortMapId[FieldIndex] = (GLuint)(size_t)(distort_tex_ptr);
+		distortMapId = (GLuint)(size_t)(distort_tex_ptr);
 	}
 
 
 	NCAM_API bool NCamUpdateDistortMap()
 	{
-		GLuint distort_tex_id = distortMapId[FieldIndex];
+		GLuint distort_tex_id = distortMapId;
 		GLint lInternalFormat = 0;
 		GLenum lFormat = 0;
 		GLenum lType = 0;

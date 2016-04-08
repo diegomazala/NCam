@@ -382,7 +382,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: bcc8f297e37b7b245b7a1f809ef65ced, type: 3}
-  FieldIndex: 1
   ncam: {fileID: 0}
 --- !u!92 &250861747
 Behaviour:
@@ -499,6 +498,58 @@ MeshFilter:
   m_PrefabInternal: {fileID: 49857176}
   m_GameObject: {fileID: 312428111}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &379440905
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100004, guid: dceaab404c2864a47962ea1555584400, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 379440907}
+  - 114: {fileID: 379440906}
+  m_Layer: 0
+  m_Name: NCam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &379440906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 379440905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b91804d2a2e754f927693e192959a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ipAddress: 127.0.0.1
+  port: 38860
+  useGLMatrix: 0
+  scale: 1
+  frameDelay: 0
+  targetCamera:
+  - {fileID: 1785835669}
+  - {fileID: 250861749}
+  DistortMap: {fileID: 0}
+  DistortMapSize: {x: 0, y: 0}
+  FieldIndex: 0
+  reconnecting: 0
+  showGUI: 1
+--- !u!4 &379440907
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400004, guid: dceaab404c2864a47962ea1555584400, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 379440905}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
 --- !u!1 &536123265
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,9 +730,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1339555564}
-  - 114: {fileID: 1339555566}
   m_Layer: 0
-  m_Name: NCam
+  m_Name: NCamCameras
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -701,30 +751,6 @@ Transform:
   - {fileID: 1785835668}
   m_Father: {fileID: 174672129}
   m_RootOrder: 1
---- !u!114 &1339555566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1339555563}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94b91804d2a2e754f927693e192959a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ipAddress: 127.0.0.1
-  port: 38860
-  useGLMatrix: 0
-  scale: 1
-  frameDelay: 0
-  targetCamera:
-  - {fileID: 1785835669}
-  - {fileID: 250861749}
-  DistortMap: []
-  DistortMapSize: {x: 0, y: 0}
-  FieldIndex: 0
-  reconnecting: 0
-  showGUI: 1
 --- !u!1 &1380454488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,7 +1132,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: bcc8f297e37b7b245b7a1f809ef65ced, type: 3}
-  FieldIndex: 0
   ncam: {fileID: 0}
 --- !u!92 &1785835672
 Behaviour:
