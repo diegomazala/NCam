@@ -28,7 +28,8 @@ extern "C"
 	LENS_TABLE_API float		LensTableFov();
 	LENS_TABLE_API void			LensTableProjection(void* floatArray16_GLProjectionMatrix);
 	
-	LENS_TABLE_API bool			LensTableUpdateDistortionMap(float zoom, float focus, unsigned int dist_tex_id);
+	LENS_TABLE_API void			LensTableSetDistortionMapId(void* distort_tex_ptr);
+	LENS_TABLE_API bool			LensTableUpdateDistortionMap();
 	LENS_TABLE_API int			LensTableDistortionMapWidth();
 	LENS_TABLE_API int			LensTableDistortionMapHeight();
 	LENS_TABLE_API int			LensTableDistortionMapChannelCount();

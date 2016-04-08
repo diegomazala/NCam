@@ -33,7 +33,22 @@ public class LensTable : MonoBehaviour
     }
 
 
-    void Start()
+    public bool Distortion
+    {
+        set
+        {
+            foreach (LensDistortionUVMap l in lensDistortion)
+                if (l != null)
+                    l.enabled = value;
+        }
+
+        get
+        {
+            return (lensDistortion[0] != null) ? lensDistortion[0].enabled : false;
+        }
+    }
+
+    void OnEnable()
     {
 #if !UNITY_EDITOR
         // If the xml configuration file does not exists, create it
@@ -64,23 +79,8 @@ public class LensTable : MonoBehaviour
     }
 
 
-    public bool Distortion
-    {
-        set
-        {
-            foreach(LensDistortionUVMap l in lensDistortion)
-                if (l != null)
-                    l.enabled = value;
-        }
 
-        get
-        {
-            return (lensDistortion[0] != null) ? lensDistortion[0].enabled : false;
-        }
-    }
-
-
-    void OnApplicationQuit()
+    void OnDisable()
     {
         StopCoroutine( UpdateDistortionMap() );
     }
@@ -90,6 +90,9 @@ public class LensTable : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
+
+        if (lens.DistortionMap == null)
+            lens.CreateDistortionMap();
 
         for (int i = 0; i < targetCamera.Length; ++i)
         {
@@ -101,15 +104,16 @@ public class LensTable : MonoBehaviour
             lensDistortion[i].distortionMap = lens.DistortionMap;
         }
 
-        while (enabled)
+        while (true)
         {
             // Wait until all frame rendering is done
             yield return new WaitForEndOfFrame();
 
-            for (int i = 0; i < targetCamera.Length; ++i)
-                lens.UpdateDistortionMap(zoom, focus);
+            //for (int i = 0; i < targetCamera.Length; ++i)
+            //    lens.UpdateDistortionMap();
+
+            GL.IssuePluginEvent(LensPlugin.GetLensTableRenderEventFunc(), (int)LensTableRenderEvent.UpdateDistortion);
         }
-        yield return null;
     }
 
 
@@ -128,6 +132,7 @@ public class LensTable : MonoBehaviour
             fovMapped = cam.fieldOfView;     // set fov (for gizmo update)
         }
     }
+
 
     void Update()
     {

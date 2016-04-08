@@ -32,6 +32,8 @@ public class NCamDistortion : MonoBehaviour
         }
 	}
 
+    
+
     void Start()
     {
         if (ncam == null)
@@ -39,6 +41,9 @@ public class NCamDistortion : MonoBehaviour
             enabled = false;
             return;
         }
+
+        if (shader == null)
+            shader = Shader.Find("NCam/Distortion");
 
         if (!SystemInfo.supportsRenderTextures)
         {
