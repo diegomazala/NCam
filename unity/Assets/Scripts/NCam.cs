@@ -252,9 +252,14 @@ public class NCam : MonoBehaviour
             }
 
             GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Update);
-            GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
 
-            UpdateCameras();
+            // Check if we got a valid packet
+            if (NCamPlugin.NCamOpticalTimeCode(Optical.Handle.AddrOfPinnedObject()) > 0)
+            {
+                UpdateCameras();
+                GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
+            }
+
         }
     }
 
@@ -271,10 +276,6 @@ public class NCam : MonoBehaviour
 
     void UpdateCameras()
     {
-        // Check if we got a valid packet
-        if (NCamPlugin.NCamOpticalTimeCode(Optical.Handle.AddrOfPinnedObject()) < 1)
-            return;
-
         lastOpticalTimeCode = ncamData[1].OpticalTimeCode.Time;
 
         for (int i = 0; i < 2; ++i)
