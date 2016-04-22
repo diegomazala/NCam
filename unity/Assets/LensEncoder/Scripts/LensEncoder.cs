@@ -1,10 +1,10 @@
-﻿
+
 using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Xml;
 
-
+[System.Serializable]
 public class LensEncoderData
 {
     public int[] data = null;
@@ -34,8 +34,12 @@ public class LensEncoderData
 
 public class LensEncoder : MonoBehaviour
 {
+    private const bool multithreadEncoder = true;
     public int port = 2;
-    public LensEncoderData encoderData = new LensEncoderData();
+    
+
+    [SerializeField] 
+    private LensEncoderData encoderData = new LensEncoderData();
 
     private float max = 65535;
 
@@ -52,6 +56,7 @@ public class LensEncoder : MonoBehaviour
         [DllImport("LensEncoder")]
         public static extern bool LensEncoderGetData(System.IntPtr intArray3);
     }
+
 
     public int ZoomMapped
     {
@@ -89,9 +94,10 @@ public class LensEncoder : MonoBehaviour
         set { encoderData.data[2] = (int)(value * max); }
     }
 
-    public void Connect()
+
+    public bool Connect()
     {
-        StartCoroutine(ConnectToEncoder());
+        return Plugin.LensEncoderConnect(port, multithreadEncoder);
     }
         
 
@@ -106,53 +112,6 @@ public class LensEncoder : MonoBehaviour
         Plugin.LensEncoderDisconnect();
     }
 
-
-    private IEnumerator ConnectToEncoder()
-    {
-        Disconnect();
-
-        yield return new WaitForEndOfFrame();
-
-        bool success = false;
-
-        success = Plugin.LensEncoderConnect(port, true);
-
-        if (success)
-        {
-            //if (SystemInfo.graphicsDeviceVersion.Contains("OpenGL"))
-                StartCoroutine("LensEncoderUpdateAtEndOfFrames");
-        }
-        else
-        {
-            Debug.LogError("Could not connect to Lens Encoder");
-        }
-
-        yield return null;
-    }
-
-
-    private IEnumerator LensEncoderUpdateAtEndOfFrames()
-    {
-        yield return new WaitForEndOfFrame();
-
-        while (true)
-        {
-            // Wait until all frame rendering is done
-            yield return new WaitForEndOfFrame();
-
-            if (!IsConnected())
-            {
-                yield return null;
-            }
-            else
-            {
-                Plugin.LensEncoderGetData(encoderData.Handle.AddrOfPinnedObject());
-            }
-
-
-            yield return null;
-        }
-    }
 
 
     static public string xmlConfigFolder
@@ -184,7 +143,7 @@ public class LensEncoder : MonoBehaviour
             WriteXml(xmlConfigFolder + @"LensEncoder.xml");
         }
 #endif
-        Connect();
+      enabled = Connect();
     }
 
 
@@ -198,7 +157,7 @@ public class LensEncoder : MonoBehaviour
     {
         if (IsConnected())
         {
-            Plugin.LensEncoderUpdate();
+            Plugin.LensEncoderGetData(encoderData.Handle.AddrOfPinnedObject());
         }
     }
 

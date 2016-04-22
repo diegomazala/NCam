@@ -156,7 +156,7 @@ copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\</Command>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\LensEncoder\Plugins\x86\
 
 </Command>
     </PostBuildEvent>
