@@ -12,8 +12,6 @@ extern "C"
 
 	static unsigned int Port = 3;
 
-	std::ofstream logFile; 
-
 	static FujinonEncoder lensHA22x7;
 	static ThreadReader threadLens;
 	int encoder[3];
@@ -23,7 +21,6 @@ extern "C"
 
 	LENS_ENCODER_API bool LensEncoderConnect(unsigned int port, bool multithread_reading)
 	{
-		logFile.open("LensEncoder.log", std::ios::out);
 		multithread = multithread_reading;
 		if (multithread)
 		{
@@ -56,7 +53,6 @@ extern "C"
 			lensHA22x7.finishConnection();
 		}
 		
-		logFile.close();
 		isConnected = false;
 	}
 

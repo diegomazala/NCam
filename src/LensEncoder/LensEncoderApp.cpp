@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include <iostream>
 #include "LensEncoder.h"
 
@@ -12,29 +13,40 @@ int main(int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 
+
 	int port = atoi(argv[1]);
-	bool multithread = false;
+	bool multithread = true;
 	int data[3] = {0, 0, 0};
 
+
+	//
+	// Try to connect
+	//
 	if (!LensEncoderConnect(port, multithread))
 	{
 		std::cerr << "Could not connect to port " << port << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	for (int i = 0; i < 99999; ++i)
+
+	//
+	// If connected, run loop until ESCAPE be pressed
+	//
+	bool stop = false;
+	while (!stop)
 	{
-
-		LensEncoderUpdate();
-
-		if (LensEncoderGetData(data))
-		{
-			std::cout << data[0] << '\t' << data[1] << '\t' << data[2] << std::endl;
-		}
-
 		_sleep(30);
+		if (GetAsyncKeyState(VK_ESCAPE))
+			stop = true;
+		
+		if (LensEncoderGetData(data))
+			std::cout << data[0] << '\t' << data[1] << '\t' << data[2] << std::endl;
 	}
 
+
+	//
+	// Disconnect 
+	//
 	LensEncoderDisconnect();
 
 
