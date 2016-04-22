@@ -133,8 +133,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\LensEncoder\Plugins\x86_x64\$(ProjectName)$(TargetExt)
-copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\LensEncoder\Plugins\x86_x64\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -181,7 +180,6 @@ copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\</Command>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\LensEncoder\Plugins\x86_x64\
-copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
