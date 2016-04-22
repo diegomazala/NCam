@@ -2,6 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
 
+public enum LensTableRenderEvent
+{
+    Initialize,
+    Update,
+    UpdateDistortion,
+    Uninitialize
+};
+
 
 public class LensPlugin 
 {
@@ -20,13 +28,15 @@ public class LensPlugin
     [DllImport("LensTable")]
     private static extern float LensTableFovMax();
     [DllImport("LensTable")]
-    private static extern float LensTableUpdate(float zoom, float focus);
+    private static extern void LensTableUpdate(float zoom, float focus);
     [DllImport("LensTable")]
     private static extern float LensTableFov();
     [DllImport("LensTable")]
     private static extern void LensTableProjection(System.IntPtr floatArray16_GLProjectionMatrix);
     [DllImport("LensTable")]
-    private static extern bool LensTableUpdateDistortionMap(float zoom, float focus, System.IntPtr dist_tex_ptr);
+    private static extern void LensTableSetDistortionMapId(System.IntPtr dist_tex_ptr);
+    [DllImport("LensTable")]
+    private static extern bool LensTableUpdateDistortionMap();
     [DllImport("LensTable")]
     private static extern int LensTableDistortionMapWidth();
     [DllImport("LensTable")]
@@ -35,6 +45,8 @@ public class LensPlugin
     private static extern int LensTableDistortionMapChannelCount();
     [DllImport("LensTable")]
     private static extern int LensTableDistortionData(System.IntPtr floatArray);
+    [DllImport("LensTable")]
+    public static extern System.IntPtr GetLensTableRenderEventFunc();
 
 
     private RenderTexture distortionMap = null;
@@ -72,7 +84,7 @@ public class LensPlugin
         {
             fovMin = LensTableFovMin();
             fovMax = LensTableFovMax();
-            return CreateDistortionMap();
+            return true;
         }
         else
         {
@@ -81,7 +93,7 @@ public class LensPlugin
     }
 
 
-    private bool CreateDistortionMap()
+    public bool CreateDistortionMap()
     {
         // Create RenderTexture for distortion
         distortionMap = new RenderTexture(LensPlugin.LensTableDistortionMapWidth(),
@@ -90,7 +102,12 @@ public class LensPlugin
         distortionMap.name = "DistortionMap";
         distortionMap.wrapMode = TextureWrapMode.Clamp;
         distortionMap.filterMode = FilterMode.Bilinear; //FilterMode.Point;
-        return distortionMap.Create();  // Call Create() so it's actually uploaded to the GPU
+        distortionMap.anisoLevel = 0;
+        distortionMap.Create();  // Call Create() so it's actually uploaded to the GPU
+
+        LensTableSetDistortionMapId(distortionMap.GetNativeTexturePtr());
+
+        return distortionMap.IsCreated();
     }
 
 
@@ -100,9 +117,9 @@ public class LensPlugin
         LensTableUpdate(zoom, focus);
     }
 
-    public void UpdateDistortionMap(float zoom, float focus)
+    public void UpdateDistortionMap()
     {
-        LensTableUpdateDistortionMap(zoom, focus, distortionMap.GetNativeTexturePtr());
+        LensTableUpdateDistortionMap();
     }
 
     public void UpdateProjection()

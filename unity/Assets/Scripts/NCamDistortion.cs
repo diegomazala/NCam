@@ -1,42 +1,28 @@
 using UnityEngine;
 
 
-[AddComponentMenu("Image Effects/NCam Distortion ")]
+[AddComponentMenu("NCam/Distortion")]
 [RequireComponent(typeof(Camera))]
-public class NCamDistortion : ImageEffectBase
+public class NCamDistortion : MonoBehaviour
 {
-    public int FieldIndex = 0;
+    /// Provides a shader property that is set in the inspector
+    /// and a material instantiated from the shader
+    public Shader shader;
+    private Material m_Material;
+
     [HideInInspector]
     public NCam ncam = null;
-    
-	protected new void Start()
-	{
-        if (ncam == null)
-        {
-            enabled = false;
-            return;
-        }
 
-
-		if(!SystemInfo.supportsRenderTextures)
-		{
-			enabled = false;
-			return;
-		}
-		base.Start();
-	}
 	
-
-
 	void OnRenderImage (RenderTexture source, RenderTexture destination)
 	{
         if (ncam != null)
         {
-            material.SetTexture("DistortTex", ncam.DistortMap[FieldIndex]);
-            material.SetFloat("DistortUScale", (ncam.DistortMapSize.x - 1.0f) / ncam.DistortMapSize.x);
-            material.SetFloat("DistortUOffset", 0.5f / ncam.DistortMapSize.x);
-            material.SetFloat("DistortVScale", (ncam.DistortMapSize.y - 1.0f) / ncam.DistortMapSize.y);
-            material.SetFloat("DistortVOffset", 0.5f / ncam.DistortMapSize.y);
+            material.SetTexture("DistortTex", ncam.distortionMap);
+            material.SetFloat("DistortUScale", (ncam.distortionMapSize.x - 1.0f) / ncam.distortionMapSize.x);
+            material.SetFloat("DistortUOffset", 0.5f / ncam.distortionMapSize.x);
+            material.SetFloat("DistortVScale", (ncam.distortionMapSize.y - 1.0f) / ncam.distortionMapSize.y);
+            material.SetFloat("DistortVOffset", 0.5f / ncam.distortionMapSize.y);
 
             Graphics.Blit(source, destination, material);
         }
@@ -46,5 +32,58 @@ public class NCamDistortion : ImageEffectBase
         }
 	}
 
+    
+
+    void Start()
+    {
+        if (ncam == null)
+        {
+            enabled = false;
+            return;
+        }
+
+        if (shader == null)
+            shader = Shader.Find("NCam/Distortion");
+
+        if (!SystemInfo.supportsRenderTextures)
+        {
+            enabled = false;
+            return;
+        }
+
+        // Disable if we don't support image effects
+        if (!SystemInfo.supportsImageEffects)
+        {
+            enabled = false;
+            return;
+        }
+
+        // Disable the image effect if the shader can't
+        // run on the users graphics card
+        if (!shader || !shader.isSupported)
+            enabled = false;
+    }
+
+    
+    protected Material material
+    {
+        get
+        {
+            if (m_Material == null)
+            {
+                m_Material = new Material(shader);
+                m_Material.hideFlags = HideFlags.HideAndDontSave;
+            }
+            return m_Material;
+        }
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (m_Material)
+        {
+            DestroyImmediate(m_Material);
+        }
+    }
 
 }

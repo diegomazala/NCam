@@ -30,9 +30,9 @@ public class NCam : MonoBehaviour
     public NCamMatrix[] ncamModelview = { null, null };
 
     [HideInInspector]
-    public RenderTexture[] DistortMap = { null, null };
+    public RenderTexture distortionMap = null;
     [HideInInspector]
-    public Vector2 DistortMapSize;
+    public Vector2 distortionMapSize;
 
     [HideInInspector]
     public int FieldIndex = 0;
@@ -119,8 +119,7 @@ public class NCam : MonoBehaviour
         ncamProjection = new NCamMatrix[2];
         ncamModelview = new NCamMatrix[2];
         ncamData = new NCamData[2];
-        DistortMap = new RenderTexture[2];
-        DistortMapSize = Vector2.one;
+        distortionMapSize = Vector2.one;
 
         for (int i = 0; i < 2; ++i)
         {
@@ -132,7 +131,7 @@ public class NCam : MonoBehaviour
             ncamData[i] = new NCamData(new NCamTimeCode(), new NCamTimeCode(), 45.0f, 1.78f,
                                         new Vector2(1920.0f, 1080.0f), new Vector2(9.59f, 5.39f),
                                         new Vector2(0.0f, 0.0f),
-                                        DistortMapSize,
+                                        distortionMapSize,
                                         Matrix4x4.Perspective(45.0f, 1.78f, 0.1f, 1024.0f),
                                         Matrix4x4.identity);
             if (enabled)
@@ -190,25 +189,22 @@ public class NCam : MonoBehaviour
     }
 
 
-    private IEnumerator CreateDistortMaps()
+    private IEnumerator CreateDistortMap()
     {
         int w = NCamPlugin.NCamDistortMapWidth();
         int h = NCamPlugin.NCamDistortMapHeight();
 
-        DistortMapSize = new Vector2(w, h);
+        distortionMapSize = new Vector2(w, h);
 
         if (w > 1 && h > 1) // otherwise the reading has not been initialized yet
         {
-            for (int i = 0; i < 2; ++i)
-            {
-                DistortMap[i] = new RenderTexture(w, h, 8, RenderTextureFormat.RGFloat);
-                DistortMap[i].name = "NCamDistortMap_" + i.ToString();
-                DistortMap[i].wrapMode = TextureWrapMode.Clamp;
-                DistortMap[i].Create();  // Call Create() so it's actually uploaded to the GPU
+            distortionMap = new RenderTexture(w, h, 8, RenderTextureFormat.RGFloat);
+            distortionMap.name = "NCamDistortMap";
+            distortionMap.anisoLevel = 0;
+            distortionMap.wrapMode = TextureWrapMode.Clamp;
+            distortionMap.Create();  // Call Create() so it's actually uploaded to the GPU
 
-                NCamPlugin.NCamFieldIndex(i);
-                NCamPlugin.NCamSetDistortMapPtr(DistortMap[i].GetNativeTexturePtr());
-            }
+            NCamPlugin.NCamSetDistortMapPtr(distortionMap.GetNativeTexturePtr());
         }
 
         yield return new WaitForEndOfFrame();
@@ -242,19 +238,19 @@ public class NCam : MonoBehaviour
             yield return new WaitForEndOfFrame();
 
             if (!NCamPlugin.NCamIsOpen())
-            {
                 yield return null;
-            }
 
-            if (DistortMap[0] == null || DistortMap[1] == null)
-            {
-                yield return CreateDistortMaps();
-            }
+            if (distortionMap == null)
+                yield return CreateDistortMap();
 
             GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Update);
-            GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
 
-            UpdateCameras();
+            // Check if we got a valid packet
+            if (NCamPlugin.NCamOpticalTimeCode(Optical.Handle.AddrOfPinnedObject()) > 0)
+            {
+                UpdateCameras();
+                GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.UpdateDistortion);
+            }
         }
     }
 
@@ -271,10 +267,6 @@ public class NCam : MonoBehaviour
 
     void UpdateCameras()
     {
-        // Check if we got a valid packet
-        if (NCamPlugin.NCamOpticalTimeCode(Optical.Handle.AddrOfPinnedObject()) < 1)
-            return;
-
         lastOpticalTimeCode = ncamData[1].OpticalTimeCode.Time;
 
         for (int i = 0; i < 2; ++i)
@@ -292,7 +284,7 @@ public class NCam : MonoBehaviour
             dataBuffer.Enqueue(new NCamData(Tracking.TimeCode, Optical.TimeCode,
                                         Optical.FieldOfViewVertical, Optical.ImageAspectRatio,
                                         Optical.ImageResolution, Optical.ImageSensorSize,
-                                        Optical.ProjectionCenter, DistortMapSize,
+                                        Optical.ProjectionCenter, distortionMapSize,
                                         Projection.Matrix, Modelview.Matrix));
 
             if (dataBuffer.Count > frameDelay)

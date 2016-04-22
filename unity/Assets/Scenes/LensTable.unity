@@ -1155,6 +1155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileName: Fujinon_HA14x45BERD-S6B_6701118.lens
+  computeFovFromMatrix: 0
   targetCamera:
   - {fileID: 250861749}
   - {fileID: 1785835669}

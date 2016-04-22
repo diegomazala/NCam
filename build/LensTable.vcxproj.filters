@@ -14,6 +14,9 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="UnityPlugin">
+      <UniqueIdentifier>{9bfb6511-270a-4104-862b-0e20cca5e01b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Lens\LensTablePlugin.cpp">
@@ -22,6 +25,9 @@
     <ClCompile Include="..\src\Lens\Lens.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\UnityPlugin\UnityPlugin.cpp">
+      <Filter>UnityPlugin</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Lens\LensTablePlugin.h">
@@ -29,6 +35,15 @@
     </ClInclude>
     <ClInclude Include="..\src\Lens\Lens.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\IUnityGraphics.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\IUnityInterface.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\UnityPlugin.h">
+      <Filter>UnityPlugin</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

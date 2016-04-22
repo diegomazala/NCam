@@ -10,6 +10,20 @@
 #define GL_RG32F         0x8230
 
 
+#include "UnityPlugin.h"
+#include "IUnityGraphics.h"
+
+enum LensTableRenderEvent
+{
+	Initialize,
+	Update,
+	UpdateDistortion,
+	Uninitialize
+};
+
+unsigned int distortionTexId = 0;
+
+
 template <typename T>
 T Lerp(T const& x, T const& x0, T const& x1, T const& y0, T const& y1)
 {
@@ -143,15 +157,14 @@ extern "C"
 		std::memcpy(pArrayFloat, sample.projection.data(), sizeof(float) * 16);
 	}
 
-
-
-	LENS_TABLE_API bool	LensTableUpdateDistortionMap(float zoom, float focus, unsigned int dist_tex_id)
+	LENS_TABLE_API void	LensTableSetDistortionMapId(void* distort_tex_ptr)
 	{
-		float z_dist = 0;
-		float f_dist = 0;
-		const LensSample& s = tableLens.find(zoom, focus, z_dist, f_dist);
+		distortionTexId = (GLuint)(size_t)(distort_tex_ptr);
+	}
 
-		if (!glIsTexture(dist_tex_id))
+	LENS_TABLE_API bool	LensTableUpdateDistortionMap()
+	{
+		if (!glIsTexture(distortionTexId))
 		{
 			logFile << "<Error> Trying to update distortion map with a invalid opengl texture id" << std::endl;
 			return false;
@@ -159,12 +172,12 @@ extern "C"
 
 		GLenum lFormat = GL_RG;
 		GLenum lType = GL_FLOAT;
-		glBindTexture(GL_TEXTURE_2D, dist_tex_id);
+		glBindTexture(GL_TEXTURE_2D, distortionTexId);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-			s.distortion.width,
-			s.distortion.height,
+			sample.distortion.width,
+			sample.distortion.height,
 			lFormat, lType,
-			(const GLvoid*)s.distortion.data.data());
+			(const GLvoid*)sample.distortion.data.data());
 
 		return true;
 	}
@@ -219,5 +232,40 @@ extern "C"
 		}
 
 		return size;
+	}
+
+
+	static void UNITY_INTERFACE_API OnLensTableRenderEvent(int render_event_id)
+	{
+		switch (static_cast<LensTableRenderEvent>(render_event_id))
+		{
+		case LensTableRenderEvent::Initialize:
+		{
+			break;
+		}
+		case LensTableRenderEvent::Update:
+		{
+			break;
+		}
+		case LensTableRenderEvent::UpdateDistortion:
+		{
+			LensTableUpdateDistortionMap();
+			break;
+		}
+		case LensTableRenderEvent::Uninitialize:
+		{
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+
+	// --------------------------------------------------------------------------
+	// GetRenderEventFunc, an example function we export which is used to get a rendering event callback function.
+	UnityRenderingEvent LENS_TABLE_API UNITY_INTERFACE_API GetLensTableRenderEventFunc()
+	{
+		return OnLensTableRenderEvent;
 	}
 };

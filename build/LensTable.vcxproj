@@ -21,10 +21,14 @@
   <ItemGroup>
     <ClCompile Include="..\src\Lens\Lens.cpp" />
     <ClCompile Include="..\src\Lens\LensTablePlugin.cpp" />
+    <ClCompile Include="..\src\UnityPlugin\UnityPlugin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Lens\Lens.h" />
     <ClInclude Include="..\src\Lens\LensTablePlugin.h" />
+    <ClInclude Include="..\src\UnityPlugin\IUnityGraphics.h" />
+    <ClInclude Include="..\src\UnityPlugin\IUnityInterface.h" />
+    <ClInclude Include="..\src\UnityPlugin\UnityPlugin.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CA22F905-7724-4B09-850C-8744C17AF4A3}</ProjectGuid>
@@ -92,7 +96,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>LENS_TABLE_LIB;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src\UnityPlugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -114,7 +118,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>LENS_TABLE_LIB;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src\UnityPlugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -137,7 +141,7 @@ copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>LENS_TABLE_LIB;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src\UnityPlugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>
       </DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -160,7 +164,7 @@ copy /Y $(TargetPath) $(SolutionDir)..\install\depends\x64\</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PreprocessorDefinitions>LENS_TABLE_LIB;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src\UnityPlugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>
       </DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
