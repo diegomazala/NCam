@@ -212,7 +212,7 @@ int FujinonEncoder::getIrisPos()
 	double dIrisVal = 0.0;
 	dIrisVal = getInterpolationFromLongInt( iIrisVal );
 
-	printf(" Iris: %d , %.3lf", iIrisVal , dIrisVal );
+	//printf(" Iris: %d , %.3lf", iIrisVal , dIrisVal );
 
 
 	return iIrisVal;
@@ -251,7 +251,7 @@ int FujinonEncoder::getZoomPos()
 	double dZoomVal = 0.0;
 	dZoomVal = getInterpolationFromLongInt( iZoomVal );
 
-	printf(" Zoom: %d , %.3lf", iZoomVal , dZoomVal );
+	//printf(" Zoom: %d , %.3lf", iZoomVal , dZoomVal );
 	return iZoomVal;
 }
 
@@ -288,7 +288,7 @@ int FujinonEncoder::getFocusPos()
 	double dFocusVal = 0.0;
 	dFocusVal = getInterpolationFromLongInt( iFocusVal );
 
-	printf(" Focus: %d , %.3lf", iFocusVal , dFocusVal );
+	//printf(" Focus: %d , %.3lf", iFocusVal , dFocusVal );
 	return iFocusVal;
 }
 
@@ -355,7 +355,7 @@ void FujinonEncoder::moveFocusPos( int inc )
 			iFocusVal = -1;
 		}
 
-		printf("\nNew Focus: %d \n ", iFocusVal );
+		//printf("\nNew Focus: %d \n ", iFocusVal );
 	}
 
 	return ;
