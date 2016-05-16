@@ -6,7 +6,6 @@ using System;
 [RequireComponent(typeof(Camera))]
 public class LensDistortionUVMap : MonoBehaviour
 {
-    [HideInInspector]
     public RenderTexture distortionMap = null;
     public Shader distortionMapShader = null;
     private Material distortionMaterial = null;

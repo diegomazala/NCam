@@ -112,7 +112,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\$(ProjectName)$(TargetExt)</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\CameraTracking\Plugins\x86\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -134,7 +134,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86_64\$(ProjectName)$(TargetExt)</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\CameraTracking\Plugins\x86_64\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -156,7 +156,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\$(ProjectName)$(TargetExt)
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\CameraTracking\Plugins\x86\$(ProjectName)$(TargetExt)
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -179,7 +179,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86_64\$(ProjectName)$(TargetExt)</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\CameraTracking\Plugins\x86_64\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

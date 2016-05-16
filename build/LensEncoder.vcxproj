@@ -111,7 +111,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\$(ProjectName)$(TargetExt)</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\CameraTracking\x86\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -133,7 +133,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\LensEncoder\Plugins\x86_x64\$(ProjectName)$(TargetExt)</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\CameraTracking\Plugins\x86_64\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -155,7 +155,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\LensEncoder\Plugins\x86\
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\CameraTracking\Plugins\x86\
 
 </Command>
     </PostBuildEvent>
@@ -179,7 +179,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\LensEncoder\Plugins\x86_x64\
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\CameraTracking\Plugins\x86_64\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
