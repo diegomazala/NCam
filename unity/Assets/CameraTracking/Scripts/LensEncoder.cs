@@ -32,9 +32,10 @@ public class LensEncoderData
 
 
 
+
 public class LensEncoder : MonoBehaviour
 {
-    private const bool multithreadEncoder = true;
+    public bool multithreadEncoder = true;
     public int port = 2;
     
 
@@ -42,6 +43,15 @@ public class LensEncoder : MonoBehaviour
     private LensEncoderData encoderData = new LensEncoderData();
 
     private float max = 65535;
+
+    public enum LensEncoderRenderEvent
+    {
+        Initialize,
+        Update,
+        Uninitialize
+    };
+
+
 
     private class Plugin
     {
@@ -55,6 +65,8 @@ public class LensEncoder : MonoBehaviour
         public static extern void LensEncoderUpdate();
         [DllImport("LensEncoder")]
         public static extern bool LensEncoderGetData(System.IntPtr intArray3);
+        [DllImport("LensEncoder")]
+        public static extern System.IntPtr GetLensEncoderRenderEventFunc();
     }
 
 
@@ -97,7 +109,13 @@ public class LensEncoder : MonoBehaviour
 
     public bool Connect()
     {
-        return Plugin.LensEncoderConnect(port, multithreadEncoder);
+        if (Plugin.LensEncoderConnect(port, multithreadEncoder))
+        {
+            if (!multithreadEncoder)
+                StartCoroutine(GetEncoderData());
+            return true;
+        }
+        return false;
     }
         
 
@@ -109,7 +127,24 @@ public class LensEncoder : MonoBehaviour
 
     public void Disconnect()
     {
+        StopCoroutine(GetEncoderData());
         Plugin.LensEncoderDisconnect();
+    }
+
+
+
+    private IEnumerator GetEncoderData()
+    {
+        yield return new WaitForEndOfFrame();
+
+        while (true)
+        {
+            // Wait until all frame rendering is done
+            yield return new WaitForEndOfFrame();
+            
+            GL.IssuePluginEvent(Plugin.GetLensEncoderRenderEventFunc(), (int)LensEncoderRenderEvent.Update);
+            Plugin.LensEncoderGetData(encoderData.Handle.AddrOfPinnedObject());
+        }
     }
 
 
@@ -153,13 +188,17 @@ public class LensEncoder : MonoBehaviour
     }
 
 
+
     void Update()
     {
-        if (IsConnected())
-        {
+        if (multithreadEncoder && IsConnected())
             Plugin.LensEncoderGetData(encoderData.Handle.AddrOfPinnedObject());
-        }
     }
+
+
+
+
+
 
 
 
@@ -180,6 +219,7 @@ public class LensEncoder : MonoBehaviour
                 XmlIO.Read(ncamXml.ChildNodes[0], ref isEnabled);
                 enabled = isEnabled;
                 XmlIO.Read(ncamXml.ChildNodes[1], ref port);
+                XmlIO.Read(ncamXml.ChildNodes[2], ref multithreadEncoder);
             }
         }
         catch (System.Exception e)
@@ -189,6 +229,7 @@ public class LensEncoder : MonoBehaviour
         }
         return true;
     }
+
 
 
     public bool WriteXml(string file_path)
@@ -202,6 +243,7 @@ public class LensEncoder : MonoBehaviour
 
         XmlIO.Write(ncamXml, enabled, "Enabled");
         XmlIO.Write(ncamXml, port, "Port");
+        XmlIO.Write(ncamXml, multithreadEncoder, "Multithread");
 
         xmlDoc.AppendChild(ncamXml);
 

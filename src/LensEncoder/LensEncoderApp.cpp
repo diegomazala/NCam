@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
 
 	int port = atoi(argv[1]);
-	bool multithread = true;
+	bool multithread = false;
 	int data[3] = {0, 0, 0};
 
 
@@ -39,6 +39,9 @@ int main(int argc, char* argv[])
 		if (GetAsyncKeyState(VK_ESCAPE))
 			stop = true;
 		
+		if (!multithread)
+			LensEncoderUpdate();
+
 		if (LensEncoderGetData(data))
 			std::cout << data[0] << '\t' << data[1] << '\t' << data[2] << std::endl;
 	}

@@ -14,6 +14,9 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="UnityPlugin">
+      <UniqueIdentifier>{8dda6df0-684c-4385-a28e-f07c462c1baa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\LensEncoder\SerialPort.cpp">
@@ -24,6 +27,9 @@
     </ClCompile>
     <ClCompile Include="..\src\LensEncoder\LensEncoder.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UnityPlugin\UnityPlugin.cpp">
+      <Filter>UnityPlugin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +44,15 @@
     </ClInclude>
     <ClInclude Include="..\src\LensEncoder\ThreadReader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\IUnityGraphics.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\IUnityInterface.h">
+      <Filter>UnityPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UnityPlugin\UnityPlugin.h">
+      <Filter>UnityPlugin</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -47,7 +47,9 @@ public:
 	void Stop()
 	{
 		stop_thread = true;
-		if (the_thread.joinable()) the_thread.join();
+		if (the_thread.joinable()) 
+			the_thread.join();
+		lensHA22x7.finishConnection();
 	}
 
 	bool IsRunning() const
@@ -55,9 +57,18 @@ public:
 		return !stop_thread;
 	}
 
-	const std::vector<int>& Data() const
+	void Data(std::vector<int>& encoder_data) 
 	{
-		return data;
+		std::lock_guard<std::mutex> guard(mutex);
+		encoder_data = data;
+	}
+
+	void Data(int& zoom, int& focus, int& irirs)
+	{
+		std::lock_guard<std::mutex> guard(mutex);
+		zoom = data[0];
+		focus = data[1];
+		irirs = data[2];
 	}
 
 private:

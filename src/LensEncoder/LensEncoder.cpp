@@ -5,6 +5,15 @@
 #include "ThreadReader.h"
 #include <fstream>
 
+#include "UnityPlugin.h"
+#include "IUnityGraphics.h"
+
+enum LensEncoderRenderEvent
+{
+	Initialize,
+	Update,
+	Uninitialize
+};
 
 
 extern "C"
@@ -12,8 +21,8 @@ extern "C"
 
 	static unsigned int Port = 3;
 
-	static FujinonEncoder lensHA22x7;
-	static ThreadReader threadLens;
+	static FujinonEncoder* lensHA22x7 = nullptr;
+	static ThreadReader* threadLens = nullptr;
 	int encoder[3];
 	bool isConnected = false;
 	bool multithread = false;
@@ -24,12 +33,20 @@ extern "C"
 		multithread = multithread_reading;
 		if (multithread)
 		{
-			isConnected = threadLens.Start(port);
+			if (threadLens)
+				delete threadLens;
+			
+			threadLens = new ThreadReader();
+			isConnected = threadLens->Start(port);
 		}
 		else
 		{
-			lensHA22x7.setPortNumber(port);
-			isConnected = lensHA22x7.initConnection();
+			if (lensHA22x7)
+				delete lensHA22x7;
+
+			lensHA22x7 = new FujinonEncoder();
+			lensHA22x7->setPortNumber(port);
+			isConnected = lensHA22x7->initConnection();
 		}
 
 		return isConnected;
@@ -46,11 +63,19 @@ extern "C"
 	{		
 		if (multithread)
 		{
-			threadLens.Stop();
+			if (threadLens)
+			{
+				delete threadLens;
+				threadLens = nullptr;
+			}
 		}
 		else
 		{
-			lensHA22x7.finishConnection();
+			if (lensHA22x7)
+			{
+				delete lensHA22x7;
+				lensHA22x7 = nullptr;
+			}
 		}
 		
 		isConnected = false;
@@ -59,11 +84,18 @@ extern "C"
 
 	LENS_ENCODER_API void LensEncoderUpdate()
 	{
-		if (!multithread)
+		if (multithread)
 		{
-			encoder[0] = lensHA22x7.getZoomPos();	// Request zoom
-			encoder[1] = lensHA22x7.getFocusPos();	// Request focus
-			encoder[2] = lensHA22x7.getIrisPos();	// Request iris
+			threadLens->Data(encoder[0], encoder[1], encoder[2]);
+		}
+		else
+		{
+			if (!lensHA22x7)
+				return;
+
+			encoder[0] = lensHA22x7->getZoomPos();	// Request zoom
+			encoder[1] = lensHA22x7->getFocusPos();	// Request focus
+			encoder[2] = lensHA22x7->getIrisPos();	// Request iris
 		}
 	}
 
@@ -82,18 +114,49 @@ extern "C"
 
 		if (multithread)
 		{ 
+			if (!threadLens)
+				return false;
+
 			// copying to array
-			for (int i = 0; i < 3; ++i)
-				pArrayInt[i] = threadLens.Data()[i];
+			threadLens->Data(pArrayInt[0], pArrayInt[1], pArrayInt[2]);
 		}
 		else
 		{
 			// copying to array
-			for (int i = 0; i < 3; ++i)
-				pArrayInt[i] = encoder[i];
+			std::memcpy(pArrayInt, encoder, sizeof(int) * 3);
 		}
 
 		return true;
+	}
+
+	static void UNITY_INTERFACE_API OnLensEncoderRenderEvent(int render_event_id)
+	{
+		switch (static_cast<LensEncoderRenderEvent>(render_event_id))
+		{
+		case LensEncoderRenderEvent::Initialize:
+		{
+			break;
+		}
+		case LensEncoderRenderEvent::Update:
+		{
+			LensEncoderUpdate();
+			break;
+		}
+		case LensEncoderRenderEvent::Uninitialize:
+		{
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+
+	// --------------------------------------------------------------------------
+	// GetRenderEventFunc, an example function we export which is used to get a rendering event callback function.
+	UnityRenderingEvent LENS_ENCODER_API UNITY_INTERFACE_API GetLensEncoderRenderEventFunc()
+	{
+		return OnLensEncoderRenderEvent;
 	}
 
 };
