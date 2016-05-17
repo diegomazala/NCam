@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 	bool stop = false;
 	while (!stop)
 	{
-		_sleep(30);
+		Sleep(30);
 		if (GetAsyncKeyState(VK_ESCAPE))
 			stop = true;
 		

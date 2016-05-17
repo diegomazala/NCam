@@ -112,19 +112,8 @@ extern "C"
 		if (!pArrayInt)
 			return false;
 
-		if (multithread)
-		{ 
-			if (!threadLens)
-				return false;
-
-			// copying to array
-			threadLens->Data(pArrayInt[0], pArrayInt[1], pArrayInt[2]);
-		}
-		else
-		{
-			// copying to array
-			std::memcpy(pArrayInt, encoder, sizeof(int) * 3);
-		}
+		// copying to array
+		std::memcpy(pArrayInt, encoder, sizeof(int) * 3);
 
 		return true;
 	}

@@ -111,8 +111,7 @@ public class LensEncoder : MonoBehaviour
     {
         if (Plugin.LensEncoderConnect(port, multithreadEncoder))
         {
-            if (!multithreadEncoder)
-                StartCoroutine(GetEncoderData());
+            StartCoroutine(GetEncoderData());
             return true;
         }
         return false;
@@ -186,19 +185,6 @@ public class LensEncoder : MonoBehaviour
     {
         Disconnect();
     }
-
-
-
-    void Update()
-    {
-        if (multithreadEncoder && IsConnected())
-            Plugin.LensEncoderGetData(encoderData.Handle.AddrOfPinnedObject());
-    }
-
-
-
-
-
 
 
 
