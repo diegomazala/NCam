@@ -42,8 +42,9 @@ extern "C"
 
 	NCAM_API void			NCamGetData(void* pArrayUInt6_OpticalTimeCode, 
 										void* pArrayUInt6_TrackingTimeCode,
+										void* pArrayDouble6_EncoderParameters,
 										void* pArrayDouble13_OpticalParameters,
-										void* pArrayDouble12_TrackingParameters,
+										void* pArrayDouble12_TrackingParameters,										
 										void* pArrayDouble16_GLProjectionMatrix,
 										void* pArrayDouble16_GLModelViewMatrix,
 										double near_plane, double far_plane);

@@ -13,7 +13,7 @@ public class NCam : MonoBehaviour
 
     public bool useGLMatrix = false;
     public float scale = 100.0f;
-    public int frameDelay = 0;
+    
 
     public Camera[] targetCamera = { null, null };
 
@@ -22,6 +22,8 @@ public class NCam : MonoBehaviour
 
     private Queue dataBuffer = new Queue();
     private NCamData[] ncamData = { null, null };
+
+    public NCamEncoder[] ncamEncoder = { null, null };
 
     public NCamOptical[] ncamOptical = { null, null };
     public NCamTracking[] ncamTracking = { null, null };
@@ -39,7 +41,7 @@ public class NCam : MonoBehaviour
 
 
     public bool reconnecting = false;
-    private bool autoConnection = false;
+    public bool autoConnection = false;
     private uint lastOpticalTimeCode = 0;
 
     #region GUI Variables
@@ -49,6 +51,67 @@ public class NCam : MonoBehaviour
     private bool showParentTransform = false;
     #endregion
 
+
+    public enum Status
+    {
+        Disconnected,
+        Connected,
+        Connecting
+    }
+
+    public Status GetStatus()
+    {
+        if (reconnecting)
+            return Status.Connecting;
+        else if (NCamPlugin.NCamIsOpen())
+            return Status.Connected;
+        else
+            return Status.Disconnected;
+    }
+
+
+    public void Connect()
+    {
+        if (!NCamPlugin.NCamIsOpen() && !reconnecting)
+            StartCoroutine(StartNCam());
+    }
+
+    public void Disconnect()
+    {
+        StopNCam();
+    }
+
+
+    public bool IsConnected()
+    {
+        return NCamPlugin.NCamIsOpen() && !reconnecting && NCamPlugin.ErrorCode() == NCamPlugin.ErrorCodeEnum.None;
+    }
+
+    public int FrameSync
+    {
+        get { return (int)(ncamData[1].OpticalTimeCode.Time - ncamData[0].OpticalTimeCode.Time) - 1; }
+    }
+
+    public int FieldSync
+    {
+        get { return (int)(ncamData[1].OpticalTimeCode.Time - lastOpticalTimeCode) - 2; }
+    }
+
+    public int DroppedFrames
+    {
+        get { return NCamPlugin.NCamFrameLostCount(); }
+    }
+
+    public int DroppedFields
+    {
+        get { return NCamPlugin.NCamFieldLostCount(); }
+    }
+
+    public int FrameDelay
+    {
+        get;
+        set;
+    }
 
     static public string xmlConfigFolder
     {
@@ -63,6 +126,10 @@ public class NCam : MonoBehaviour
         }
     }
 
+    public NCamEncoder Encoder
+    {
+        get { return ncamEncoder[FieldIndex]; }
+    }
 
     public NCamOptical Optical
     {
@@ -82,6 +149,16 @@ public class NCam : MonoBehaviour
     public NCamMatrix Modelview
     {
         get { return ncamModelview[FieldIndex]; }
+    }
+
+    public Vector3 Position
+    {
+        get { return position; }
+    }
+
+    public Vector3 Rotation
+    {
+        get { return eulerAngles; }
     }
 
     public float ProjectionMatrix2Fovy(float mat_11)
@@ -113,7 +190,8 @@ public class NCam : MonoBehaviour
     }
 
     void Awake()
-    {        
+    {
+        ncamEncoder = new NCamEncoder[2];
         ncamOptical = new NCamOptical[2];
         ncamTracking = new NCamTracking[2];
         ncamProjection = new NCamMatrix[2];
@@ -123,6 +201,7 @@ public class NCam : MonoBehaviour
 
         for (int i = 0; i < 2; ++i)
         {
+            ncamEncoder[i] = new NCamEncoder();
             ncamOptical[i] = new NCamOptical();
             ncamTracking[i] = new NCamTracking();
             ncamProjection[i] = new NCamMatrix();
@@ -173,13 +252,13 @@ public class NCam : MonoBehaviour
         }
 #endif
 
-        StartCoroutine(StartNCam());
+        Connect();
     }
 
 
     void OnDisable()
     {
-        StopNCam();
+        Disconnect();
 
 #if !UNITY_EDITOR
         WriteXml(xmlConfigFolder + @"NCam.xml");
@@ -213,12 +292,8 @@ public class NCam : MonoBehaviour
 
     private IEnumerator StartNCam()
     {
-        if (reconnecting)
-        {
-            yield return null;
-        }
-
         reconnecting = true;
+        yield return new WaitForEndOfFrame();
         StopNCam();
 
         NCamPlugin.NCamResetError();
@@ -256,11 +331,13 @@ public class NCam : MonoBehaviour
 
 
 
-    void StopNCam()
+    private void StopNCam()
     {
+        reconnecting = false;
         StopCoroutine(StartNCam());
-        NCamPlugin.NCamClose();
+        GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Uninitialize);
     }
+
 
 
 
@@ -275,6 +352,7 @@ public class NCam : MonoBehaviour
             NCamPlugin.NCamFieldIndex(FieldIndex);
             NCamPlugin.NCamGetData(Optical.TimeCode.Handle.AddrOfPinnedObject(),
                                 Tracking.TimeCode.Handle.AddrOfPinnedObject(),
+                                Encoder.Handle.AddrOfPinnedObject(),
                                 Optical.Handle.AddrOfPinnedObject(),
                                 Tracking.Handle.AddrOfPinnedObject(),
                                 Projection.Handle.AddrOfPinnedObject(),
@@ -287,7 +365,7 @@ public class NCam : MonoBehaviour
                                         Optical.ProjectionCenter, distortionMapSize,
                                         Projection.Matrix, Modelview.Matrix));
 
-            if (dataBuffer.Count > frameDelay)
+            if (dataBuffer.Count > FrameDelay)
                 ncamData[FieldIndex] = dataBuffer.Dequeue() as NCamData;
         }
 
@@ -299,7 +377,6 @@ public class NCam : MonoBehaviour
                 // Reseting matrices in order to have gizmos update into Unity
                 targetCamera[i].ResetProjectionMatrix();
                 targetCamera[i].ResetWorldToCameraMatrix();
-
 
                 // Projection Setup
                 targetCamera[i].fieldOfView = ProjectionMatrix2Fovy(-ncamData[i].GLProjection.m11);
@@ -323,10 +400,14 @@ public class NCam : MonoBehaviour
             {
                 targetCamera[i].projectionMatrix = ncamData[i].GLProjection;
                 targetCamera[i].worldToCameraMatrix = ncamData[i].GLModelView;
+
+                // invalid values
+                position = Vector3.zero;
+                eulerAngles = Vector3.zero;
             }
         }
 
-        while (dataBuffer.Count > frameDelay)
+        while (dataBuffer.Count > FrameDelay)
         {
             dataBuffer.Dequeue();
         }
@@ -436,8 +517,8 @@ public class NCam : MonoBehaviour
         {
             if (GUILayout.Button("Buffer:" + dataBuffer.Count.ToString()))
                 dataBuffer.Clear();
-            GUILayout.Label("Delay In Frames:");
-            frameDelay = GUIAux.Int(frameDelay, "box");
+            GUILayout.Label("Frame Delay:");
+            FrameDelay = GUIAux.Int(FrameDelay, "box");
             GUILayout.Label("Scale Units:");
             scale = GUIAux.Float(scale, "box");
 
@@ -653,7 +734,9 @@ public class NCam : MonoBehaviour
                 XmlIO.Read(ncamXml.ChildNodes[1], ref ipAddress);
                 XmlIO.Read(ncamXml.ChildNodes[2], ref port);
                 XmlIO.Read(ncamXml.ChildNodes[3], ref autoConnection);
+                int frameDelay = 0;
                 XmlIO.Read(ncamXml.ChildNodes[4], ref frameDelay);
+                FrameDelay = FrameDelay;
                 XmlIO.Read(ncamXml.ChildNodes[5], ref scale);
                 XmlIO.Read(ncamXml.ChildNodes[6], ref useGLMatrix);
                 bool useDistortion = Distortion;
@@ -704,7 +787,7 @@ public class NCam : MonoBehaviour
         XmlIO.Write(ncamXml, ipAddress, "IpAddress");
         XmlIO.Write(ncamXml, port, "Port");
         XmlIO.Write(ncamXml, autoConnection, "AutoConnection");
-        XmlIO.Write(ncamXml, frameDelay, "DelayInFrames");
+        XmlIO.Write(ncamXml, FrameDelay, "DelayInFrames");
         XmlIO.Write(ncamXml, scale, "ScaleUnits");
         XmlIO.Write(ncamXml, useGLMatrix, "UseGLMatrix");
         XmlIO.Write(ncamXml, Distortion, "Distortion");

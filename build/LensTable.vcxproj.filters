@@ -30,20 +30,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Lens\LensTablePlugin.h">
+    <CustomBuild Include="..\src\Lens\Lens.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Lens\Lens.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\Lens\LensTablePlugin.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\UnityPlugin\IUnityGraphics.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\UnityPlugin\IUnityGraphics.h">
       <Filter>UnityPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\UnityPlugin\IUnityInterface.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\UnityPlugin\IUnityInterface.h">
       <Filter>UnityPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\UnityPlugin\UnityPlugin.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\UnityPlugin\UnityPlugin.h">
       <Filter>UnityPlugin</Filter>
-    </ClInclude>
+    </CustomBuild>
   </ItemGroup>
 </Project>

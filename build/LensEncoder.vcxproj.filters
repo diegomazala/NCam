@@ -33,26 +33,26 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\LensEncoder\SerialPort.h">
+    <CustomBuild Include="..\src\LensEncoder\FujinonEncoder.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\LensEncoder\FujinonEncoder.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\LensEncoder\LensEncoder.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\LensEncoder\LensEncoder.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\LensEncoder\SerialPort.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\LensEncoder\ThreadReader.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\LensEncoder\ThreadReader.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\UnityPlugin\IUnityGraphics.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\UnityPlugin\IUnityGraphics.h">
       <Filter>UnityPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\UnityPlugin\IUnityInterface.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\UnityPlugin\IUnityInterface.h">
       <Filter>UnityPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\UnityPlugin\UnityPlugin.h">
+    </CustomBuild>
+    <CustomBuild Include="..\src\UnityPlugin\UnityPlugin.h">
       <Filter>UnityPlugin</Filter>
-    </ClInclude>
+    </CustomBuild>
   </ItemGroup>
 </Project>

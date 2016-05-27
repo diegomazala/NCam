@@ -216,6 +216,7 @@ extern "C"
 
 	NCAM_API void NCamGetData(	void* pArrayUInt6_OpticalTimeCode, 
 								void* pArrayUInt6_TrackingTimeCode,
+								void* pArrayDouble6_EncoderParameters,
 								void* pArrayDouble13_OpticalParameters,
 								void* pArrayDouble12_TrackingParameters,
 								void* pArrayDouble16_GLProjectionMatrix,
@@ -227,6 +228,9 @@ extern "C"
 
 		if (pArrayUInt6_TrackingTimeCode != nullptr)
 			NCamTrackingTimeCode(pArrayUInt6_TrackingTimeCode);
+
+		if (pArrayDouble6_EncoderParameters != nullptr)
+			NCamEncoderParameters(pArrayDouble6_EncoderParameters);
 
 		if (pArrayDouble13_OpticalParameters != nullptr)
 			NCamOpticalParameters(pArrayDouble13_OpticalParameters);

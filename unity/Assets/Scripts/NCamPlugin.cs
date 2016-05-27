@@ -55,6 +55,7 @@ public class NCamPlugin
     [DllImport(DllName)]
     public static extern void NCamGetData(System.IntPtr doubleArray6_OpticalTimeCode,
                                         System.IntPtr doubleArray6_TrackingTimeCode,
+                                        System.IntPtr doubleArray6_EncoderParameters,
                                         System.IntPtr doubleArray13_OpticalParameters,
                                         System.IntPtr doubleArray12_TrackingParamters,
                                         System.IntPtr doubleArray16_GLProjectionMatrix,
@@ -160,6 +161,7 @@ public class NCamMatrix
 }
 
 
+[System.Serializable]
 public class NCamTimeCode
 {
 	private uint[] data = null;
