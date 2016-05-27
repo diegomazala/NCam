@@ -143,7 +143,7 @@
       <AdditionalDependencies>LibNcamDataStreamingd.lib;Qt5Cored.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\$(ProjectName)$(TargetExt)</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\NCam\Plugins\x86\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -164,7 +164,7 @@
       <AdditionalDependencies>LibNcamDataStreamingd.lib;Qt5Cored.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86_64\$(ProjectName)$(TargetExt)</Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\NCam\Plugins\x86_64\$(ProjectName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -185,7 +185,7 @@
       <AdditionalDependencies>LibNcamDataStreaming.lib;Qt5Core.lib;Qt5Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86\  
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\NCam\Plugins\x86\  
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -207,7 +207,7 @@
       <AdditionalDependencies>LibNcamDataStreaming.lib;Qt5Core.lib;Qt5Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\Plugins\x86_64\
+      <Command>copy /Y $(TargetPath) $(SolutionDir)..\unity\Assets\NCam\Plugins\x86_64\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

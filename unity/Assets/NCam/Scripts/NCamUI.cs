@@ -13,8 +13,8 @@ public class NCamUI : MonoBehaviour
     public UnityEngine.UI.Image statusImage;
     public UnityEngine.UI.Text statusText;
 
-    public UnityEngine.UI.Text ipAddress;
-    public UnityEngine.UI.Text port;
+    public UnityEngine.UI.InputField ipAddress;
+    public UnityEngine.UI.InputField port;
 
     public UnityEngine.UI.Text timeCode;
     public UnityEngine.UI.Image syncFramesImage;
@@ -57,8 +57,8 @@ public class NCamUI : MonoBehaviour
                 return;
             }
         }
-
 	}
+
 
     void Start()
     {
@@ -70,6 +70,8 @@ public class NCamUI : MonoBehaviour
 
     public void OnConnectButtonPress()
     {
+        ncam.ipAddress = ipAddress.text;
+        ncam.port = System.Int32.Parse(port.text);
         ncam.Connect();
     }
 
@@ -79,10 +81,12 @@ public class NCamUI : MonoBehaviour
         ncam.Disconnect();
     }
 
+
     public void OnAutoConnectionToggle(bool value)
     {
         ncam.autoConnection = value;
     }
+
 
     public void OnDistortionToggle(bool value)
     {
@@ -109,6 +113,7 @@ public class NCamUI : MonoBehaviour
         UpdateConnectionUI();
         UpdateTimingUI();
         UpdateOpticalParamsUI();
+        UpdateEncoderParamsUI();
         UpdateTrackingParamsUI();
     }
 
@@ -195,6 +200,7 @@ public class NCamUI : MonoBehaviour
         focusText.text = ncam.Encoder.GetValue(NCamEncoder.EParameter.FocusNormalized).ToString();
         irisText.text = ncam.Encoder.GetValue(NCamEncoder.EParameter.IrisNormalized).ToString();
     }
+
 
     void UpdateTrackingParamsUI()
     {
