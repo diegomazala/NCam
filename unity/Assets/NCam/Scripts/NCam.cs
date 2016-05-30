@@ -44,12 +44,13 @@ public class NCam : MonoBehaviour
     public bool autoConnection = false;
     private uint lastOpticalTimeCode = 0;
 
-    #region GUI Variables
-    private GUIWindow guiWindow = null;
-    public bool showGUI = false;
-    private bool showMatrices = false;
-    private bool showParentTransform = false;
-    #endregion
+
+    //#region GUI Variables
+    //private GUIWindow guiWindow = null;
+    //public bool showGUI = false;
+    //private bool showMatrices = false;
+    //private bool showParentTransform = false;
+    //#endregion
 
 
     public enum Status
@@ -79,12 +80,6 @@ public class NCam : MonoBehaviour
     public void Disconnect()
     {
         StopNCam();
-    }
-
-
-    public bool IsConnected()
-    {
-        return NCamPlugin.NCamIsOpen() && !reconnecting && NCamPlugin.ErrorCode() == NCamPlugin.ErrorCodeEnum.None;
     }
 
     public int FrameSync
@@ -261,7 +256,7 @@ public class NCam : MonoBehaviour
         Disconnect();
 
 #if !UNITY_EDITOR
-        WriteXml(xmlConfigFolder + @"NCam.xml");
+        //WriteXml(xmlConfigFolder + @"NCam.xml");
 #endif
 
         NCamPlugin.NCamDestroy();
@@ -416,8 +411,8 @@ public class NCam : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F3) && Input.GetKey(KeyCode.LeftControl))
-            showGUI = !showGUI;
+        //if (Input.GetKeyDown(KeyCode.F3) && Input.GetKey(KeyCode.LeftControl))
+        //    showGUI = !showGUI;
 
 
         if (!NCamPlugin.NCamIsOpen() && !reconnecting && autoConnection)
@@ -427,8 +422,135 @@ public class NCam : MonoBehaviour
 
     }
 
+    
+    public void ApplyCcdShift(Camera cam, float ccd_shift_x, float ccd_shift_y)
+    {
+        Matrix4x4 p = cam.projectionMatrix;
+
+        p[0, 2] = ccd_shift_x;
+        p[1, 2] = ccd_shift_y;
+
+        cam.projectionMatrix = p;
+    }
+
+    public static Quaternion QuaternionFromMatrix(Matrix4x4 m)
+    {
+        return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1));
+    }
 
 
+    public static Vector3 EulerAnglesFromMatrix(Matrix4x4 m)
+    {
+        return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1)).eulerAngles;
+    }
+
+
+    public bool ReadXml(string file_path)
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+
+        try
+        {
+            xmlDoc.Load(file_path);
+
+            XmlNodeList docXml = xmlDoc.GetElementsByTagName("NCam");
+            XmlNode ncamXml = docXml[0];
+
+            if (ncamXml != null)
+            {
+                bool isEnabled = false;
+                XmlIO.Read(ncamXml.ChildNodes[0], ref isEnabled);
+                enabled = isEnabled;
+                XmlIO.Read(ncamXml.ChildNodes[1], ref ipAddress);
+                XmlIO.Read(ncamXml.ChildNodes[2], ref port);
+                XmlIO.Read(ncamXml.ChildNodes[3], ref autoConnection);
+                int frameDelay = 0;
+                XmlIO.Read(ncamXml.ChildNodes[4], ref frameDelay);
+                FrameDelay = FrameDelay;
+                XmlIO.Read(ncamXml.ChildNodes[5], ref scale);
+                XmlIO.Read(ncamXml.ChildNodes[6], ref useGLMatrix);
+                bool useDistortion = Distortion;
+                XmlIO.Read(ncamXml.ChildNodes[7], ref useDistortion);
+                Distortion = useDistortion;
+
+				if (enabled)
+				{	
+					XmlNode localPosNode = ncamXml.ChildNodes[8];
+					{
+						Vector3 localPos = Vector3.zero;
+						XmlIO.Read(localPosNode.ChildNodes[0], ref localPos.x);
+						XmlIO.Read(localPosNode.ChildNodes[1], ref localPos.y);
+						XmlIO.Read(localPosNode.ChildNodes[2], ref localPos.z);
+						this.transform.localPosition = localPos;
+					}
+
+					XmlNode localRotNode = ncamXml.ChildNodes[9];
+					{
+						Vector3 localRot = Vector3.zero;
+						XmlIO.Read(localRotNode.ChildNodes[0], ref localRot.x);
+						XmlIO.Read(localRotNode.ChildNodes[1], ref localRot.y);
+						XmlIO.Read(localRotNode.ChildNodes[2], ref localRot.z);
+						this.transform.localRotation = Quaternion.Euler(localRot);
+					}
+				}
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError(e.Message);
+            return false;
+        }
+        return true;
+    }
+
+
+    public bool WriteXml(string file_path)
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+
+        XmlDeclaration xmlDec = xmlDoc.CreateXmlDeclaration("1.0", null, null);
+        xmlDoc.AppendChild(xmlDec);
+
+        XmlElement ncamXml = xmlDoc.CreateElement("NCam");
+
+        XmlIO.Write(ncamXml, enabled, "Enabled");
+        XmlIO.Write(ncamXml, ipAddress, "IpAddress");
+        XmlIO.Write(ncamXml, port, "Port");
+        XmlIO.Write(ncamXml, autoConnection, "AutoConnection");
+        XmlIO.Write(ncamXml, FrameDelay, "DelayInFrames");
+        XmlIO.Write(ncamXml, scale, "ScaleUnits");
+        XmlIO.Write(ncamXml, useGLMatrix, "UseGLMatrix");
+        XmlIO.Write(ncamXml, Distortion, "Distortion");
+
+		if (enabled)
+		{
+			XmlElement xmlLocalPosition = xmlDoc.CreateElement("LocalPosition");
+			XmlIO.WriteFields(xmlLocalPosition, this.transform.localPosition);
+			ncamXml.AppendChild(xmlLocalPosition);
+
+			XmlElement xmlLocalRotation = xmlDoc.CreateElement("LocalRotation");
+			XmlIO.WriteFields(xmlLocalRotation, this.transform.localRotation.eulerAngles);
+			ncamXml.AppendChild(xmlLocalRotation);
+		}
+		
+        xmlDoc.AppendChild(ncamXml);
+
+        try
+        {
+            xmlDoc.Save(file_path);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError(e.Message);
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+#if false
     void OnGUI()
     {
         if (!showGUI)
@@ -692,128 +814,5 @@ public class NCam : MonoBehaviour
 
         return collapsed;
     }
-
-    public void ApplyCcdShift(Camera cam, float ccd_shift_x, float ccd_shift_y)
-    {
-        Matrix4x4 p = cam.projectionMatrix;
-
-        p[0, 2] = ccd_shift_x;
-        p[1, 2] = ccd_shift_y;
-
-        cam.projectionMatrix = p;
-    }
-
-    public static Quaternion QuaternionFromMatrix(Matrix4x4 m)
-    {
-        return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1));
-    }
-
-
-    public static Vector3 EulerAnglesFromMatrix(Matrix4x4 m)
-    {
-        return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1)).eulerAngles;
-    }
-
-
-    public bool ReadXml(string file_path)
-    {
-        XmlDocument xmlDoc = new XmlDocument();
-
-        try
-        {
-            xmlDoc.Load(file_path);
-
-            XmlNodeList docXml = xmlDoc.GetElementsByTagName("NCam");
-            XmlNode ncamXml = docXml[0];
-
-            if (ncamXml != null)
-            {
-                bool isEnabled = false;
-                XmlIO.Read(ncamXml.ChildNodes[0], ref isEnabled);
-                enabled = isEnabled;
-                XmlIO.Read(ncamXml.ChildNodes[1], ref ipAddress);
-                XmlIO.Read(ncamXml.ChildNodes[2], ref port);
-                XmlIO.Read(ncamXml.ChildNodes[3], ref autoConnection);
-                int frameDelay = 0;
-                XmlIO.Read(ncamXml.ChildNodes[4], ref frameDelay);
-                FrameDelay = FrameDelay;
-                XmlIO.Read(ncamXml.ChildNodes[5], ref scale);
-                XmlIO.Read(ncamXml.ChildNodes[6], ref useGLMatrix);
-                bool useDistortion = Distortion;
-                XmlIO.Read(ncamXml.ChildNodes[7], ref useDistortion);
-                Distortion = useDistortion;
-
-				if (enabled)
-				{	
-					XmlNode localPosNode = ncamXml.ChildNodes[8];
-					{
-						Vector3 localPos = Vector3.zero;
-						XmlIO.Read(localPosNode.ChildNodes[0], ref localPos.x);
-						XmlIO.Read(localPosNode.ChildNodes[1], ref localPos.y);
-						XmlIO.Read(localPosNode.ChildNodes[2], ref localPos.z);
-						this.transform.localPosition = localPos;
-					}
-
-					XmlNode localRotNode = ncamXml.ChildNodes[9];
-					{
-						Vector3 localRot = Vector3.zero;
-						XmlIO.Read(localRotNode.ChildNodes[0], ref localRot.x);
-						XmlIO.Read(localRotNode.ChildNodes[1], ref localRot.y);
-						XmlIO.Read(localRotNode.ChildNodes[2], ref localRot.z);
-						this.transform.localRotation = Quaternion.Euler(localRot);
-					}
-				}
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError(e.Message);
-            return false;
-        }
-        return true;
-    }
-
-
-    public bool WriteXml(string file_path)
-    {
-        XmlDocument xmlDoc = new XmlDocument();
-
-        XmlDeclaration xmlDec = xmlDoc.CreateXmlDeclaration("1.0", null, null);
-        xmlDoc.AppendChild(xmlDec);
-
-        XmlElement ncamXml = xmlDoc.CreateElement("NCam");
-
-        XmlIO.Write(ncamXml, enabled, "Enabled");
-        XmlIO.Write(ncamXml, ipAddress, "IpAddress");
-        XmlIO.Write(ncamXml, port, "Port");
-        XmlIO.Write(ncamXml, autoConnection, "AutoConnection");
-        XmlIO.Write(ncamXml, FrameDelay, "DelayInFrames");
-        XmlIO.Write(ncamXml, scale, "ScaleUnits");
-        XmlIO.Write(ncamXml, useGLMatrix, "UseGLMatrix");
-        XmlIO.Write(ncamXml, Distortion, "Distortion");
-
-		if (enabled)
-		{
-			XmlElement xmlLocalPosition = xmlDoc.CreateElement("LocalPosition");
-			XmlIO.WriteFields(xmlLocalPosition, this.transform.localPosition);
-			ncamXml.AppendChild(xmlLocalPosition);
-
-			XmlElement xmlLocalRotation = xmlDoc.CreateElement("LocalRotation");
-			XmlIO.WriteFields(xmlLocalRotation, this.transform.localRotation.eulerAngles);
-			ncamXml.AppendChild(xmlLocalRotation);
-		}
-		
-        xmlDoc.AppendChild(ncamXml);
-
-        try
-        {
-            xmlDoc.Save(file_path);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError(e.Message);
-            return false;
-        }
-        return true;
-    }
+#endif
 }

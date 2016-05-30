@@ -5,6 +5,7 @@ public class UIWindowControl : MonoBehaviour
 {
 
     public GameObject[] uiObjects;
+    public MonoBehaviour[] uiComponents;
     protected UnityEngine.UI.Image imagePanel = null;
 
     void Start()
@@ -16,6 +17,9 @@ public class UIWindowControl : MonoBehaviour
     {
         foreach (GameObject go in uiObjects)
             go.SetActive(toogle);
+
+        foreach (MonoBehaviour mb in uiComponents)
+            mb.enabled = toogle;
 
         if (imagePanel)
             imagePanel.enabled = toogle;

@@ -104,13 +104,11 @@ public class NCamUI : MonoBehaviour
         if (!ncam.enabled)
             return;
 
-        UpdateUI();
-    }
-
-
-    void UpdateUI()
-    {
         UpdateConnectionUI();
+
+        if (ncam.GetStatus() == NCam.Status.Disconnected)
+            return;
+
         UpdateTimingUI();
         UpdateOpticalParamsUI();
         UpdateEncoderParamsUI();
@@ -128,10 +126,7 @@ public class NCamUI : MonoBehaviour
                     disconnectButton.interactable = true;
                     autoConnectionToggle.interactable = true;
                     statusImage.color = new Color(0.0f, 0.5f, 0.0f);
-                    //if (NCamPlugin.ErrorCode() == NCamPlugin.ErrorCodeEnum.None)
-                        statusText.text = "Connected";
-                    //else
-                    //    statusText.text = "Error: " + NCamPlugin.ErrorCode().ToString();
+                    statusText.text = "Connected";
                     break;
                 }
             case NCam.Status.Connecting:
@@ -150,10 +145,7 @@ public class NCamUI : MonoBehaviour
                     disconnectButton.interactable = false;
                     autoConnectionToggle.interactable = true;
                     statusImage.color = new Color(0.5f, 0.0f, 0.0f);
-                    //if (NCamPlugin.ErrorCode() == NCamPlugin.ErrorCodeEnum.None)
-                        statusText.text = "Disconnected";
-                    //else
-                    //    statusText.text = "Error: " + NCamPlugin.ErrorCode().ToString();
+                    statusText.text = "Disconnected";
                     break;
                 }
         }
