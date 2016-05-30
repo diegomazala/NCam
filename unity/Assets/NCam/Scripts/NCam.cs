@@ -212,10 +212,7 @@ public class NCam : MonoBehaviour
             {
                 NCamDistortion dist = targetCamera[i].GetComponent<NCamDistortion>() as NCamDistortion;
                 if (dist != null)
-                {
                     dist.ncam = this;
-                    dist.enabled = false;
-                }
             }
         }
     }

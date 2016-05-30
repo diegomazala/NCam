@@ -26,9 +26,9 @@ public class NCamDistortion : MonoBehaviour
 
             Graphics.Blit(source, destination, material);
         }
-        else
+        else 
         {
-            enabled = false;
+            Graphics.Blit(source, destination);
         }
 	}
 

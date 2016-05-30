@@ -65,6 +65,7 @@ public class NCamUI : MonoBehaviour
         ipAddress.text = ncam.ipAddress;
         port.text = ncam.port.ToString();
         autoConnectionToggle.isOn = ncam.autoConnection;
+        distortionToggle.isOn = ncam.Distortion;
     }
 	
 
@@ -88,9 +89,9 @@ public class NCamUI : MonoBehaviour
     }
 
 
-    public void OnDistortionToggle(bool value)
+    public void OnDistortionToggle()
     {
-        ncam.Distortion = value;
+        ncam.Distortion = distortionToggle.isOn;
     }
 
     public void OnUseGLMatricesToggle(bool value)
