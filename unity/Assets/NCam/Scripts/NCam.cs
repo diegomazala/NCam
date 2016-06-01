@@ -70,6 +70,10 @@ public class NCam : MonoBehaviour
             return Status.Disconnected;
     }
 
+    public double FrameRate
+    {
+        get { return NCamPlugin.NCamFrameRate(); }
+    }
 
     public void Connect()
     {

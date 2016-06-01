@@ -24,6 +24,8 @@ public class NCamUI : MonoBehaviour
     public UnityEngine.UI.Text droppedFramesText;
     public UnityEngine.UI.Text droppedFieldsText;
     public UnityEngine.UI.Text frameDelayText;
+    public UnityEngine.UI.Image fpsImage;
+    public UnityEngine.UI.Text fpsText;
 
     public UnityEngine.UI.Text imageWidthText;
     public UnityEngine.UI.Text imageHeightText;
@@ -65,6 +67,7 @@ public class NCamUI : MonoBehaviour
         ipAddress.text = ncam.ipAddress;
         port.text = ncam.port.ToString();
         autoConnectionToggle.isOn = ncam.autoConnection;
+        frameDelayText.text = ncam.FrameDelay.ToString();
         distortionToggle.isOn = ncam.Distortion;
     }
 	
@@ -161,6 +164,7 @@ public class NCamUI : MonoBehaviour
         droppedFramesText.text = ncam.DroppedFrames.ToString();
         droppedFieldsText.text = ncam.DroppedFields.ToString();
         frameDelayText.text = ncam.FrameDelay.ToString();
+        fpsText.text = ncam.FrameRate.ToString("00.00");
 
         if (ncam.DroppedFrames > 0)
             syncFramesImage.color = new Color(0.5f, 0.0f, 0.0f);
@@ -171,6 +175,13 @@ public class NCamUI : MonoBehaviour
             syncFieldsImage.color = new Color(0.5f, 0.0f, 0.0f);
         else
             syncFieldsImage.color = new Color(0.0f, 0.5f, 0.0f);
+
+        if (ncam.FrameRate > 59.9)
+            fpsImage.color = new Color(0.0f, 0.5f, 0.0f);
+        else if (ncam.FrameRate < 59.0)
+            fpsImage.color = new Color(0.5f, 0.0f, 0.0f);
+        else
+            fpsImage.color = new Color(0.5f, 0.5f, 0.0f);
     }
 
 

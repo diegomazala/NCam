@@ -315,10 +315,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &343833651 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 186878, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-  m_PrefabInternal: {fileID: 1747363352}
 --- !u!1001 &478922325
 Prefab:
   m_ObjectHideFlags: 0
@@ -731,10 +727,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 338041749}
     m_Modifications:
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 22428742, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -811,34 +803,6 @@ Prefab:
       propertyPath: ncam
       value: 
       objectReference: {fileID: 1339555566}
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 343833651}
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11405590, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5f211dd7225910344a1d24203a2307cd, type: 2}
   m_IsPrefabParent: 0

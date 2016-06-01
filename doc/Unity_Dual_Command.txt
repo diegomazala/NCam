@@ -1,0 +1,10 @@
+-- Criando pasta que será uma cópia simbólia do projeto Unity
+
+cd <unity_dual>
+mklink /D Assets ..\unity\Assets
+
+
+
+-- Executando o editor apontando para a nova pasta
+
+"C:\Program Files (x86)\Unity\4.1.0\Editor\Unity.exe" -force-opengl -projectPath "F:\VGP\unity_dual"
