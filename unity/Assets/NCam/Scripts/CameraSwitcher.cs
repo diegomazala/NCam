@@ -30,8 +30,8 @@ public class CameraSwitcher : MonoBehaviour
         if (m_KeyCam.Length > m_CurrentCamera)
 		{
             m_KeyCam[m_CurrentCamera].Camera.depth = 1;
-            if (targetCam != null && targetCam.m_TargetCamera != null)
-                targetCam.m_TargetCamera = m_KeyCam[m_CurrentCamera].Camera;
+            if (targetCam != null && targetCam.targetCamera != null)
+                targetCam.targetCamera = m_KeyCam[m_CurrentCamera].Camera;
 		}
 
         
@@ -51,8 +51,8 @@ public class CameraSwitcher : MonoBehaviour
         if (m_KeyCam.Length > m_CurrentCamera)
         {
             m_KeyCam[m_CurrentCamera].Camera.depth = 1;
-            if (targetCam != null && targetCam.m_TargetCamera != null)
-                targetCam.m_TargetCamera = m_KeyCam[m_CurrentCamera].Camera;
+            if (targetCam != null && targetCam.targetCamera != null)
+                targetCam.targetCamera = m_KeyCam[m_CurrentCamera].Camera;
         }
 	}
 }
