@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class NCamUI : MonoBehaviour
@@ -64,18 +64,18 @@ public class NCamUI : MonoBehaviour
 
     void Start()
     {
-        ipAddress.text = ncam.ipAddress;
-        port.text = ncam.port.ToString();
-        autoConnectionToggle.isOn = ncam.autoConnection;
+        ipAddress.text = ncam.Config.Ip;
+        port.text = ncam.Config.Port.ToString();
+        autoConnectionToggle.isOn = ncam.Config.AutoConnection;
         frameDelayText.text = ncam.FrameDelay.ToString();
-        distortionToggle.isOn = ncam.Distortion;
+        distortionToggle.isOn = ncam.Config.Distortion;
     }
 	
 
     public void OnConnectButtonPress()
     {
-        ncam.ipAddress = ipAddress.text;
-        ncam.port = System.Int32.Parse(port.text);
+        ncam.Config.Ip = ipAddress.text;
+        ncam.Config.Port = System.Int32.Parse(port.text);
         ncam.Connect();
     }
 
@@ -88,7 +88,7 @@ public class NCamUI : MonoBehaviour
 
     public void OnAutoConnectionToggle(bool value)
     {
-        ncam.autoConnection = value;
+        ncam.Config.AutoConnection = value;
     }
 
 
@@ -99,7 +99,7 @@ public class NCamUI : MonoBehaviour
 
     public void OnUseGLMatricesToggle(bool value)
     {
-        ncam.useGLMatrix = value;
+        ncam.Config.UseGLMatrix = value;
     }
 
 

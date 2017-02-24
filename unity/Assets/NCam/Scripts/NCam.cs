@@ -1,4 +1,4 @@
-﻿
+
 using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
@@ -8,12 +8,8 @@ using System.Xml;
 
 public class NCam : MonoBehaviour
 {
-    public string ipAddress = "127.0.0.1";
-    public int port = 38860; //3003;
-
-    public bool useGLMatrix = false;
-    public float scale = 100.0f;
-    
+    public NCamUI Ui = null;
+    public NCamConfig Config = new NCamConfig();
 
     public Camera[] targetCamera = { null, null };
 
@@ -41,17 +37,8 @@ public class NCam : MonoBehaviour
 
 
     public bool reconnecting = false;
-    public bool autoConnection = false;
     private uint lastOpticalTimeCode = 0;
-
-
-    //#region GUI Variables
-    //private GUIWindow guiWindow = null;
-    //public bool showGUI = false;
-    //private bool showMatrices = false;
-    //private bool showParentTransform = false;
-    //#endregion
-
+    
 
     public enum Status
     {
@@ -112,19 +99,7 @@ public class NCam : MonoBehaviour
         set;
     }
 
-    static public string xmlConfigFolder
-    {
-        get
-        {
-#if UNITY_EDITOR
-            System.IO.DirectoryInfo mainFolderPath = new System.IO.DirectoryInfo(Application.dataPath + "/");
-#else
-            System.IO.DirectoryInfo mainFolderPath = new System.IO.DirectoryInfo(Application.dataPath + "/../");
-#endif
-            return mainFolderPath.FullName + @"Config/Sensor/";
-        }
-    }
-
+    
     public NCamEncoder Encoder
     {
         get { return ncamEncoder[FieldIndex]; }
@@ -219,6 +194,11 @@ public class NCam : MonoBehaviour
                     dist.ncam = this;
             }
         }
+
+        if (Ui == null)
+        {
+            Ui = FindObjectOfType<NCamUI>();
+        }
     }
 
 
@@ -236,29 +216,21 @@ public class NCam : MonoBehaviour
         }
 
 #if !UNITY_EDITOR
-        // If the xml configuration file does not exists, create it
-        if (!ReadXml(xmlConfigFolder + @"NCam.xml"))
-        {
-            System.IO.DirectoryInfo sensorDir = new System.IO.DirectoryInfo(xmlConfigFolder);
-            if (!sensorDir.Exists)
-            {
-                sensorDir.Create();
-            }
-            WriteXml(xmlConfigFolder + @"NCam.xml");
-        }
+        if (!Config.Load())
+            Config.Save();
 #endif
 
-        Connect();
+        if (Ui)
+            Ui.gameObject.SetActive(enabled);
+
+        if (enabled)
+            Connect();
     }
 
 
     void OnDisable()
     {
         Disconnect();
-
-#if !UNITY_EDITOR
-        //WriteXml(xmlConfigFolder + @"NCam.xml");
-#endif
 
         NCamPlugin.NCamDestroy();
     }
@@ -297,7 +269,7 @@ public class NCam : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-        NCamPlugin.NCamSetIpAddress(ipAddress, port);
+        NCamPlugin.NCamSetIpAddress(Config.Ip, Config.Port);
         GL.IssuePluginEvent(NCamPlugin.GetNCamRenderEventFunc(), (int)NCamRenderEvent.Initialize);
 
         yield return new WaitForEndOfFrame();
@@ -366,7 +338,7 @@ public class NCam : MonoBehaviour
         }
 
 
-        if (!useGLMatrix)
+        if (!Config.UseGLMatrix)
         {
             for (int i = 0; i < 2; ++i)
             {
@@ -385,7 +357,7 @@ public class NCam : MonoBehaviour
                 Matrix4x4 mdv = ncamData[i].GLModelView.inverse;
                 position = mdv.GetColumn(3);
                 eulerAngles = QuaternionFromMatrix(mdv).eulerAngles;
-                targetCamera[i].transform.localPosition = new Vector3(position.x * scale, position.y * scale, -position.z * scale);
+                targetCamera[i].transform.localPosition = new Vector3(position.x * Config.Scale, position.y * Config.Scale, -position.z * Config.Scale);
                 targetCamera[i].transform.localRotation = Quaternion.Euler(eulerAngles.x, 180.0f - eulerAngles.y, 180.0f - eulerAngles.z);
 
             }
@@ -416,7 +388,7 @@ public class NCam : MonoBehaviour
         //    showGUI = !showGUI;
 
 
-        if (!NCamPlugin.NCamIsOpen() && !reconnecting && autoConnection)
+        if (!NCamPlugin.NCamIsOpen() && !reconnecting && Config.AutoConnection)
         {
             StartCoroutine(StartNCam());
         }
@@ -445,375 +417,7 @@ public class NCam : MonoBehaviour
         return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1)).eulerAngles;
     }
 
-
-    public bool ReadXml(string file_path)
-    {
-        XmlDocument xmlDoc = new XmlDocument();
-
-        try
-        {
-            xmlDoc.Load(file_path);
-
-            XmlNodeList docXml = xmlDoc.GetElementsByTagName("NCam");
-            XmlNode ncamXml = docXml[0];
-
-            if (ncamXml != null)
-            {
-                bool isEnabled = false;
-                XmlIO.Read(ncamXml.ChildNodes[0], ref isEnabled);
-                enabled = isEnabled;
-                XmlIO.Read(ncamXml.ChildNodes[1], ref ipAddress);
-                XmlIO.Read(ncamXml.ChildNodes[2], ref port);
-                XmlIO.Read(ncamXml.ChildNodes[3], ref autoConnection);
-                int frameDelay = 0;
-                XmlIO.Read(ncamXml.ChildNodes[4], ref frameDelay);
-                FrameDelay = FrameDelay;
-                XmlIO.Read(ncamXml.ChildNodes[5], ref scale);
-                XmlIO.Read(ncamXml.ChildNodes[6], ref useGLMatrix);
-                bool useDistortion = Distortion;
-                XmlIO.Read(ncamXml.ChildNodes[7], ref useDistortion);
-                Distortion = useDistortion;
-
-				if (enabled)
-				{	
-					XmlNode localPosNode = ncamXml.ChildNodes[8];
-					{
-						Vector3 localPos = Vector3.zero;
-						XmlIO.Read(localPosNode.ChildNodes[0], ref localPos.x);
-						XmlIO.Read(localPosNode.ChildNodes[1], ref localPos.y);
-						XmlIO.Read(localPosNode.ChildNodes[2], ref localPos.z);
-						this.transform.localPosition = localPos;
-					}
-
-					XmlNode localRotNode = ncamXml.ChildNodes[9];
-					{
-						Vector3 localRot = Vector3.zero;
-						XmlIO.Read(localRotNode.ChildNodes[0], ref localRot.x);
-						XmlIO.Read(localRotNode.ChildNodes[1], ref localRot.y);
-						XmlIO.Read(localRotNode.ChildNodes[2], ref localRot.z);
-						this.transform.localRotation = Quaternion.Euler(localRot);
-					}
-				}
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError(e.Message);
-            return false;
-        }
-        return true;
-    }
-
-
-    public bool WriteXml(string file_path)
-    {
-        XmlDocument xmlDoc = new XmlDocument();
-
-        XmlDeclaration xmlDec = xmlDoc.CreateXmlDeclaration("1.0", null, null);
-        xmlDoc.AppendChild(xmlDec);
-
-        XmlElement ncamXml = xmlDoc.CreateElement("NCam");
-
-        XmlIO.Write(ncamXml, enabled, "Enabled");
-        XmlIO.Write(ncamXml, ipAddress, "IpAddress");
-        XmlIO.Write(ncamXml, port, "Port");
-        XmlIO.Write(ncamXml, autoConnection, "AutoConnection");
-        XmlIO.Write(ncamXml, FrameDelay, "DelayInFrames");
-        XmlIO.Write(ncamXml, scale, "ScaleUnits");
-        XmlIO.Write(ncamXml, useGLMatrix, "UseGLMatrix");
-        XmlIO.Write(ncamXml, Distortion, "Distortion");
-
-		if (enabled)
-		{
-			XmlElement xmlLocalPosition = xmlDoc.CreateElement("LocalPosition");
-			XmlIO.WriteFields(xmlLocalPosition, this.transform.localPosition);
-			ncamXml.AppendChild(xmlLocalPosition);
-
-			XmlElement xmlLocalRotation = xmlDoc.CreateElement("LocalRotation");
-			XmlIO.WriteFields(xmlLocalRotation, this.transform.localRotation.eulerAngles);
-			ncamXml.AppendChild(xmlLocalRotation);
-		}
-		
-        xmlDoc.AppendChild(ncamXml);
-
-        try
-        {
-            xmlDoc.Save(file_path);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError(e.Message);
-            return false;
-        }
-        return true;
-    }
-
-
-
-
-#if false
-    void OnGUI()
-    {
-        if (!showGUI)
-            return;
-
-        if (guiWindow == null)
-        {
-            int w = 390;
-            int h = 680;
-            guiWindow = new GUIWindow(Screen.width - w - 10, Screen.height - h - 10, w, h, "NCam [CTRL + F3]");
-        }
-
-        guiWindow.rect = GUILayout.Window(guiWindow.id, guiWindow.rect, BuildWindow, guiWindow.label);
-    }
-
-
-    void BuildWindow(int windowId)
-    {
-        GUILayout.BeginHorizontal("box");
-        {
-            ipAddress = GUILayout.TextField(ipAddress);
-            GUIAux.Int(port);
-
-            Color c = GUI.color;
-            if (NCamPlugin.NCamIsOpen())
-            {
-
-                if (!reconnecting)
-                {
-                    GUI.color = Color.green;
-                    GUILayout.Label("Connected", "box");
-                }
-                else
-                {
-                    GUI.color = Color.yellow;
-                    GUILayout.Label("Connecting", "box");
-                }
-            }
-            else
-            {
-                GUI.color = Color.red;
-                if (NCamPlugin.ErrorCode() == NCamPlugin.ErrorCodeEnum.None)
-                    GUILayout.Label("Disconnected", "box");
-                else
-                    GUILayout.Label("Error: " + NCamPlugin.ErrorCode().ToString(), "box");
-            }
-            GUI.color = c;
-        }
-        GUILayout.EndHorizontal();
-
-
-        GUILayout.BeginHorizontal("box");
-        {
-            if (autoConnection)
-                GUI.enabled = false;
-
-            if (GUILayout.Button("Open"))
-            {
-                StartCoroutine(StartNCam());
-            }
-
-            if (GUILayout.Button("Close"))
-            {
-                StopNCam();
-            }
-
-            GUI.enabled = true;
-            GUILayout.Space(15);
-            autoConnection = GUILayout.Toggle(autoConnection, "Auto Connection", GUILayout.Width(130));
-        }
-        GUILayout.EndHorizontal();
-
-
-        GUILayout.BeginHorizontal("box");
-        {
-            useGLMatrix = GUILayout.Toggle(useGLMatrix, "Use OpenGL Matrix");
-
-            bool dist = Distortion;
-            dist = GUILayout.Toggle(dist, "Distortion");
-            if (dist != Distortion)
-                Distortion = dist;
-        }
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal("box");
-        {
-            if (GUILayout.Button("Buffer:" + dataBuffer.Count.ToString()))
-                dataBuffer.Clear();
-            GUILayout.Label("Frame Delay:");
-            FrameDelay = GUIAux.Int(FrameDelay, "box");
-            GUILayout.Label("Scale Units:");
-            scale = GUIAux.Float(scale, "box");
-
-            GUIAux.Int((int)(ncamData[1].OpticalTimeCode.Time - ncamData[0].OpticalTimeCode.Time));
-            GUIAux.Int((int)(ncamData[1].OpticalTimeCode.Time - lastOpticalTimeCode));
-        }
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginVertical("box");
-        {
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.Label("Optical Parameters:     " + ncamData[FieldIndex].OpticalTimeCode.ToString(), "box");
-            }
-            GUILayout.EndHorizontal();
-
-            if (useGLMatrix)
-            {
-                GUILayout.BeginVertical("box");
-                {
-                    GUILayout.Label("OpenGL Projection Matrix", "box");
-                    GUILayout.Label(ncamData[FieldIndex].GLProjection.ToString(), "box");
-                }
-                GUILayout.EndVertical();
-            }
-            else
-            {
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Fov(v): ");
-                        GUILayout.Label(ncamData[FieldIndex].Fov.ToString("0.0"), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Aspect: ");
-                        GUILayout.Label(ncamData[FieldIndex].AspectRatio.ToString("0.00"), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Image: ");
-                        GUILayout.Label(ncamData[FieldIndex].ImageResolution.x.ToString(), "box");
-                        GUILayout.Label(ncamData[FieldIndex].ImageResolution.y.ToString(), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Sensor Size: ");
-                        GUILayout.Label(ncamData[FieldIndex].ImageSensorSize.x.ToString("0.00"), "box");
-                        GUILayout.Label(ncamData[FieldIndex].ImageSensorSize.y.ToString("0.00"), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Center: ");
-                        GUILayout.Label(ncamData[FieldIndex].ProjectionCenter.x.ToString("0.00"), "box");
-                        GUILayout.Label(ncamData[FieldIndex].ProjectionCenter.y.ToString("0.00"), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndHorizontal();
-            }
-        }
-        GUILayout.EndVertical();
-
-        GUILayout.BeginVertical("box");
-        {
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.Label("Tracking Parameters:     " + ncamData[FieldIndex].TrackingTimeCode.ToString(), "box");
-            }
-            GUILayout.EndHorizontal();
-
-            if (useGLMatrix)
-            {
-                GUILayout.BeginVertical("box");
-                {
-                    GUILayout.Label("OpenGL ModelView Matrix", "box");
-                    GUILayout.Label(ncamData[FieldIndex].GLModelView.ToString(), "box");
-                }
-                GUILayout.EndVertical();
-            }
-            else
-            {
-                GUILayout.BeginVertical("box");
-                {
-                    GUILayout.Label("NCam Values", "box");
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Position: ");
-                        GUILayout.Label(position.ToString(), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Rotation: ");
-                        GUILayout.Label(eulerAngles.ToString(), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndVertical();
-
-                GUILayout.BeginVertical("box");
-                {
-                    GUILayout.Label("Computed Values", "box");
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Position: ");
-                        GUILayout.Label(targetCamera[0].transform.localPosition.ToString(), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal("box");
-                    {
-                        GUILayout.Label("Rotation: ");
-                        GUILayout.Label(targetCamera[0].transform.localEulerAngles.ToString(), "box");
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndVertical();
-            }
-
-
-            showParentTransform = TransformGUI(this.transform, "Parent Transform", showParentTransform);
-
-            if (GUILayout.Button((showMatrices ? "-" : "+") + " Matrices", "box"))
-                showMatrices = !showMatrices;
-
-            if (showMatrices)
-            {
-                GUILayout.Label(targetCamera[0].projectionMatrix.ToString(), "box");
-                GUILayout.Label(targetCamera[0].worldToCameraMatrix.ToString(), "box");
-            }
-        }
-        GUILayout.EndVertical();
-
-        GUI.DragWindow();
-    }
-
-    bool TransformGUI(Transform t, string label, bool collapsed)
-    {
-        GUILayout.BeginVertical("box");
-        {
-            if (GUILayout.Button((collapsed ? "+ " : "- ") + label, "box"))
-                collapsed = !collapsed;
-
-            if (!collapsed)
-            {
-                GUILayout.BeginHorizontal("box");
-                {
-                    GUILayout.Label("Position: ");
-                    t.localPosition = GUIAux.Vector3(t.localPosition, "box");
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal("box");
-                {
-                    GUILayout.Label("Rotation: ");
-                    t.localEulerAngles = GUIAux.Vector3(t.localEulerAngles, "box");
-                }
-                GUILayout.EndHorizontal();
-            }
-        }
-        GUILayout.EndVertical();
-
-        return collapsed;
-    }
-#endif
 }
+
+
+

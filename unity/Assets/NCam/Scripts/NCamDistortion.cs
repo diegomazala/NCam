@@ -45,11 +45,6 @@ public class NCamDistortion : MonoBehaviour
         if (shader == null)
             shader = Shader.Find("NCam/Distortion");
 
-        if (!SystemInfo.supportsRenderTextures)
-        {
-            enabled = false;
-            return;
-        }
 
         // Disable if we don't support image effects
         if (!SystemInfo.supportsImageEffects)

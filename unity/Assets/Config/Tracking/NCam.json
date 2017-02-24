@@ -1,0 +1,10 @@
+{
+    "Enabled": true,
+    "Ip": "127.0.0.1",
+    "Port": 38860,
+    "Delay": 0,
+    "Scale": 1,
+    "Distortion": true,
+    "UseGLMatrix": false,
+    "AutoConnection": false
+}

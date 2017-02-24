@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Xml;
@@ -161,7 +161,6 @@ public class NCamMatrix
 }
 
 
-[System.Serializable]
 public class NCamTimeCode
 {
 	private uint[] data = null;
@@ -329,7 +328,6 @@ public class NCamTracking
        
 }
 
-[System.Serializable]
 public class NCamEncoder
 {
     public enum EParameter
@@ -413,3 +411,80 @@ public class NCamData
 }
 
 
+
+[System.Serializable]
+public class NCamConfig
+{
+    public bool Enabled = true;
+    public string Ip = "127.0.0.1";
+    public int Port = 38860; //6301;
+    public int Delay = 0;
+    public int Scale = 1;
+    public bool Distortion = true;
+    public bool UseGLMatrix = false;
+    public bool AutoConnection = false;
+
+    public static string FileName { get { return @"NCam.json"; } }
+
+    static public string Folder
+    {
+        get
+        {
+#if UNITY_EDITOR
+            System.IO.DirectoryInfo mainFolderPath = new System.IO.DirectoryInfo(Application.dataPath + "/");
+#else
+            System.IO.DirectoryInfo mainFolderPath = new System.IO.DirectoryInfo(Application.dataPath + "/../");
+#endif
+            return mainFolderPath.FullName + @"Config/Tracking/";
+        }
+    }
+
+    public NCamConfig()
+    {
+
+    }
+
+
+    public virtual bool Load()
+    {
+        return Load(Folder + FileName);
+    }
+
+    public virtual bool Load(string filename)
+    {
+        if (!System.IO.File.Exists(filename))
+            return false;
+
+        try
+        {
+            string json_str = System.IO.File.ReadAllText(filename);
+            if (json_str.Length > 0)
+            {
+                UnityEngine.JsonUtility.FromJsonOverwrite(json_str, this);
+                return true;
+            }
+        }
+        catch (System.Exception e)
+        {
+            UnityEngine.Debug.LogException(e);
+        }
+        return false;
+    }
+
+
+    public virtual void Save()
+    {
+        Save(Folder + FileName);
+    }
+
+    public virtual void Save(string filename)
+    {
+        System.IO.FileInfo fileInfo = new System.IO.FileInfo(filename);
+        if (!fileInfo.Exists)
+            System.IO.Directory.CreateDirectory(fileInfo.Directory.FullName);
+
+        bool prettyPrint = true;
+        string json_str = UnityEngine.JsonUtility.ToJson(this, prettyPrint);
+        System.IO.File.WriteAllText(filename, json_str);
+    }
+};
