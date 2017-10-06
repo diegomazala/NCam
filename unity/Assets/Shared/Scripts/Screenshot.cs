@@ -46,13 +46,13 @@ public class Screenshot : MonoBehaviour
     {
         if (recording)
         {
-            Application.CaptureScreenshot(recordFolder + Time.time.ToString() + ".png");
+            ScreenCapture.CaptureScreenshot(recordFolder + Time.time.ToString() + ".png");
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
             System.DateTime t = System.DateTime.Now;
-            Application.CaptureScreenshot(Application.dataPath + "/../Screenshot_" + t.Hour.ToString("00") + "-" + t.Minute.ToString("00") + "-" + t.Second.ToString("00") + ".png");
+            ScreenCapture.CaptureScreenshot(Application.dataPath + "/../Screenshot_" + t.Hour.ToString("00") + "-" + t.Minute.ToString("00") + "-" + t.Second.ToString("00") + ".png");
         }
     }
 
@@ -77,7 +77,7 @@ public class Screenshot : MonoBehaviour
     void TakeScreenshot()
     {
         System.DateTime t = System.DateTime.Now;
-        Application.CaptureScreenshot(Application.dataPath + "/../Screenshot_" + t.Hour.ToString("00") + '-' + t.Minute.ToString("00") + '-' + t.Second.ToString("00") + ".png");
+        ScreenCapture.CaptureScreenshot(Application.dataPath + "/../Screenshot_" + t.Hour.ToString("00") + '-' + t.Minute.ToString("00") + '-' + t.Second.ToString("00") + ".png");
     }
 
 }
